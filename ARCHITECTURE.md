@@ -33,6 +33,10 @@ src/
 │           ├── context/
 │           ├── services/
 │           └── index.ts
+├── pages/
+│     ├── DashboardPage.tsx
+│     ├── InspectionPage.tsx
+│     └── ReportPage.tsx
 ├── core/
 │     ├── api/
 │     ├── auth/
@@ -56,6 +60,15 @@ src/
 | `context/` | Context + Reducer + InitialState |
 | `services/` | 실제 API 호출 함수 (apiClient 사용) |
 | `index.ts` | public API 진입점 (외부 노출 항목만 export) |
+
+### pages/
+라우트와 1:1 대응하는 페이지 컴포넌트. features를 조합해서 화면을 구성.
+
+| 파일 | 역할 |
+|---|---|
+| `DashboardPage.tsx` | 메인 대시보드 화면 |
+| `InspectionPage.tsx` | 배터리 검사 결과 화면 |
+| `ReportPage.tsx` | 리포트 화면 |
 
 ### core/
 앱 전반의 인프라 레이어.
@@ -86,6 +99,7 @@ shared/ → features/ → pages/
 - features 간 직접 import 금지
 - 두 feature가 같은 코드를 필요로 하면 shared/로 이동
 - 각 feature는 index.ts로만 외부에 노출
+- pages/에서 여러 feature를 조합해서 화면 구성
 
 ### Reducer 방침
 - 각 도메인 Reducer 독립 운영
@@ -93,18 +107,18 @@ shared/ → features/ → pages/
 - Auth(전역)만 core/auth/에 위치
 
 ### shared/ 승격 기준
-feature 하나에서만 쓰임 → feature 안에 위치
-두 개 이상 feature에서 실제로 쓰임 → shared/로 이동
-"나중에 쓸 것 같다"는 이유로 shared/ 금지
-
+feature 하나에서만 쓰임    → feature 안에 위치
+두 개 이상 feature에서 쓰임 → shared/로 이동
+"나중에 쓸 것 같다"        → shared/ 금지
 
 ## 네이밍 컨벤션
 
 | 대상 | 규칙 | 예시 |
 |---|---|---|
 | 컴포넌트 | PascalCase | `BatteryCard.tsx` |
+| 페이지 | PascalCase + Page 접미사 | `DashboardPage.tsx` |
 | 훅 | use 접두사 + camelCase | `useDefects.ts` |
-| 서비스 | camelCase + Service | `batteryService.ts` |
+| 서비스 | camelCase + Service 접미사 | `batteryService.ts` |
 | 타입/인터페이스 | PascalCase | `Defect`, `BatteryCell` |
 | 폴더 | 소문자 camelCase | `battery`, `dashboard` |
 | 상수 | UPPER_SNAKE_CASE | `API_BASE_URL` |

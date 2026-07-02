@@ -89,9 +89,9 @@ shared/ → features/ → pages/
 | 도메인 UI 컴포넌트 | `features/<domain>/components/` |
 | 도메인 커스텀 훅 | `features/<domain>/hooks/` |
 | 도메인 TypeScript 타입 | `features/<domain>/types/` |
-| Context + Reducer | `features/<domain>/context/` |
+| Zustand 스토어 | `features/<domain>/store/` |
 | API 호출 함수 | `features/<domain>/services/` |
-| 전역 인증 | `core/auth/` |
+| 전역 인증 스토어 | `core/auth/` |
 | 공통 UI 컴포넌트 | `shared/ui/` |
 | 공통 훅 | `shared/hooks/` |
 | 유틸 함수 | `shared/utils/` |

@@ -4,6 +4,7 @@
 - React 19 + TypeScript + React Compiler
 - Vite (번들러)
 - Bun (패키지 매니저)
+- Zustand (상태관리)
 
 ## 폴더 구조
 src/
@@ -16,21 +17,21 @@ src/
 │     │     ├── components/
 │     │     ├── hooks/
 │     │     ├── types/
-│     │     ├── context/
+│     │     ├── store/
 │     │     ├── services/
 │     │     └── index.ts
 │     ├── dashboard/
 │     │     ├── components/
 │     │     ├── hooks/
 │     │     ├── types/
-│     │     ├── context/
+│     │     ├── store/
 │     │     ├── services/
 │     │     └── index.ts
 │     └── report/
 │           ├── components/
 │           ├── hooks/
 │           ├── types/
-│           ├── context/
+│           ├── store/
 │           ├── services/
 │           └── index.ts
 ├── pages/
@@ -57,7 +58,7 @@ src/
 | `components/` | 해당 도메인 전용 UI 컴포넌트 |
 | `hooks/` | 해당 도메인 전용 커스텀 훅 |
 | `types/` | 해당 도메인 TypeScript 타입/인터페이스 |
-| `context/` | Context + Reducer + InitialState |
+| `store/` | Zustand 스토어 (state + actions) |
 | `services/` | 실제 API 호출 함수 (apiClient 사용) |
 | `index.ts` | public API 진입점 (외부 노출 항목만 export) |
 
@@ -76,7 +77,7 @@ src/
 | 폴더 | 역할 |
 |---|---|
 | `api/` | axios 인스턴스 생성 + 인터셉터 (비즈니스 로직 없음) |
-| `auth/` | 전역 AuthContext + AuthReducer + AuthInitialState |
+| `auth/` | 전역 Auth Zustand 스토어 |
 | `navigation/` | Router, PrivateRoute, routes 상수 |
 
 ### shared/
@@ -101,10 +102,30 @@ shared/ → features/ → pages/
 - 각 feature는 index.ts로만 외부에 노출
 - pages/에서 여러 feature를 조합해서 화면 구성
 
-### Reducer 방침
-- 각 도메인 Reducer 독립 운영
-- Context + InitialState + Reducer는 각 feature/context/ 안에 위치
-- Auth(전역)만 core/auth/에 위치
+### Zustand 스토어 방침
+- 각 도메인 스토어 독립 운영 (`features/<domain>/store/`)
+- state와 actions를 분리해 actions는 객체로 묶어 관리
+- 컴포넌트에서는 셀렉터로 필요한 값만 구독 (불필요한 리렌더링 방지)
+- Auth(전역)만 `core/auth/`에 위치
+
+```typescript
+// store 작성 예시
+const useBatteryStore = create<BatteryState & BatteryActions>((set) => ({
+  // state
+  status: 'idle',
+  defects: [],
+
+  // actions — 객체로 분리
+  actions: {
+    setStatus: (s) => set({ status: s }),
+    addDefect: (d) => set((state) => ({ defects: [...state.defects, d] })),
+  },
+}))
+
+// 사용 예시
+const status = useBatteryStore((state) => state.status)           // state만
+const { setStatus } = useBatteryStore((state) => state.actions)   // action만
+```
 
 ### shared/ 승격 기준
 feature 하나에서만 쓰임    → feature 안에 위치
@@ -118,6 +139,7 @@ feature 하나에서만 쓰임    → feature 안에 위치
 | 컴포넌트 | PascalCase | `BatteryCard.tsx` |
 | 페이지 | PascalCase + Page 접미사 | `DashboardPage.tsx` |
 | 훅 | use 접두사 + camelCase | `useDefects.ts` |
+| 스토어 | use 접두사 + PascalCase + Store 접미사 | `useBatteryStore.ts` |
 | 서비스 | camelCase + Service 접미사 | `batteryService.ts` |
 | 타입/인터페이스 | PascalCase | `Defect`, `BatteryCell` |
 | 폴더 | 소문자 camelCase | `battery`, `dashboard` |

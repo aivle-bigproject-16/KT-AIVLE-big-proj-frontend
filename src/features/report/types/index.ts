@@ -41,6 +41,7 @@ export interface IndividualReportCreateResponse {
 
 // GET /report/individual/:reportId — Response
 export interface IndividualReportDetail {
+  reportId: number
   batteryCellId: number
   cellSerialNo: string
   status: ReportStatus

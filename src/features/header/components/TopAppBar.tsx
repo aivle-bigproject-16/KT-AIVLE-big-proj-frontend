@@ -1,33 +1,32 @@
 import "./TopAppBar.css";
-import { SearchIcon, BellIcon, SettingsIcon, UserIcon } from "./Icons";
-import { useState } from "react";
+import { BellIcon, SettingsIcon, UserIcon } from "./Icons";
+import { SearchBar } from "./SearchBar"
 
-function TopAppBar() {
-  const [inputValue, setInputValue] = useState("");
-  const [searchValue, setSearchValue] = useState("");
+type TopAppBarProps = {
+  onSearch: (value: string) => void;
+  onSettingsClick: () => void;
+};
 
-  const handleSearch = () => {setSearchValue(inputValue);};
-
+function TopAppBar({ onSearch, onSettingsClick }: TopAppBarProps) {
   return (
     <header className="top-app-bar">
-      <div className="top-app-bar__search">
-        <input
-          className="top-app-bar__search-input"
-          type="text"
-          placeholder="검색어를 입력해주세요 (날짜, ID 등)"
-          value = {inputValue}
-          onChange = {(e) => setInputValue(e.target.value)}
-        />
-        <button type="button" onClick={handleSearch} aria-label="검색">
-          <SearchIcon />
-        </button>
-      </div>
+      <SearchBar placeholder="검색어를 입력해주세요 (날짜, ID 등)" onSearch={onSearch} />
 
       <div className="top-app-bar__actions">
-        <button type="button" className="top-app-bar__icon-button" aria-label="알림">
+        <button
+          type="button"
+          className="top-app-bar__icon-button"
+          aria-label="알림"
+          onClick = {onSettingsClick}
+        >
           <BellIcon />
         </button>
-        <button type="button" className="top-app-bar__icon-button" aria-label="설정">
+        <button
+          type="button"
+          className="top-app-bar__icon-button"
+          aria-label="설정"
+          onClick = {onSettingsClick}
+        >
           <SettingsIcon />
         </button>
 

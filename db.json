@@ -1,0 +1,200 @@
+{
+  "battery": [
+    {
+      "id": "1",
+      "inspectionId": 1,
+      "batteryCellId": 1,
+      "cellSerialNo": "CELL-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-06T10:30:00"
+    },
+    {
+      "id": "2",
+      "inspectionId": 2,
+      "batteryCellId": 2,
+      "cellSerialNo": "CELL-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-06T11:00:00"
+    }
+  ],
+  "dashboard": [
+    {
+      "id": "1",
+      "kpiData": {
+        "totalInspections": 100,
+        "yieldRate": 95.6,
+        "processStatus": "COMPLETED"
+      },
+      "summaryData": [
+        {
+          "inspectionId": 1,
+          "finalLabel": "PASS",
+          "createdAt": "2026-07-06T18:00:00"
+        },
+        {
+          "inspectionId": 2,
+          "finalLabel": "REJECT",
+          "createdAt": "2026-07-06T18:00:00"
+        }
+      ],
+      "graphData": [
+        {
+          "label": "2026-07-05",
+          "value": 15
+        },
+        {
+          "label": "2026-07-06",
+          "value": 8
+        },
+        {
+          "label": "2026-07-07",
+          "value": 5
+        }
+      ]
+    }
+  ],
+  "report": [
+    {
+      "id": "individual",
+      "content": [
+        {
+          "reportId": 1,
+          "batteryCellId": 1,
+          "cellSerialNo": "CELL-001",
+          "status": "COMPLETED",
+          "title": "BATT-001 불량 검사 상세 리포트",
+          "content": "CT 이미지 분석 결과, 상단 탭 부분에 94% 신뢰도로 크랙이 발견되었습니다.",
+          "ctImageUrl": "",
+          "rgbImageUrl": "",
+          "createdAt": "2026-07-07T10:00:00Z",
+          "updatedAt": "2026-07-07T10:30:00Z",
+          "imageMappings": [
+            {
+              "imageType": "CT",
+              "imageId": 1,
+              "bbox": { "x": 120, "y": 80, "width": 240, "height": 160 }
+            }
+          ]
+        },
+        {
+          "reportId": 2,
+          "batteryCellId": 2,
+          "cellSerialNo": "CELL-002",
+          "status": "COMPLETED",
+          "title": "BATT-002 불량 검사 상세 리포트",
+          "content": "RGB 이미지 분석 결과, 표면에 오점이 발견되었습니다.",
+          "ctImageUrl": "",
+          "rgbImageUrl": "",
+          "createdAt": "2026-07-07T11:00:00Z",
+          "updatedAt": "2026-07-07T11:30:00Z",
+          "imageMappings": [
+            {
+              "imageType": "RGB",
+              "imageId": 2,
+              "bbox": { "x": 60, "y": 40, "width": 100, "height": 100 }
+            }
+          ]
+        },
+        {
+          "reportId": 3,
+          "batteryCellId": 1,
+          "cellSerialNo": "CELL-001",
+          "status": "PENDING",
+          "title": "BATT-001 재검사 리포트",
+          "content": "리포트 생성 요청이 접수되어 처리 중입니다.",
+          "ctImageUrl": "",
+          "rgbImageUrl": "",
+          "createdAt": "2026-07-08T09:00:00Z",
+          "updatedAt": "2026-07-08T09:00:00Z",
+          "imageMappings": []
+        }
+      ]
+    },
+    {
+      "id": "daily",
+      "content": [
+        {
+          "reportId": 1,
+          "reportDate": "2026-07-06",
+          "status": "COMPLETED",
+          "title": "2026년 07월 06일 일일 검사 요약 리포트",
+          "content": "금일 검사에서는 총 120건 중 14건의 불량이 탐지되었습니다.",
+          "failureReason": null,
+          "ctImageUrl": "",
+          "rgbImageUrl": "",
+          "createdAt": "2026-07-07T10:00:00Z",
+          "updatedAt": "2026-07-07T10:30:00Z",
+          "summary": {
+            "totalCount": 120,
+            "passCount": 104,
+            "rejectCount": 14,
+            "failedCount": 2,
+            "defects": [
+              { "defectType": "MICRO_DEFECT", "count": 5 },
+              { "defectType": "CRACK", "count": 2 }
+            ]
+          }
+        },
+        {
+          "reportId": 2,
+          "reportDate": "2026-07-07",
+          "status": "COMPLETED",
+          "title": "2026년 07월 07일 일일 검사 요약 리포트",
+          "content": "금일 검사에서는 총 95건 중 6건의 불량이 탐지되었습니다.",
+          "failureReason": null,
+          "ctImageUrl": "",
+          "rgbImageUrl": "",
+          "createdAt": "2026-07-08T10:00:00Z",
+          "updatedAt": "2026-07-08T10:30:00Z",
+          "summary": {
+            "totalCount": 95,
+            "passCount": 89,
+            "rejectCount": 6,
+            "failedCount": 0,
+            "defects": [
+              { "defectType": "SWELLING", "count": 3 },
+              { "defectType": "CRACK", "count": 3 }
+            ]
+          }
+        },
+        {
+          "reportId": 3,
+          "reportDate": "2026-07-08",
+          "status": "FAILED",
+          "title": "2026년 07월 08일 일일 검사 요약 리포트",
+          "content": null,
+          "failureReason": "AI_SERVER_ERROR",
+          "ctImageUrl": "",
+          "rgbImageUrl": "",
+          "createdAt": "2026-07-08T18:00:00Z",
+          "updatedAt": "2026-07-08T18:00:00Z",
+          "summary": {
+            "totalCount": 0,
+            "passCount": 0,
+            "rejectCount": 0,
+            "failedCount": 0,
+            "defects": []
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "testid123",
+      "password": "testpass123!",
+      "name": "김성준",
+      "role": "supervisor"
+    },
+    {
+      "id": "testid456",
+      "password": "testpass456!",
+      "name": "이영희",
+      "role": "user"
+    }
+  ]
+}

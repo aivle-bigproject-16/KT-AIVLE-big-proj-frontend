@@ -95,7 +95,7 @@ export interface DailyReportSummary {
 }
 
 export interface DailyReportDetail {
-  id: number
+  reportId: number
   reportDate: string
   status: ReportStatus
   title: string | null

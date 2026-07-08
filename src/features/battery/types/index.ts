@@ -12,6 +12,13 @@ export interface BatteryListItem {
   latestAnalyzedAt: string | null
 }
 
+export interface BatteryReportSummary {
+  reportId: number
+  title: string | null
+  createdAt: string
+  updatedAt: string | null
+}
+
 // GET /battery/:batteryCellId
 export interface BatteryDetail {
   batteryCellId: number
@@ -25,4 +32,5 @@ export interface BatteryDetail {
   manufacturedDate: string | null
   createdAt: string
   updatedAt: string | null
+  reports: BatteryReportSummary[]
 }

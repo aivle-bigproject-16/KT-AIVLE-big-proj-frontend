@@ -1,5 +1,5 @@
 import { httpClient } from '@/core/api/httpClient'
-import type { ApiResponse, PageResponse } from '@/shared/types/api'
+import type { ApiResponse, ListResponse } from '@/shared/types/api'
 import type {
   IndividualReportCreateRequest,
   IndividualReportCreateResponse,
@@ -23,7 +23,7 @@ export const individualReportService = {
     httpClient.get<ApiResponse<IndividualReportDetail>>(`${BASE_URL}/${reportId}`),
 
   getIndividualReportList: (params: GetIndividualReportListParams) =>
-    httpClient.get<ApiResponse<PageResponse<IndividualReportListItem>>>(BASE_URL, {
+    httpClient.get<ApiResponse<ListResponse<IndividualReportListItem>>>(BASE_URL, {
       params,
     }),
 }

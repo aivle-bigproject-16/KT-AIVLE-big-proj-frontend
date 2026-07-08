@@ -2,10 +2,10 @@ import {
     TopAppBar
 } from "../features/header";
 
-function DashboardPage() {
+function TempHeaderPage() {
     return (<div>
         <TopAppBar />
     </div>)
 }
 
-export { DashboardPage };
+export { TempHeaderPage };

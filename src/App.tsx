@@ -1,7 +1,7 @@
-import { DashboardPage } from './pages/DashboardPage'
+import { TempHeaderPage } from './pages/TempHeaderPage'
 
 function App() {
-  return <DashboardPage />
+  return <TempHeaderPage />
 }
 
 export default App

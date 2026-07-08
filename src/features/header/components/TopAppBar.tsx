@@ -1,16 +1,26 @@
 import "./TopAppBar.css";
 import { SearchIcon, BellIcon, SettingsIcon, UserIcon } from "./Icons";
+import { useState } from "react";
 
 function TopAppBar() {
+  const [inputValue, setInputValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearch = () => {setSearchValue(inputValue);};
+
   return (
     <header className="top-app-bar">
       <div className="top-app-bar__search">
-        <SearchIcon />
         <input
           className="top-app-bar__search-input"
           type="text"
           placeholder="검색어를 입력해주세요 (날짜, ID 등)"
+          value = {inputValue}
+          onChange = {(e) => setInputValue(e.target.value)}
         />
+        <button type="button" onClick={handleSearch} aria-label="검색">
+          <SearchIcon />
+        </button>
       </div>
 
       <div className="top-app-bar__actions">

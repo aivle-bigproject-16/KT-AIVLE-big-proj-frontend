@@ -1,4 +1,3 @@
-import "./TopAppBar.css";
 import { SearchIcon } from "./Icons";
 import { useState } from "react";
 

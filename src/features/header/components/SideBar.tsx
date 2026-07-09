@@ -2,6 +2,7 @@ import "./SideBar.css";
 import { DashboardIcon, ChecklistIcon, ReportIcon, BrandIcon, HelpIcon, SettingsIcon } from "./Icons";
 import tempLogo from "./TempLogo.svg";
 import { SideBarTab } from "./SideBarTab";
+import { ROUTES } from "@/core/navigation/routes";
 
 function SideBar() {
   return (
@@ -17,14 +18,14 @@ function SideBar() {
         </div>
 
         <ul className="side-bar__nav">
-            <SideBarTab icon={<DashboardIcon />} label="대시보드" active />
-            <SideBarTab icon={<ChecklistIcon />} label="배터리 목록" />
-            <SideBarTab icon={<ReportIcon />} label="리포트 목록" />
+            <SideBarTab icon={<DashboardIcon />} label="대시보드" to={ROUTES.DASHBOARD}/>
+            <SideBarTab icon={<ChecklistIcon />} label="배터리 목록" to={ROUTES.BATTERY}/>
+            <SideBarTab icon={<ReportIcon />} label="리포트 목록" to={ROUTES.REPORT_DAILY}/>
         </ul>
 
         <ul className="side-bar__nav side-bar__nav--bottom">
-            <SideBarTab icon={<HelpIcon />} label="고객 지원" />
-            <SideBarTab icon={<SettingsIcon />} label="설정" />
+            <SideBarTab icon={<HelpIcon />} label="고객 지원" to={ROUTES.HELP}/>
+            <SideBarTab icon={<SettingsIcon />} label="설정" to={ROUTES.SETTINGS}/>
         </ul>
     </nav>
   );

@@ -8,4 +8,6 @@ export const ROUTES = {
   REPORT_INDIVIDUAL_DETAIL: (reportId: string | number) => `/report/individual/${reportId}`,
   REPORT_DAILY: '/report/daily',
   REPORT_DAILY_DETAIL: (reportId: string | number) => `/report/daily/${reportId}`,
+  HELP: '/help',
+  SETTINGS: '/settings',
 } as const

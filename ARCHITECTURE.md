@@ -43,7 +43,7 @@ src/
 │           └── index.ts
 ├── pages/
 │     ├── DashboardPage.tsx
-│     ├── InspectionPage.tsx
+│     ├── BatteryPage.tsx
 │     └── ReportPage.tsx
 ├── core/
 │     ├── api/
@@ -77,7 +77,7 @@ src/
 | 파일 | 역할 |
 |---|---|
 | `DashboardPage.tsx` | 메인 대시보드 화면 |
-| `InspectionPage.tsx` | 배터리 검사 결과 화면 |
+| `BatteryPage.tsx` | 배터리 검사 결과 화면 |
 | `ReportPage.tsx` | 리포트 화면 |
 
 ### core/

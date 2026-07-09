@@ -1,5 +1,5 @@
 export { DashboardMockPanel } from './components/DashboardMockPanel'
-export { Flow } from './components/Flow'
+export { Simulation } from './components/Simulation'
 export { default as SimulationMockPanel } from './components/SimulationMockPanel'
 export { useDashboardStore } from './store/useDashboardStore'
 export { useSimulationStore } from './store/useSimulationStore'

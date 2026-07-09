@@ -64,6 +64,7 @@
   border-radius: 10px 0 0 10px;
   color: #5b5f63;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .side-bar__nav-item:hover {

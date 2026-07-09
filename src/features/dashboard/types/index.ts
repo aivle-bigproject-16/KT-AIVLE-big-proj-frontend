@@ -56,6 +56,8 @@ export interface BatchProgress {
 }
 
 export interface SimulationProgressPayload {
+  batchCount: number
+  batteryCellCount: number
   registered: BatchProgress[]
   capture: BatchProgress | null
   analyze: BatchProgress | null

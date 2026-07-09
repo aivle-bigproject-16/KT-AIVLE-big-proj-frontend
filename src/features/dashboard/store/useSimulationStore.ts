@@ -7,6 +7,8 @@ const MAX_COMPLETED = 20
 type WsStatus = 'idle' | 'connecting' | 'open' | 'closed'
 
 interface SimulationState {
+  batchCount: number
+  batteryCellCount: number
   registered: BatchProgress[]
   capture: BatchProgress | null
   analyze: BatchProgress | null
@@ -24,6 +26,8 @@ interface SimulationActions {
 }
 
 const initialState: SimulationState = {
+  batchCount: 0,
+  batteryCellCount: 0,
   registered: [],
   capture: null,
   analyze: null,
@@ -37,6 +41,8 @@ export const useSimulationStore = create<SimulationState & SimulationActions>((s
   actions: {
     applyProgress: (payload) => {
       set({
+        batchCount: payload.batchCount,
+        batteryCellCount: payload.batteryCellCount,
         registered: payload.registered,
         capture: payload.capture,
         analyze: payload.analyze,

@@ -1,8 +1,9 @@
-import { useEffect, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
 import SimulationCard from './SimulationCard'
-import { useDashboardStore } from '../store/useDashboardStore'
+import { useSimulationStore } from '../store/useSimulationStore'
+import { useSimulationSocket } from '../hooks/useSimulationSocket'
 
 const ACCENT_COLOR = '#E60012'
 const TEXT_SECONDARY = '#5B5F63'
@@ -12,21 +13,22 @@ function VariantLabel({ children }: { children: ReactNode }) {
 }
 
 function Simulation() {
-  const kpiData = useDashboardStore((s) => s.kpiData)
-  const { fetchDashboard } = useDashboardStore((s) => s.actions)
+  useSimulationSocket()
 
-  useEffect(() => {
-    fetchDashboard({
-      todayDate: '2026-07-07',
-      startDate: '2026-07-01',
-      size: 5,
-      graphType: 'DAILY_TREND',
-    })
-  }, [fetchDashboard])
+  const batteryCellCount = useSimulationStore((s) => s.batteryCellCount)
+  const registered = useSimulationStore((s) => s.registered)
+  const capture = useSimulationStore((s) => s.capture)
+  const analyze = useSimulationStore((s) => s.analyze)
+  const completed = useSimulationStore((s) => s.completed)
 
-  const totalInspections = kpiData?.totalInspections ?? 0
-  const passCount = Math.round(totalInspections * ((kpiData?.yieldRate ?? 0) / 100))
-  const rejectCount = totalInspections - passCount
+  const registeredCellCount = registered.reduce((sum, batch) => sum + batch.cells.length, 0)
+  const capturingCellCount = capture?.cells.length ?? 0
+  const analyzingCellCount = analyze?.cells.length ?? 0
+
+  const completedCells = completed.flatMap((batch) => batch.cells)
+  const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
+  const rejectCount = completedCells.filter((cell) => cell.finalLabel === 'REJECT').length
+  const completedCount = completedCells.length
 
   return (
     <section className="simulation">
@@ -41,13 +43,13 @@ function Simulation() {
       <div>
         <VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>
         <div className="simulation__cards">
-          {/* current는 kpiData.totalInspections 실연동, total은 실제 용량 데이터 연동 전까지 사용하는 목업 값 */}
+          {/* current/total 모두 useSimulationStore(WS) 실연동 — total은 batteryCellCount(전체 셀 개수) */}
           <SimulationCard
             label="대기 (PENDING)"
             icon={<InputIcon />}
             iconColor={TEXT_SECONDARY}
-            current={kpiData?.totalInspections ?? 0}
-            total={1500}
+            current={registeredCellCount}
+            total={batteryCellCount}
             unit="units"
           />
           <div className="simulation__connector" aria-hidden="true" />
@@ -55,8 +57,8 @@ function Simulation() {
             label="촬영 (CAPTURING)"
             icon={<CaptureIcon />}
             iconColor={ACCENT_COLOR}
-            current={12}
-            total={40}
+            current={capturingCellCount}
+            total={batteryCellCount}
             unit="active"
           />
           <div className="simulation__connector" aria-hidden="true" />
@@ -64,8 +66,8 @@ function Simulation() {
             label="분석 (ANALYSIS)"
             icon={<AnalysisIcon />}
             iconColor={ACCENT_COLOR}
-            current={4}
-            total={40}
+            current={analyzingCellCount}
+            total={batteryCellCount}
             unit="queued"
           />
           <div className="simulation__connector simulation__connector--branch" aria-hidden="true">
@@ -80,14 +82,14 @@ function Simulation() {
             </svg>
           </div>
           <div className="simulation__cards-side">
-            {/* current/total은 kpiData.totalInspections·yieldRate로부터 산출한 실연동 값 */}
+            {/* current/total은 useSimulationStore의 completed 셀 목록에서 집계한 실연동 값 */}
             <SimulationCard
               compact
               label="정상 (PASS)"
               icon={<CheckIcon />}
               iconColor={TEXT_SECONDARY}
               current={passCount}
-              total={totalInspections}
+              total={completedCount}
               unit="units"
             />
             <SimulationCard
@@ -96,7 +98,7 @@ function Simulation() {
               icon={<AlertIcon />}
               iconColor={ACCENT_COLOR}
               current={rejectCount}
-              total={totalInspections}
+              total={completedCount}
               unit="units"
             />
           </div>

@@ -168,7 +168,10 @@ let analyze = null
 let completed = []
 
 function snapshot() {
-  return { registered, capture, analyze, completed }
+  const batches = [...registered, capture, analyze, ...completed].filter(Boolean)
+  const batchCount = batches.length
+  const batteryCellCount = batches.reduce((sum, b) => sum + b.cells.length, 0)
+  return { batchCount, batteryCellCount, registered, capture, analyze, completed }
 }
 
 function broadcastSnapshot() {

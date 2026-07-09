@@ -1,4 +1,4 @@
-.flow {
+.simulation {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -8,20 +8,20 @@
   padding: 20px;
 }
 
-.flow__header {
+.simulation__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.flow__title {
+.simulation__title {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
   color: #191c1d;
 }
 
-.flow__sim-control {
+.simulation__sim-control {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -35,7 +35,7 @@
   cursor: pointer;
 }
 
-.flow__variant-label {
+.simulation__variant-label {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -44,39 +44,39 @@
   margin: 0 0 8px;
 }
 
-.flow__cards {
+.simulation__cards {
   display: flex;
   justify-content: center;
 }
 
-.flow__cards > .flow-card,
-.flow__cards > .flow__cards-side {
+.simulation__cards > .simulation-card,
+.simulation__cards > .simulation__cards-side {
   flex: 0 0 220px;
   width: 220px;
 }
 
-.flow__connector {
+.simulation__connector {
   flex: 0 0 45px;
   width: 45px;
 }
 
-.flow__connector:not(.flow__connector--branch) {
+.simulation__connector:not(.simulation__connector--branch) {
   align-self: center;
   height: 1px;
   background: #191c1d;
 }
 
-.flow__connector--branch {
+.simulation__connector--branch {
   align-self: stretch;
   display: flex;
 }
 
-.flow__connector--branch svg {
+.simulation__connector--branch svg {
   width: 100%;
   height: 100%;
 }
 
-.flow__cards-side {
+.simulation__cards-side {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -84,19 +84,19 @@
   gap: 16px;
 }
 
-.flow__steps {
+.simulation__steps {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.flow__steps-arrow {
+.simulation__steps-arrow {
   display: flex;
   flex-shrink: 0;
   color: #5b5f63;
 }
 
-.flow-step {
+.simulation-step {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -107,54 +107,54 @@
   border: 1px solid transparent;
 }
 
-.flow-step--active {
+.simulation-step--active {
   background: #fff;
   border-color: #e9bcb6;
 }
 
-.flow-step__header {
+.simulation-step__header {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.flow-step__dot {
+.simulation-step__dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
 }
 
-.flow-step__dot--dark {
+.simulation-step__dot--dark {
   background: #191c1d;
 }
 
-.flow-step__dot--accent {
+.simulation-step__dot--accent {
   background: #e60012;
 }
 
-.flow-step__dot--outline {
+.simulation-step__dot--outline {
   background: transparent;
   border: 2px solid #5b5f63;
 }
 
-.flow-step__label {
+.simulation-step__label {
   font-size: 12px;
   font-weight: 600;
   color: #5b5f63;
 }
 
-.flow-step__value {
+.simulation-step__value {
   font-size: 16px;
   font-weight: 700;
   color: #191c1d;
 }
 
-.flow-step__caption {
+.simulation-step__caption {
   font-size: 11px;
   color: #5b5f63;
 }
 
-.flow-card {
+.simulation-card {
   flex: 1;
   max-width: 240px;
   display: flex;
@@ -167,23 +167,23 @@
   background: #fff;
 }
 
-.flow-card__header {
+.simulation-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.flow-card__label {
+.simulation-card__label {
   font-size: 15px;
   font-weight: 600;
   color: #5b5f63;
 }
 
-.flow-card__icon {
+.simulation-card__icon {
   display: flex;
 }
 
-.flow-card__body {
+.simulation-card__body {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -191,42 +191,42 @@
   gap: 10px;
 }
 
-.flow-card__value-row {
+.simulation-card__value-row {
   display: flex;
   align-items: baseline;
   gap: 6px;
 }
 
-.flow-card__value {
+.simulation-card__value {
   font-size: 45px;
   font-weight: 700;
   color: #191c1d;
 }
 
-.flow-card__unit {
+.simulation-card__unit {
   font-size: 22px;
   color: #5b5f63;
 }
 
-.flow-card__progress-track {
+.simulation-card__progress-track {
   height: 4px;
   border-radius: 999px;
   background: #f0f0f0;
   overflow: hidden;
 }
 
-.flow-card__progress-fill {
+.simulation-card__progress-fill {
   height: 100%;
   background: #e60012;
   border-radius: 999px;
 }
 
-.flow-card--compact {
+.simulation-card--compact {
   min-height: 0;
   gap: 6px;
   padding: 14px 16px;
 }
 
-.flow-card--compact .flow-card__value {
+.simulation-card--compact .simulation-card__value {
   font-size: 30px;
 }

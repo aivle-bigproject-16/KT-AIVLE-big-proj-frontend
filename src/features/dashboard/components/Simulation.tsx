@@ -1,17 +1,17 @@
 import { useEffect, type ReactNode } from 'react'
-import './Flow.css'
+import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
-import FlowCard from './FlowCard'
+import SimulationCard from './SimulationCard'
 import { useDashboardStore } from '../store/useDashboardStore'
 
 const ACCENT_COLOR = '#E60012'
 const TEXT_SECONDARY = '#5B5F63'
 
 function VariantLabel({ children }: { children: ReactNode }) {
-  return <p className="flow__variant-label">{children}</p>
+  return <p className="simulation__variant-label">{children}</p>
 }
 
-function Flow() {
+function Simulation() {
   const kpiData = useDashboardStore((s) => s.kpiData)
   const { fetchDashboard } = useDashboardStore((s) => s.actions)
 
@@ -29,10 +29,10 @@ function Flow() {
   const rejectCount = totalInspections - passCount
 
   return (
-    <section className="flow">
-      <div className="flow__header">
-        <h3 className="flow__title">Live Monitoring Flow</h3>
-        <button className="flow__sim-control">
+    <section className="simulation">
+      <div className="simulation__header">
+        <h3 className="simulation__title">Live Monitoring Flow</h3>
+        <button className="simulation__sim-control">
           <SimControlIcon />
           Sim Control (시뮬레이션 제어)
         </button>
@@ -40,9 +40,9 @@ function Flow() {
 
       <div>
         <VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>
-        <div className="flow__cards">
+        <div className="simulation__cards">
           {/* current는 kpiData.totalInspections 실연동, total은 실제 용량 데이터 연동 전까지 사용하는 목업 값 */}
-          <FlowCard
+          <SimulationCard
             label="대기 (PENDING)"
             icon={<InputIcon />}
             iconColor={TEXT_SECONDARY}
@@ -50,8 +50,8 @@ function Flow() {
             total={1500}
             unit="units"
           />
-          <div className="flow__connector" aria-hidden="true" />
-          <FlowCard
+          <div className="simulation__connector" aria-hidden="true" />
+          <SimulationCard
             label="촬영 (CAPTURING)"
             icon={<CaptureIcon />}
             iconColor={ACCENT_COLOR}
@@ -59,8 +59,8 @@ function Flow() {
             total={40}
             unit="active"
           />
-          <div className="flow__connector" aria-hidden="true" />
-          <FlowCard
+          <div className="simulation__connector" aria-hidden="true" />
+          <SimulationCard
             label="분석 (ANALYSIS)"
             icon={<AnalysisIcon />}
             iconColor={ACCENT_COLOR}
@@ -68,7 +68,7 @@ function Flow() {
             total={40}
             unit="queued"
           />
-          <div className="flow__connector flow__connector--branch" aria-hidden="true">
+          <div className="simulation__connector simulation__connector--branch" aria-hidden="true">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">
               <path
                 d="M0 50 H50 M50 25 V75 M50 25 H100 M50 75 H100"
@@ -79,9 +79,9 @@ function Flow() {
               />
             </svg>
           </div>
-          <div className="flow__cards-side">
+          <div className="simulation__cards-side">
             {/* current/total은 kpiData.totalInspections·yieldRate로부터 산출한 실연동 값 */}
-            <FlowCard
+            <SimulationCard
               compact
               label="정상 (PASS)"
               icon={<CheckIcon />}
@@ -90,7 +90,7 @@ function Flow() {
               total={totalInspections}
               unit="units"
             />
-            <FlowCard
+            <SimulationCard
               compact
               label="불량 (REJECT)"
               icon={<AlertIcon />}
@@ -106,4 +106,4 @@ function Flow() {
   )
 }
 
-export  {Flow}
+export { Simulation }

@@ -1,5 +1,5 @@
 import { httpClient } from '@/core/api/httpClient'
-import type { ApiResponse, PageResponse } from '@/shared/types/api'
+import type { ApiResponse, ListResponse } from '@/shared/types/api'
 import type {
   DailyReportCreateRequest,
   DailyReportCreateResponse,
@@ -19,9 +19,9 @@ export const dailyReportService = {
   createDailyReport: (body: DailyReportCreateRequest) =>
     httpClient.post<ApiResponse<DailyReportCreateResponse>>(BASE_URL, body),
 
-  getDailyReport: (id: number) =>
-    httpClient.get<ApiResponse<DailyReportDetail>>(`${BASE_URL}/${id}`),
+  getDailyReport: (reportId: number) =>
+    httpClient.get<ApiResponse<DailyReportDetail>>(`${BASE_URL}/${reportId}`),
 
   getDailyReportList: (params: GetDailyReportListParams) =>
-    httpClient.get<ApiResponse<PageResponse<DailyReportListItem>>>(BASE_URL, { params }),
+    httpClient.get<ApiResponse<ListResponse<DailyReportListItem>>>(BASE_URL, { params }),
 }

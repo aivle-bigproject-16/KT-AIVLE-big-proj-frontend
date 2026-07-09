@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { individualReportService } from '../services/individualReport.service'
 import type { IndividualReportListItem } from '../types'
 import type { Pageable } from '@/shared/types/api'
+import { normalizeListResponse } from '@/shared/types/api'
 import type { AsyncState } from '@/shared/types/store'
 
 interface IndividualReportListState extends AsyncState {
@@ -32,7 +33,8 @@ export const useIndividualReportListStore = create<
       set({ isLoading: true, error: null })
       try {
         const res = await individualReportService.getIndividualReportList({ page, size })
-        set({ list: res.data.content, pageable: res.data.pageable, isLoading: false })
+        const { content, pageable } = normalizeListResponse(res.data)
+        set({ list: content, pageable, isLoading: false })
       } catch {
         set({ error: '개별 리포트 목록 조회에 실패했습니다.', isLoading: false })
       }

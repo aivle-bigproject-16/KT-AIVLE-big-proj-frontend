@@ -1,12 +1,20 @@
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { AppHeader } from '@/features/header'
+import { TopAppBar, SideBar } from '@/features/header'
 
 function RootLayout() {
+  const [searchValue, setSearchValue] = useState('')
+
   return (
-    <>
-      <AppHeader />
-      <Outlet />
-    </>
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <SideBar />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <TopAppBar onSearch={setSearchValue} onSettingsClick={() => console.log('설정 클릭')} />
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <Outlet context={{ searchValue }} />
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -1,6 +1,8 @@
 import { spawn } from 'node:child_process'
 import http from 'node:http'
 import { readFile } from 'node:fs/promises'
+import readline from 'node:readline'
+import { WebSocketServer } from 'ws'
 
 const RAW_PORT = 4001
 const PROXY_PORT = 4000
@@ -157,6 +159,96 @@ const server = http.createServer(async (req, res) => {
   }
 })
 
+// --- /ws/sim — 검사 진행 상황 수신(simulation.progress) mock ---
+// 콘솔에 숫자를 입력하면 그 번호로 배치를 만들어 registered에 등록하고,
+// 10초 후 capture, 다시 10초 후 analyze, 다시 10초 후 completed로 넘긴다.
+let registered = []
+let capture = null
+let analyze = null
+let completed = []
+
+function snapshot() {
+  return { registered, capture, analyze, completed }
+}
+
+function broadcastSnapshot() {
+  const payload = JSON.stringify(snapshot())
+  for (const client of wss.clients) {
+    if (client.readyState === client.OPEN) client.send(payload)
+  }
+}
+
+function makeBatch(num, status) {
+  return {
+    batchId: `test-batch${String(num).padStart(3, '0')}`,
+    status,
+    cells: [
+      { batteryCellId: `cell-id${num}001`, inspectionId: `inspection-id${num}001`, finalLabel: null },
+      { batteryCellId: `cell-id${num}002`, inspectionId: `inspection-id${num}002`, finalLabel: null },
+    ],
+  }
+}
+
+const STAGE_DELAY_MS = 3000
+
+function registerBatch(num) {
+  const batch = makeBatch(num, 'REGISTERED')
+  registered.push(batch)
+  broadcastSnapshot()
+  console.log(`[ws/sim] ${batch.batchId} registered`)
+
+  setTimeout(() => {
+    registered = registered.filter((b) => b.batchId !== batch.batchId)
+    batch.status = 'CAPTURING'
+    capture = batch
+    broadcastSnapshot()
+    console.log(`[ws/sim] ${batch.batchId} → capture`)
+
+    setTimeout(() => {
+      batch.status = 'ANALYZING'
+      analyze = batch
+      capture = null
+      broadcastSnapshot()
+      console.log(`[ws/sim] ${batch.batchId} → analyze`)
+
+      setTimeout(() => {
+        batch.status = 'COMPLETED'
+        batch.cells = batch.cells.map((cell) => ({
+          ...cell,
+          finalLabel: Math.random() < 0.8 ? 'PASS' : 'REJECT',
+        }))
+        analyze = null
+        completed = [batch, ...completed].slice(0, 20)
+        broadcastSnapshot()
+        console.log(`[ws/sim] ${batch.batchId} → completed`)
+      }, STAGE_DELAY_MS)
+    }, STAGE_DELAY_MS)
+  }, STAGE_DELAY_MS)
+}
+
+const wss = new WebSocketServer({ server, path: '/ws/sim' })
+
+wss.on('connection', (socket) => {
+  socket.send(JSON.stringify(snapshot()))
+})
+
+const rl = readline.createInterface({ input: process.stdin })
+
+rl.on('line', (line) => {
+  const trimmed = line.trim()
+  if (!trimmed) return
+
+  const num = Number(trimmed)
+  if (!Number.isInteger(num)) {
+    console.log(`숫자를 입력해주세요: ${trimmed}`)
+    return
+  }
+
+  registerBatch(num)
+})
+
 server.listen(PROXY_PORT, () => {
   console.log(`mock API wrapper listening on http://localhost:${PROXY_PORT} (upstream json-server on ${RAW_PORT})`)
+  console.log(`mock WS listening on ws://localhost:${PROXY_PORT}/ws/sim`)
+  console.log('콘솔에 숫자를 입력하면 그 번호로 배치가 등록되어 3초 간격으로 capture→analyze→completed 순으로 진행됩니다.')
 })

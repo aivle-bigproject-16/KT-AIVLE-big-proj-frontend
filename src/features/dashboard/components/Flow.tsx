@@ -1,39 +1,11 @@
 import { useEffect, type ReactNode } from 'react'
 import './Flow.css'
-import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, ArrowRightIcon } from './Icons'
+import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon } from './Icons'
 import FlowCard from './FlowCard'
 import { useDashboardStore } from '../store/useDashboardStore'
 
 const ACCENT_COLOR = '#E60012'
 const TEXT_SECONDARY = '#5B5F63'
-
-interface FlowStepProps {
-  label: string
-  value: string
-  valueColor?: string
-  caption: string
-  dotVariant: 'filled-dark' | 'filled-accent' | 'outline'
-  active?: boolean
-}
-
-function FlowStep({ label, value, valueColor, caption, dotVariant, active }: FlowStepProps) {
-  const dotClassName = `flow-step__dot flow-step__dot--${
-    dotVariant === 'outline' ? 'outline' : dotVariant === 'filled-accent' ? 'accent' : 'dark'
-  }`
-
-  return (
-    <div className={`flow-step${active ? ' flow-step--active' : ''}`}>
-      <div className="flow-step__header">
-        <span className={dotClassName} />
-        <span className="flow-step__label">{label}</span>
-      </div>
-      <span className="flow-step__value" style={valueColor ? { color: valueColor } : undefined}>
-        {value}
-      </span>
-      <span className="flow-step__caption">{caption}</span>
-    </div>
-  )
-}
 
 function VariantLabel({ children }: { children: ReactNode }) {
   return <p className="flow__variant-label">{children}</p>
@@ -51,8 +23,6 @@ function Flow() {
       graphType: 'DAILY_TREND',
     })
   }, [fetchDashboard])
-
-  const isRunning = kpiData?.processStatus === 'RUNNING'
 
   return (
     <section className="flow">
@@ -93,38 +63,6 @@ function Flow() {
             unit="queued"
           />
           <div className="flow__cards-spacer" aria-hidden="true" />
-        </div>
-      </div>
-
-      <div>
-        <VariantLabel>Variant 2: Minimalist Industrial Grid</VariantLabel>
-        <div className="flow__steps">
-          <FlowStep
-            label="입고 (INPUT)"
-            value="ID: B-9921"
-            caption="READY TO PROCESS"
-            dotVariant="filled-dark"
-          />
-          <span className="flow__steps-arrow">
-            <ArrowRightIcon />
-          </span>
-          <FlowStep
-            label="촬영 (CAPTURING)"
-            value={isRunning ? 'SCANNING...' : 'IDLE'}
-            valueColor={isRunning ? ACCENT_COLOR : undefined}
-            caption={isRunning ? 'CAMERA FEED ACTIVE' : 'PROCESS STATUS: ' + (kpiData?.processStatus ?? 'UNKNOWN')}
-            dotVariant={isRunning ? 'filled-accent' : 'filled-dark'}
-            active={isRunning}
-          />
-          <span className="flow__steps-arrow">
-            <ArrowRightIcon />
-          </span>
-          <FlowStep
-            label="분석 (ANALYSIS)"
-            value="5.2ms"
-            caption="INFERENCE LATENCY"
-            dotVariant="outline"
-          />
         </div>
       </div>
     </section>

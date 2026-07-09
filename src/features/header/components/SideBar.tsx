@@ -1,6 +1,7 @@
 import "./SideBar.css";
 import { DashboardIcon, ChecklistIcon, ReportIcon } from "./Icons";
 import tempLogo from "./TempLogo.svg";
+import { SideBarTab } from "./SideBarTab";
 
 function SideBar() {
   return (
@@ -10,24 +11,9 @@ function SideBar() {
         </div>
 
         <ul className="side-bar__nav">
-            <li className="side-bar__nav-item side-bar__nav-item--active">
-                <span className="side-bar__nav-item-icon">
-                    <DashboardIcon />
-                </span>
-                대시보드
-            </li>
-            <li className="side-bar__nav-item">
-                <span className="side-bar__nav-item-icon">
-                    <ChecklistIcon />
-                </span>
-                배터리 목록
-            </li>
-            <li className="side-bar__nav-item">
-                <span className="side-bar__nav-item-icon">
-                    <ReportIcon />
-                </span>
-                리포트 목록
-            </li>
+            <SideBarTab icon={<DashboardIcon />} label="대시보드" active />
+            <SideBarTab icon={<ChecklistIcon />} label="배터리 목록" />
+            <SideBarTab icon={<ReportIcon />} label="리포트 목록" />
         </ul>
     </nav>
   );

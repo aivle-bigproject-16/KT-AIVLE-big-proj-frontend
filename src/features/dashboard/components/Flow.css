@@ -46,11 +46,42 @@
 
 .flow__cards {
   display: flex;
-  gap: 16px;
+  justify-content: center;
 }
 
-.flow__cards-spacer {
+.flow__cards > .flow-card,
+.flow__cards > .flow__cards-side {
+  flex: 0 0 220px;
+  width: 220px;
+}
+
+.flow__connector {
+  flex: 0 0 45px;
+  width: 45px;
+}
+
+.flow__connector:not(.flow__connector--branch) {
+  align-self: center;
+  height: 1px;
+  background: #191c1d;
+}
+
+.flow__connector--branch {
+  align-self: stretch;
+  display: flex;
+}
+
+.flow__connector--branch svg {
+  width: 100%;
+  height: 100%;
+}
+
+.flow__cards-side {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .flow__steps {
@@ -125,10 +156,11 @@
 
 .flow-card {
   flex: 1;
+  max-width: 240px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 220px;
+  min-height: 200px;
   border: 2px solid #191c1d;
   border-radius: 10px;
   padding: 20px;
@@ -142,7 +174,7 @@
 }
 
 .flow-card__label {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: #5b5f63;
 }
@@ -166,13 +198,13 @@
 }
 
 .flow-card__value {
-  font-size: 26px;
+  font-size: 45px;
   font-weight: 700;
   color: #191c1d;
 }
 
 .flow-card__unit {
-  font-size: 12px;
+  font-size: 22px;
   color: #5b5f63;
 }
 
@@ -187,4 +219,14 @@
   height: 100%;
   background: #e60012;
   border-radius: 999px;
+}
+
+.flow-card--compact {
+  min-height: 0;
+  gap: 6px;
+  padding: 14px 16px;
+}
+
+.flow-card--compact .flow-card__value {
+  font-size: 30px;
 }

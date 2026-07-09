@@ -8,13 +8,14 @@ interface FlowCardProps {
   current: number
   total: number
   unit: string
+  compact?: boolean
 }
 
-function FlowCard({ label, icon, iconColor, current, total, unit }: FlowCardProps) {
+function FlowCard({ label, icon, iconColor, current, total, unit, compact }: FlowCardProps) {
   const progress = Math.min(100, Math.max(0, (current / total) * 100))
 
   return (
-    <div className="flow-card">
+    <div className={`flow-card${compact ? ' flow-card--compact' : ''}`}>
       <div className="flow-card__header">
         <span className="flow-card__label">{label}</span>
         <span className="flow-card__icon" style={{ color: iconColor }}>

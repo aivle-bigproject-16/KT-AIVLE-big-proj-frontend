@@ -39,3 +39,25 @@ export interface DashboardResponse {
 export interface SimConfigRequest {
   running: boolean
 }
+
+// WS simulation.progress — Response (상태: 추후 진행)
+export type BatchStatus = 'REGISTERED' | 'CAPTURING' | 'CAPTURED' | 'ANALYZING' | 'ANALYZED' | 'COMPLETED'
+
+export interface CellProgress {
+  batteryCellId: string
+  inspectionId: string
+  finalLabel: FinalLabel | null
+}
+
+export interface BatchProgress {
+  batchId: string
+  status: BatchStatus
+  cells: CellProgress[]
+}
+
+export interface SimulationProgressPayload {
+  registered: BatchProgress[]
+  capture: BatchProgress | null
+  analyze: BatchProgress | null
+  completed: BatchProgress[]
+}

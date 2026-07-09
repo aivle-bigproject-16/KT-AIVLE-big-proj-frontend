@@ -1,8 +1,8 @@
 import { RouterProvider } from 'react-router-dom'
-import { routerMock } from '@/core/navigation/router.mock'
+import { router } from '@/core/navigation'
 
 function App() {
-  return <RouterProvider router={routerMock} />
+  return <RouterProvider router={router} />
 }
 
 export default App

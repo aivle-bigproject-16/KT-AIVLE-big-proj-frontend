@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import './Flow.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, ArrowRightIcon } from './Icons'
 import FlowCard from './FlowCard'
+import { useDashboardStore } from '../store/useDashboardStore'
 
 const ACCENT_COLOR = '#E60012'
 const TEXT_SECONDARY = '#5B5F63'
@@ -39,6 +40,20 @@ function VariantLabel({ children }: { children: ReactNode }) {
 }
 
 function Flow() {
+  const kpiData = useDashboardStore((s) => s.kpiData)
+  const { fetchDashboard } = useDashboardStore((s) => s.actions)
+
+  useEffect(() => {
+    fetchDashboard({
+      todayDate: '2026-07-07',
+      startDate: '2026-07-01',
+      size: 5,
+      graphType: 'DAILY_TREND',
+    })
+  }, [fetchDashboard])
+
+  const isRunning = kpiData?.processStatus === 'RUNNING'
+
   return (
     <section className="flow">
       <div className="flow__header">
@@ -52,12 +67,12 @@ function Flow() {
       <div>
         <VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>
         <div className="flow__cards">
-          {/* total은 실제 용량 데이터 연동 전까지 사용하는 목업 값 */}
+          {/* current는 kpiData.totalInspections 실연동, total은 실제 용량 데이터 연동 전까지 사용하는 목업 값 */}
           <FlowCard
             label="입고 (INPUT)"
             icon={<InputIcon />}
             iconColor={TEXT_SECONDARY}
-            current={1024}
+            current={kpiData?.totalInspections ?? 0}
             total={1500}
             unit="units"
           />
@@ -95,11 +110,11 @@ function Flow() {
           </span>
           <FlowStep
             label="촬영 (CAPTURING)"
-            value="SCANNING..."
-            valueColor={ACCENT_COLOR}
-            caption="CAMERA FEED ACTIVE"
-            dotVariant="filled-accent"
-            active
+            value={isRunning ? 'SCANNING...' : 'IDLE'}
+            valueColor={isRunning ? ACCENT_COLOR : undefined}
+            caption={isRunning ? 'CAMERA FEED ACTIVE' : 'PROCESS STATUS: ' + (kpiData?.processStatus ?? 'UNKNOWN')}
+            dotVariant={isRunning ? 'filled-accent' : 'filled-dark'}
+            active={isRunning}
           />
           <span className="flow__steps-arrow">
             <ArrowRightIcon />

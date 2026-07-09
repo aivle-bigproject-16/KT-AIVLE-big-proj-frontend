@@ -1,6 +1,7 @@
 export { default as IndividualReportMockList } from './components/IndividualReportMockList'
 export { default as IndividualReportDetailMockCard } from './components/IndividualReportDetailMockCard'
 export { default as DailyReportMockList } from './components/DailyReportMockList'
+export { default as DailyReportTable } from './components/DailyReportTable'
 export { default as DailyReportDetailMockCard } from './components/DailyReportDetailMockCard'
 export { useIndividualReportListStore } from './store/useIndividualReportListStore'
 export { useIndividualReportDetailStore } from './store/useIndividualReportDetailStore'

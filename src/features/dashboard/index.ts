@@ -1,2 +1,6 @@
 export { default as DashboardMockPanel } from './components/DashboardMockPanel'
+export { default as SimulationMockPanel } from './components/SimulationMockPanel'
 export { useDashboardStore } from './store/useDashboardStore'
+export { useSimulationStore } from './store/useSimulationStore'
+export { useSimulationSocket } from './hooks/useSimulationSocket'
+export { disconnectSimulationSocket } from './services/simulationSocketService'

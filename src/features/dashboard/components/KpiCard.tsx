@@ -21,4 +21,4 @@ function KpiCard({ label, value, unit, accent, dotColor }: KpiCardProps) {
   )
 }
 
-export default KpiCard
+export { KpiCard }

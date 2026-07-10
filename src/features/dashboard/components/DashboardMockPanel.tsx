@@ -45,4 +45,4 @@ function DashboardMockPanel() {
   )
 }
 
-export { DashboardMockPanel}
+export { DashboardMockPanel }

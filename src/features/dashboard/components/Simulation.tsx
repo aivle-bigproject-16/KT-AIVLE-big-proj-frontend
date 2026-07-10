@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
-import SimulationCard from './SimulationCard'
+import { SimulationCard } from './SimulationCard'
 import { useDashboardStore } from '../store/useDashboardStore'
 
 const ACCENT_COLOR = '#E60012'

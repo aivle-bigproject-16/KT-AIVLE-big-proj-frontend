@@ -37,4 +37,4 @@ function SimulationCard({ label, icon, iconColor, current, total, unit, compact 
   )
 }
 
-export default SimulationCard
+export { SimulationCard }

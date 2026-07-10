@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import './KpiCards.css'
-import KpiCard from './KpiCard'
+import { KpiCard } from './KpiCard'
 import { useDashboardStore } from '../store/useDashboardStore'
 
 const ACCENT_COLOR = '#E60012'
@@ -49,4 +49,4 @@ function KpiCards() {
   )
 }
 
-export default KpiCards
+export { KpiCards }

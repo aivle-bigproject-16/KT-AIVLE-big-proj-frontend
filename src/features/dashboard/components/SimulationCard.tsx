@@ -12,7 +12,7 @@ interface SimulationCardProps {
 }
 
 function SimulationCard({ label, icon, iconColor, current, total, unit, compact }: SimulationCardProps) {
-  const progress = Math.min(100, Math.max(0, (current / total) * 100))
+  const progress = total > 0 ? Math.min(100, Math.max(0, (current / total) * 100)) : 0
 
   return (
     <div className={`simulation-card${compact ? ' simulation-card--compact' : ''}`}>

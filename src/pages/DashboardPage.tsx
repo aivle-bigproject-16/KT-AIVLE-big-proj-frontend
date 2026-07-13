@@ -1,4 +1,5 @@
-import { DashboardMockPanel, SimulationMockPanel, Simulation, KpiCards, ResultSummary } from '@/features/dashboard'
+import { DashboardMockPanel, KpiCards, ResultSummary } from '@/features/dashboard'
+import { Simulation, SimulationMockPanel } from '@/features/simulation'
 
 function DashboardPage() {
   return (

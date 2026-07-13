@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { ROUTES } from '@/core/navigation/routes'
 import { useDailyReportListStore } from '../store/useDailyReportListStore'
 
 function DailyReportMockList() {
@@ -20,7 +21,7 @@ function DailyReportMockList() {
       <ul>
         {list.map((item) => (
           <li key={item.reportId}>
-            <Link to={`/report/daily/${item.reportId}`}>
+            <Link to={ROUTES.REPORT_DAILY_DETAIL(item.reportId)}>
               [{item.status}] {item.title ?? `리포트 #${item.reportId}`}
             </Link>
           </li>

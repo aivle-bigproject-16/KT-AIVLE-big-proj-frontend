@@ -1,0 +1,95 @@
+import { create } from 'zustand'
+import { simulationService } from '../services/simulationService'
+import type { BatchProgress, SimStartRequest, SimulationRunStatus, SimulationSocketMessage, WsStatus } from '../types'
+
+function isSimulationSocketMessage(data: unknown): data is SimulationSocketMessage {
+  return typeof data === 'object' && data !== null && 'event' in data
+}
+
+interface SimulationState {
+  batchCount: number
+  batteryCellCount: number
+  registered: BatchProgress[]
+  capture: BatchProgress | null
+  analyze: BatchProgress | null
+  completed: BatchProgress[]
+  captureSpeed: number | null
+  wsStatus: WsStatus
+  simulationStatus: SimulationRunStatus
+  lastMessage: unknown
+  lastMessageAt: number | null
+  isStarting: boolean
+  startError: string | null
+}
+
+interface SimulationActions {
+  actions: {
+    applyMessage: (data: unknown) => void
+    setWsStatus: (status: WsStatus) => void
+    start: (body: SimStartRequest) => Promise<void>
+    reset: () => void
+  }
+}
+
+const initialState: SimulationState = {
+  batchCount: 0,
+  batteryCellCount: 0,
+  registered: [],
+  capture: null,
+  analyze: null,
+  completed: [],
+  captureSpeed: null,
+  wsStatus: 'idle',
+  simulationStatus: 'idle',
+  lastMessage: null,
+  lastMessageAt: null,
+  isStarting: false,
+  startError: null,
+}
+
+export const useSimulationStore = create<SimulationState & SimulationActions>((set, get) => ({
+  ...initialState,
+  actions: {
+    applyMessage: (data) => {
+      if (!isSimulationSocketMessage(data)) return // event 구분자가 없는 메세지는 무시
+
+      if (data.event === 'PROGRESS') {
+        set({
+          batchCount: data.batchCount,
+          batteryCellCount: data.batteryCellCount,
+          captureSpeed: data.captureSpeed,
+          registered: data.registered,
+          capture: data.capture,
+          analyze: data.analyze,
+          completed: data.completed,
+          simulationStatus: 'running',
+          lastMessage: data,
+          lastMessageAt: Date.now(),
+        })
+        return
+      }
+
+      // event === 'COMPLETED'
+      set({
+        simulationStatus: 'completed',
+        lastMessage: data,
+        lastMessageAt: Date.now(),
+      })
+    },
+
+    setWsStatus: (status) => set({ wsStatus: status }),
+
+    start: async (body) => {
+      set({ isStarting: true, startError: null })
+      try {
+        const res = await simulationService.startSimulation(body)
+        get().actions.applyMessage(res.data)
+        set({ isStarting: false })
+      } catch {
+        set({ isStarting: false, startError: '시뮬레이션 시작에 실패했습니다.' })
+      }
+    },
+
+    reset: () => set(initialState),
+  },
+}))

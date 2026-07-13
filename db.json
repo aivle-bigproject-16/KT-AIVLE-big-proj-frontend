@@ -57,7 +57,7 @@
       ]
     }
   ],
-  "report": [
+  "reports": [
     {
       "id": "individual",
       "content": [
@@ -68,8 +68,8 @@
           "status": "COMPLETED",
           "title": "BATT-001 불량 검사 상세 리포트",
           "content": "CT 이미지 분석 결과, 상단 탭 부분에 94% 신뢰도로 크랙이 발견되었습니다.",
-          "ctImageUrl": "",
-          "rgbImageUrl": "",
+          "ctImages": [],
+          "rgbImages": [],
           "createdAt": "2026-07-07T10:00:00Z",
           "updatedAt": "2026-07-07T10:30:00Z",
           "imageMappings": [
@@ -87,8 +87,8 @@
           "status": "COMPLETED",
           "title": "BATT-002 불량 검사 상세 리포트",
           "content": "RGB 이미지 분석 결과, 표면에 오점이 발견되었습니다.",
-          "ctImageUrl": "",
-          "rgbImageUrl": "",
+          "ctImages": [],
+          "rgbImages": [],
           "createdAt": "2026-07-07T11:00:00Z",
           "updatedAt": "2026-07-07T11:30:00Z",
           "imageMappings": [
@@ -106,8 +106,8 @@
           "status": "PENDING",
           "title": "BATT-001 재검사 리포트",
           "content": "리포트 생성 요청이 접수되어 처리 중입니다.",
-          "ctImageUrl": "",
-          "rgbImageUrl": "",
+          "ctImages": [],
+          "rgbImages": [],
           "createdAt": "2026-07-08T09:00:00Z",
           "updatedAt": "2026-07-08T09:00:00Z",
           "imageMappings": []
@@ -185,13 +185,13 @@
   ],
   "users": [
     {
-      "id": "testid123",
+      "email": "testid123",
       "password": "testpass123!",
       "name": "김성준",
       "role": "supervisor"
     },
     {
-      "id": "testid456",
+      "email": "testid456",
       "password": "testpass456!",
       "name": "이영희",
       "role": "user"

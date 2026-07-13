@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { individualReportService } from '../services/individualReport.service'
+import { individualReportService } from '../services/individualReportService'
 import type { IndividualReportDetail, IndividualReportCreateRequest } from '../types'
 import type { AsyncState } from '@/shared/types/store'
 

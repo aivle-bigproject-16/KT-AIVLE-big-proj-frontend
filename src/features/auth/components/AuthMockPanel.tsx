@@ -10,7 +10,7 @@ function AuthMockPanel() {
   const { login } = useLoginStore((s) => s.actions)
 
   useEffect(() => {
-    login({ id: 'testid123', password: 'testpass123!' })
+    login({ email: 'testid123', password: 'testpass123!' })
   }, [login])
 
   return (

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { ROUTES } from '@/core/navigation/routes'
 import { useIndividualReportListStore } from '../store/useIndividualReportListStore'
 
 function IndividualReportMockList() {
@@ -20,7 +21,7 @@ function IndividualReportMockList() {
       <ul>
         {list.map((item) => (
           <li key={item.reportId}>
-            <Link to={`/report/individual/${item.reportId}`}>
+            <Link to={ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId)}>
               [{item.status}] {item.title ?? `리포트 #${item.reportId}`}
             </Link>
           </li>

@@ -24,8 +24,8 @@ export interface BatteryDetail {
   batteryCellId: number
   cellSerialNo: string
   purchaseId: string | null
-  rgbImageUrl: string | null
-  ctImageUrl: string | null
+  rgbImages: string[]
+  ctImages: string[]
   productId: string | null
   modelName: string | null
   cellType: CellType | null

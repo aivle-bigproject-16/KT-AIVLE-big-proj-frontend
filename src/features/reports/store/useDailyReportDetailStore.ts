@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { dailyReportService } from '../services/dailyReport.service'
+import { dailyReportService } from '../services/dailyReportService'
 import type { DailyReportDetail, DailyReportCreateRequest } from '../types'
 import type { AsyncState } from '@/shared/types/store'
 

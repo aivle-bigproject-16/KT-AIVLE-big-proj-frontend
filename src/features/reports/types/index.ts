@@ -24,13 +24,13 @@ export interface ImageMapping {
 
 // ─── 개별 리포트 ─────────────────────────────────────────────────────────────
 
-// POST /report/individual — Request
+// POST /reports/individual — Request
 export interface IndividualReportCreateRequest {
   batteryCellId: number
   forceRegenerate?: boolean
 }
 
-// POST /report/individual — Response
+// POST /reports/individual — Response
 export interface IndividualReportCreateResponse {
   reportId: number
   reportDate: string
@@ -39,7 +39,7 @@ export interface IndividualReportCreateResponse {
   createdAt: string
 }
 
-// GET /report/individual/:reportId — Response
+// GET /reports/individual/:reportId — Response
 export interface IndividualReportDetail {
   reportId: number
   batteryCellId: number
@@ -47,14 +47,14 @@ export interface IndividualReportDetail {
   status: ReportStatus
   title: string | null
   content: string | null
-  ctImageUrl: string | null
-  rgbImageUrl: string | null
+  rgbImages: string[]
+  ctImages: string[]
   createdAt: string
   updatedAt: string | null
   imageMappings: ImageMapping[]
 }
 
-// GET /report/individual — Response content[]
+// GET /reports/individual — Response content[]
 export interface IndividualReportListItem {
   reportId: number
   status: ReportStatus
@@ -65,13 +65,13 @@ export interface IndividualReportListItem {
 
 // ─── 일일 리포트 ─────────────────────────────────────────────────────────────
 
-// POST /report/daily — Request
+// POST /reports/daily — Request
 export interface DailyReportCreateRequest {
   reportDate: string
   forceRegenerate?: boolean
 }
 
-// POST /report/daily — Response
+// POST /reports/daily — Response
 export interface DailyReportCreateResponse {
   reportId: number
   reportDate: string
@@ -80,7 +80,7 @@ export interface DailyReportCreateResponse {
   createdAt: string
 }
 
-// GET /report/daily/:id — Response
+// GET /reports/daily/:id — Response
 export interface DefectStat {
   defectType: string
   count: number
@@ -108,7 +108,7 @@ export interface DailyReportDetail {
   summary: DailyReportSummary
 }
 
-// GET /report/daily — Response content[]
+// GET /reports/daily — Response content[]
 export interface DailyReportListItem {
   reportId: number
   reportDate: string

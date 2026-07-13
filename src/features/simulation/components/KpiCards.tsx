@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import './KpiCards.css'
 import { KpiCard } from './KpiCard'
-import { useDashboardStore } from '../store/useDashboardStore'
+import { useDashboardStore } from '@/features/dashboard'
 
 const ACCENT_COLOR = '#E60012'
 const TEXT_SECONDARY = '#5B5F63'

@@ -5,6 +5,7 @@ import SimulationCard from './SimulationCard'
 import AnalysisCard from './AnalysisCard'
 import CompactCard from './CompactCard'
 import SimControlPanel from './SimControlPanel'
+import { SimulationCardModal } from './SimulationCardModal'
 import { useSimulationStore } from '../store/useSimulationStore'
 import { useSimulationSocket } from '../hooks/useSimulationSocket'
 
@@ -19,6 +20,8 @@ function Simulation() {
   useSimulationSocket()
 
   const [isControlOpen, setIsControlOpen] = useState(false)
+  type ModalCard = 'pending' | 'capture' | 'analyze' | null
+  const [modalCard, setModalCard] = useState<ModalCard>(null)
 
   const batteryCellCount = useSimulationStore((s) => s.batteryCellCount)
   const registered = useSimulationStore((s) => s.registered)
@@ -61,6 +64,7 @@ function Simulation() {
             current={registeredCellCount}
             total={batteryCellCount}
             unit="units"
+            onClick={() => setModalCard('pending')}
           />
           <div className="simulation__connector" aria-hidden="true" />
           <SimulationCard
@@ -70,11 +74,10 @@ function Simulation() {
             current={capturingCellCount}
             total={batteryCellCount}
             unit="active"
-            // 진행률 바는 촬영 중인 셀 비율이 아니라 captureSpeed(초) 동안 0→100%로 채워지는 시간 기반 애니메이션 —
-            // 배치가 바뀔 때마다(batchId 변경) 애니메이션을 처음부터 다시 시작한다.
             progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
             progressKey={capture?.batchId}
             batchId={capture?.batchId}
+            onClick={() => setModalCard('capture')}
           />
           <div className="simulation__connector" aria-hidden="true" />
           <AnalysisCard
@@ -85,6 +88,7 @@ function Simulation() {
             unit="queued"
             active={analyze !== null}
             batchId={analyze?.batchId}
+            onClick={() => setModalCard('analyze')}
           />
           <div className="simulation__connector simulation__connector--branch" aria-hidden="true">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -129,6 +133,24 @@ function Simulation() {
           </div>
         </div>
       </div>
+      <SimulationCardModal
+        open={modalCard === 'pending'}
+        onClose={() => setModalCard(null)}
+        label="대기 (PENDING)"
+        batches={registered}
+      />
+      <SimulationCardModal
+        open={modalCard === 'capture'}
+        onClose={() => setModalCard(null)}
+        label="촬영 (CAPTURING)"
+        batches={capture ? [capture] : []}
+      />
+      <SimulationCardModal
+        open={modalCard === 'analyze'}
+        onClose={() => setModalCard(null)}
+        label="분석 (ANALYSIS)"
+        batches={analyze ? [analyze] : []}
+      />
     </section>
   )
 }

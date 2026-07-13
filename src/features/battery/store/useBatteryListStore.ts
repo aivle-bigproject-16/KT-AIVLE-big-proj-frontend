@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { batteryService } from '../services/battery.service'
+import { batteryService } from '../services/batteryService'
 import type { BatteryListItem } from '../types'
 import type { Pageable } from '@/shared/types/api'
 import { normalizeListResponse } from '@/shared/types/api'

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { individualReportService } from '../services/individualReport.service'
+import { individualReportService } from '../services/individualReportService'
 import type { IndividualReportListItem } from '../types'
 import type { Pageable } from '@/shared/types/api'
 import { normalizeListResponse } from '@/shared/types/api'

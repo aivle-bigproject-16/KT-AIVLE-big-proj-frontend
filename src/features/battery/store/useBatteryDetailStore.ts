@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { batteryService } from '../services/battery.service'
+import { batteryService } from '../services/batteryService'
 import type { BatteryDetail } from '../types'
 import type { AsyncState } from '@/shared/types/store'
 

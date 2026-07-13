@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from './routes'
 import { useLoginStore } from '@/features/auth'
-import { disconnectSimulationSocket } from '@/features/dashboard'
+import { disconnectSimulationSocket } from '@/features/simulation'
 
 export function useLogout() {
   const navigate = useNavigate()

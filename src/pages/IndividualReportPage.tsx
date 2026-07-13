@@ -1,4 +1,4 @@
-import { IndividualReportMockList } from '@/features/report'
+import { IndividualReportMockList } from '@/features/reports'
 
 function IndividualReportPage() {
   return (

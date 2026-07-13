@@ -7,7 +7,7 @@ import type {
   IndividualReportListItem,
 } from '../types'
 
-const BASE_URL = '/report/individual'
+const BASE_URL = '/reports/individual'
 
 interface GetIndividualReportListParams {
   page?: number

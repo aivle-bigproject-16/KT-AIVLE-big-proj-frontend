@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
           { path: 'battery', Component: BatteryPage },
           { path: 'battery/:batteryCellId', Component: BatteryDetailPage },
           {
-            path: 'report',
+            path: 'reports',
             children: [
               { path: 'individual', Component: IndividualReportPage },
               { path: 'individual/:reportId', Component: IndividualReportDetailPage },

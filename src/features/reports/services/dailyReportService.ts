@@ -7,7 +7,7 @@ import type {
   DailyReportListItem,
 } from '../types'
 
-const BASE_URL = '/report/daily'
+const BASE_URL = '/reports/daily'
 
 interface GetDailyReportListParams {
   page?: number

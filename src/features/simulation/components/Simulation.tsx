@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
 import SimulationCard from './SimulationCard'
+import SimControlPanel from './SimControlPanel'
 import { useSimulationStore } from '../store/useSimulationStore'
 import { useSimulationSocket } from '../hooks/useSimulationSocket'
 
@@ -15,11 +16,14 @@ function VariantLabel({ children }: { children: ReactNode }) {
 function Simulation() {
   useSimulationSocket()
 
+  const [isControlOpen, setIsControlOpen] = useState(false)
+
   const batteryCellCount = useSimulationStore((s) => s.batteryCellCount)
   const registered = useSimulationStore((s) => s.registered)
   const capture = useSimulationStore((s) => s.capture)
   const analyze = useSimulationStore((s) => s.analyze)
   const completed = useSimulationStore((s) => s.completed)
+  const captureSpeed = useSimulationStore((s) => s.captureSpeed)
 
   const registeredCellCount = registered.reduce((sum, batch) => sum + batch.cells.length, 0)
   const capturingCellCount = capture?.cells.length ?? 0
@@ -34,10 +38,13 @@ function Simulation() {
     <section className="simulation">
       <div className="simulation__header">
         <h3 className="simulation__title">Live Monitoring Flow</h3>
-        <button className="simulation__sim-control">
-          <SimControlIcon />
-          Sim Control (시뮬레이션 제어)
-        </button>
+        <div className="simulation__control-wrapper">
+          <button className="simulation__sim-control" onClick={() => setIsControlOpen((open) => !open)}>
+            <SimControlIcon />
+            Sim Control (시뮬레이션 제어)
+          </button>
+          {isControlOpen && <SimControlPanel onClose={() => setIsControlOpen(false)} />}
+        </div>
       </div>
 
       <div>
@@ -60,6 +67,10 @@ function Simulation() {
             current={capturingCellCount}
             total={batteryCellCount}
             unit="active"
+            // 진행률 바는 촬영 중인 셀 비율이 아니라 captureSpeed(초) 동안 0→100%로 채워지는 시간 기반 애니메이션 —
+            // 배치가 바뀔 때마다(batchId 변경) 애니메이션을 처음부터 다시 시작한다.
+            progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
+            progressKey={capture?.batchId}
           />
           <div className="simulation__connector" aria-hidden="true" />
           <SimulationCard

@@ -10,7 +10,7 @@ function SignupPage() {
   const { signup } = useSignupStore((s) => s.actions)
 
   useEffect(() => {
-    signup({ id: 'testid123', password: 'testpass123!', name: '테스트' })
+    signup({ email: 'testid123', password: 'testpass123!', name: '테스트' })
   }, [signup])
 
   return (

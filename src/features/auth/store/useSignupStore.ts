@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { authService } from '../services/auth.service'
+import { authService } from '../services/authService'
 import type { SignupRequest } from '../types'
 import type { AsyncState } from '@/shared/types/store'
 

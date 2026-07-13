@@ -1,4 +1,4 @@
-import { DailyReportTable } from '@/features/report'
+import { DailyReportTable } from '@/features/reports'
 
 function DailyReportPage() {
   return (

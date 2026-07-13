@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { ROUTES } from '@/core/navigation/routes'
-import { IndividualReportDetailMockCard } from '@/features/report'
+import { IndividualReportDetailMockCard } from '@/features/reports'
 
 function IndividualReportDetailPage() {
   const { reportId } = useParams<{ reportId: string }>()

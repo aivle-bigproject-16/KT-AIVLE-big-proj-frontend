@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { dailyReportService } from '../services/dailyReport.service'
+import { dailyReportService } from '../services/dailyReportService'
 import type { DailyReportListItem } from '../types'
 import type { Pageable } from '@/shared/types/api'
 import { normalizeListResponse } from '@/shared/types/api'

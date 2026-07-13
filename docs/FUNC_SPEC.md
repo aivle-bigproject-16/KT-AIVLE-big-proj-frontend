@@ -16,7 +16,7 @@
 | 인증 방식 | JWT |
 | 판정 등급 | `PASS` / `REJECT` (2단계, ※ 요구사항 §9.2 개정 필요) |
 | **CT/RGB 종합 판정 규칙** | **OR 방식 — CT 또는 RGB 중 하나라도 `REJECT`이면 최종 판정은 `REJECT`. 둘 다 `PASS`일 때만 최종 `PASS`.** |
-| 촬영 방식 | 배치 처리, 배치 크기·속도는 FE 설정값으로 제어 |
+| 촬영 방식 | 배치 처리. `PUT /sim`은 `running` 시작/정지 토글만 확정됨 — 배치 크기·속도를 FE에서 설정하는 경로는 API_SPEC 미확정 |
 | AI 분석 트리거 | `CAPTURED` 전환 시 BE가 자동 호출 (사용자 개입 없음) |
 | 결함 유형 | 현재 4종(부풀음/오점/미세결함/갈라짐) 고정, 확장 가능한 구조로 설계 |
 | bbox 형식 | `{ x, y, width, height }` 객체 |
@@ -41,69 +41,73 @@
 ## 1. FE — 프론트엔드 (React)
 
 ### 1.1 인증 (MVP) (FR-AUTH-001, FR-AUTH-002)
-- **입력**: 로그인 화면(이메일/비밀번호), 회원가입 화면(이메일/비밀번호/이름)
-- **처리**: `POST /auth/login`, `POST /auth/signup` 호출 → JWT 발급받아 저장(예: httpOnly 쿠키 또는 로컬 상태)
-- **출력**: 로그인 성공 시 대시보드로 리다이렉트, 이후 모든 API 요청에 JWT 첨부
-- **예외**: 인증 실패 시 에러 메시지 표시, 만료된 토큰은 재로그인 유도
-- **비고**: 모든 화면 접근 시 JWT 필수(비회원은 로그인/회원가입만 접근 가능)
+- **입력**: 로그인 화면(아이디/비밀번호), 회원가입 화면(아이디/비밀번호/이름) — 이메일 필드 아님
+- **처리**: `POST /auth/login { id, password }`, `POST /auth/signup { id, password, name }` 호출. 응답 바디에는 토큰이 없고 `{ name, role }`만 내려온다 — `httpClient`가 `withCredentials: true`로 설정돼 있어 백엔드가 `Set-Cookie`로 내려주는 httpOnly 쿠키 기반 세션으로 인증한다. FE는 토큰 자체를 다루지 않고, 로그인 성공 여부(`isAuthenticated`)와 `name`/`role`만 클라이언트 상태(zustand)로 보관한다.
+- **출력**: 로그인 성공 시 대시보드로 리다이렉트, 이후 모든 요청에 쿠키가 자동 첨부됨(`withCredentials`)
+- **예외**: 인증 실패 시 에러 메시지 표시
+- **비고**: 라우터의 `PrivateRoute`가 인증 여부에 따라 화면 접근을 제어(비회원은 로그인/회원가입만 접근 가능)
 
 ### 1.2 시뮬레이션 제어 및 설정 (MVP) (FR-CAP-001, FR-CAP-002)
-- **입력**: 배치 크기 입력, 배속 설정 값 입력, 시작 버튼, 정지 버튼
-- **처리**:
-  - `PUT /sim` — 배치 크기·속도 설정 + 시작/정지 토글(`running: true/false`)을 단일 엔드포인트에서 일괄 처리
-- **출력**: 버튼 상태 반영(시작 중엔 시작 버튼 비활성화 등), 공정 흐름도 애니메이션 시작/정지
+- **입력**: 시작 버튼, 정지 버튼
+- **처리**: `PUT /sim { running: boolean }` — 시작/정지 토글만 전송
+- **출력**: 버튼 상태 반영(시작 중엔 시작 버튼 비활성화 등)
 - **예외**: API 실패 시 토스트 알림, 상태 롤백
-- **비고**: 정지/시작만 지원(일시정지·리셋·실시간 배속 슬라이더 조작은 MVP 범위 아님, 배치·속도는 시작 전 설정값으로만 반영)
+- **비고**: 확정된 API_SPEC상 `PUT /sim`은 `running` 단일 필드만 받는다 — 배치 크기·배속 설정 입력 UI는 이 엔드포인트로 전달할 방법이 없음. 배치 크기/배속을 FE에서 설정하려면 별도 필드 또는 엔드포인트 정의가 선행되어야 한다.
 
-### 1.3 공정 흐름 시각화 (MVP) (FR-CAP-004 관련, WS 기반)
-- **입력**: WebSocket `cell.injected` / `cell.capturing` / `cell.captured` / `cell.analyzing` / `cell.result` 이벤트
-- **처리**: react-flow로 공정 블록(촬영→검사→판정) 상태 갱신, 셀 이동을 엣지 위 애니메이션으로 표현
-- **출력**: 배치 진행률, 셀별 실시간 상태 표시
+### 1.3 실시간 진행 상황 (MVP) (FR-CAP-004 관련, WS 기반)
+- **입력**: WebSocket 단일 채널 `/ws/sim`. 메세지는 최상위 `event` 필드로 구분(`PROGRESS` | `COMPLETED`) — `cell.injected`/`cell.capturing`류의 셀 단위 개별 이벤트가 아니라, 서버가 현재 상태 전체를 스냅샷으로 매번 push한다.
+- **처리**: `PROGRESS` 페이로드(`registered[]`/`capture`/`analyze`/`completed[]`, 각 배치는 `batchId`/`status`/`cells[]`)를 카드 기반 진행 현황 컴포넌트(`Simulation`)에 반영 — react-flow 등 노드-엣지 그래프는 사용하지 않는다. 대기/촬영/분석 단계별 셀 수를 progress bar로, 완료 셀은 PASS/REJECT 집계로 표시.
+- **출력**: 단계별 셀 개수, 완료 셀 PASS/REJECT 집계
+- **연결 관리**: 소켓은 feature 모듈 싱글턴(`simulationSocketService`)이 소유하며 지수 백오프로 자동 재연결한다. 연결 상태(`WsStatus`)와 시뮬레이션 진행 상태(`SimulationRunStatus`)는 분리 관리되고, 시뮬레이션이 `COMPLETED`돼도 소켓 연결 자체는 끊지 않는다(다음 배치를 위해 상시 유지). 상세 정책은 `ARCHITECTURE.md`의 "WebSocket 연결 정책" 참고.
+- **예외**: WS 연결이 끊기면 마지막 수신 데이터를 유지하다가 재연결되면 다음 `PROGRESS` 수신 시 갱신 — 단, 끊겨 있던 동안 발생한 이벤트는 유실된다(§1.7 상태 복구 참고).
 
 ### 1.4 통계 대시보드 (MVP) (FR-DASH-001~005)
-- **입력**: WS `stats` 이벤트(주기 발행)
-- **처리**: 총 검사 수, PASS/REJECT 수, 촬영 상태별 개수(REGISTERED/CAPTURING/CAPTURED/ANALYZING/COMPLETED/FAILED), 결함 유형별 통계를 차트/카드로 표시(재계산 없이 BE 스냅샷 그대로 사용)
-- **출력**: 실시간 갱신 대시보드
-- **예외**: WS 연결 끊김 시 최근 수신 데이터 유지 + 재연결 시 §1.7 상태 복구로 갱신
+- **입력**: 대시보드 진입 시 `POST /dashboard { todayDate, startDate, size, graphType }` 1회 호출 — WS가 아니라 HTTP다.
+- **처리**: 응답의 `kpiData`(총 검사 수/수율/공정 상태), `summaryData`(최근 검사 이력 요약), `graphData`(요청한 `graphType` 1종: `DEFECT_TYPE`/`DAILY_TREND`/`MANUFACTURE_DEFECTS`)를 차트/카드로 표시. 촬영 상태별 개수(REGISTERED/CAPTURING/...)는 이 응답에 포함되지 않으며, §1.3의 시뮬레이션 WS 스냅샷에서 별도로 확인한다.
+- **출력**: KPI 카드 + 최근 검사 이력 + 그래프 1종
+- **예외**: 조회 실패 시 에러 메시지 표시(자동 재시도 없음)
 
 ### 1.5 검사 목록 (MVP) (FR-LIST-001~005)
-- **입력**: 목록 페이지 진입, 필터 조작(정상/불량, 결함 유형, 촬영/분석 상태)
-- **처리**: `GET /battery?filter=...` 호출 → 목록 렌더, 항목 클릭 시 상세 페이지 이동
-- **출력**: 필터링된 배터리 검사 목록
+- **입력**: 목록 페이지 진입, 페이지네이션(`page`, `size`)
+- **처리**: `GET /battery?page=&size=` 호출 → 목록 렌더, 항목 클릭 시 상세 페이지 이동
+- **출력**: 배터리 셀 목록(시리얼/모델/셀 유형/최근 판정/최근 분석 시각), 페이지네이션
+- **비고**: 정상/불량, 결함 유형, 촬영/분석 상태 등의 **필터 파라미터는 확정된 API_SPEC에 없음** — 현재 계약은 `page`/`size`만 지원한다. 원 요구사항(FR-LIST-001~005)의 필터 기능은 백엔드 스펙이 먼저 확정돼야 구현 가능하다.
 
 ### 1.6 검사 상세 (MVP) (FR-DETAIL-001~005)
-- **입력**: 특정 배터리 상세 페이지 진입
-- **처리**: `GET /battery/{id}` 호출 → CT 결과, RGB 결과, 최종 종합 판정, confidence, bbox 좌표, CT/RGB 원본 이미지 presigned URL, AI 원본 응답 JSON 조회
-- **출력**: CT/RGB 이미지 위에 **FE가 좌표 기반으로 bbox를 직접 렌더링**(canvas/SVG 오버레이), 결함 정보 패널. **CT/RGB 개별 결과와 최종 종합 판정을 구분하여 표시**(예: "CT: REJECT / RGB: PASS → 최종: REJECT")
-- **비고**: AI 서버는 좌표만 반환하므로 시각화 로직은 FE 전담(§3 참고)
+- **입력**: 배터리 상세 페이지 진입(`/battery/:batteryCellId`)
+- **처리**: `GET /battery/{batteryCellId}` 호출 → 배터리 메타데이터(시리얼/생산처/모델/셀 유형/제조일)와 연결된 리포트 목록(`reports[]`)만 조회한다. **CT/RGB 개별 판정·confidence·bbox·AI 원본 응답은 이 응답에 없다.**
+- bbox 오버레이와 결함 서술은 리포트 상세(§1.8, `GET /report/individual/{reportId}`)의 몫이다 — `imageMappings[]`(이미지별 `imageType`/`imageId`/`bbox`)를 FE가 CT/RGB 이미지 위에 직접 렌더링(canvas/SVG)한다. **CT/RGB 개별 label·confidence·defect_type은 확정 스키마에 없고**, 대신 LLM이 생성한 자유 텍스트(`content`)로 결함 내용을 서술한다.
+- **출력**: 배터리 상세 화면(메타데이터 + 리포트 링크), 리포트 상세 화면(본문 텍스트 + bbox 오버레이)
+- **비고**: 원 요구사항의 "CT/RGB 결과 구분 표시", "confidence 표시", "AI 원본 응답 JSON 조회"는 현재 확정된 API_SPEC 어디에도 없다 — 구현하려면 백엔드 스펙 확정이 선행되어야 한다.
 
 ### 1.7 상태 복구 (FR-12)
-- **입력**: 페이지 새로고침, WS 재연결 감지
-- **처리**: `GET /sim/status`, `GET /stats` 호출로 현재 스냅샷 재조회 → 화면 재구성 후 WS 실시간 갱신 재개
-- **출력**: 새로고침 이전과 동일한 화면 상태
+- **입력**: 페이지 새로고침, WS(`/ws/sim`) 재연결
+- **처리(목표)**: `GET /sim/status` 호출로 현재 시뮬레이션 스냅샷(WS `PROGRESS`와 동일 스키마)을 재조회 → 스토어를 그 값으로 덮어써 화면을 즉시 따라잡는다
+- **출력**: 새로고침 이전과 동일한 시뮬레이션 화면 상태
+- **비고**: `GET /stats`는 확정 API_SPEC에 없다(대시보드 KPI는 §1.4의 `POST /dashboard`로 별도 조회하며 WS/복구 대상이 아님). **현재 FE에는 이 HTTP 복구 호출이 아직 구현되어 있지 않다** — WS 재연결(지수 백오프)만 자동으로 동작하고, 재연결 성공 시점에 `GET /sim/status`를 호출해 스토어를 갱신하는 로직은 미구현 상태다.
 
 ### 1.8 리포트 조회/생성 (MVP)
-- **입력**: 검사 상세 페이지에서 "개별 리포트 생성" 버튼(최종 판정 `REJECT` 건에만 노출), 대시보드에서 "일일 리포트 생성" 버튼
+- **입력**: 개별 리포트 생성 트리거(배터리 셀 대상), 일일 리포트 생성 트리거(날짜 대상)
 - **처리**:
-  - `POST /reports/individual/{battery_id}` → 상태 `pending`으로 즉시 응답, WS `report.ready` 수신 시 자동 갱신
-  - `POST /reports/daily?date=...` → 동일한 비동기 흐름
-  - `GET /reports/individual/{id}`, `GET /reports/daily/{date}` → 조회
-- **출력**: 리포트 미생성 시 "생성 중" 표시, 완료 시 마크다운/텍스트 렌더링
-- **비고**: 개별 리포트는 사용자 요청 시에만 생성(자동 생성 없음)
+  - `POST /report/individual { batteryCellId, forceRegenerate? }` → `{ reportId, reportDate, status: PENDING, createdAt }` 즉시 응답
+  - `POST /report/daily { reportDate, forceRegenerate? }` → 동일한 흐름
+  - `GET /report/individual/{reportId}`, `GET /report/daily/{reportId}` → 상세 조회(`status`, `title`, `content`, 이미지 URL, `imageMappings`/`summary` 등)
+- **출력**: `status`가 `PENDING`이면 "생성 중" 표시, `COMPLETED`면 본문(`content`) 렌더링
+- **비고**: 완료 시 자동 갱신을 위한 **WS `report.ready` 이벤트는 확정 API_SPEC에 없고 FE도 구독하지 않는다** — 현재 스토어(`useIndividualReportDetailStore`/`useDailyReportDetailStore`)는 `create()` 후 별도로 `fetchDetail()`을 다시 호출해야 최신 상태를 반영한다(자동 폴링·WS 갱신 미구현). 개별 리포트는 사용자 요청 시에만 생성(자동 생성 없음).
 
 ---
 
 ## 2. BE — Spring Boot (오케스트레이션)
 
 ### 2.1 인증/권한 (MVP) (FR-AUTH-001~006)
-- **처리**: JWT 발급/검증, Spring Security 기반 역할별(비회원/일반사용자/검사담당자/관리자) 엔드포인트 접근 제어
-- **DB**: 사용자 정보(PostgreSQL) — 이메일, 해시된 비밀번호, 이름, 역할
+- **처리**: `POST /auth/login { id, password }` 검증 후 세션 발급(응답 바디는 `{ name, role }`만 포함 — 토큰은 응답 바디가 아니라 httpOnly 쿠키로 전달, FE는 `withCredentials`로만 동작), Spring Security 기반 역할별(비회원/일반사용자/검사담당자/관리자) 엔드포인트 접근 제어
+- **DB**: 사용자 정보(PostgreSQL) — 아이디(`id`, 이메일 아님), 해시된 비밀번호, 이름, 역할
 
 ### 2.2 시뮬레이션 설정 및 배치 제어 (MVP) (FR-CAP-001~003)
-- **입력**: FE로부터 배치 크기·속도 설정, 시작/정지 명령
+- **입력**: FE로부터 시작/정지 명령(`running: boolean`) — 확정 API_SPEC상 배치 크기·속도는 이 엔드포인트의 파라미터가 아님(§1.2 비고 참고)
 - **처리**:
-  1. `PUT /sim` — 배치 크기·간격 저장 + `running` 플래그로 시작/정지 일괄 처리
-  2. `running: true` 수신 시 스케줄러(택트 루프) 가동, 설정된 배치 크기만큼 이미지 pool에서 pop
+  1. `PUT /sim { running }` — 시작/정지 토글만 처리
+  2. `running: true` 수신 시 스케줄러(택트 루프) 가동, 배치 크기만큼 이미지 pool에서 pop(배치 크기 값 자체의 저장/설정 경로는 미확정)
   3. 배치 내 각 셀: `REGISTERED → CAPTURING → CAPTURED` 상태 전이, 각 전이마다 WS push
   4. `CAPTURED` 전환 즉시 AI 분석 자동 트리거(§2.3)
 - **출력**: 배치 단위 진행 상태, WS 이벤트 발행
@@ -127,17 +131,13 @@
   - CT/RGB 중 한쪽만 실패한 경우, 실패하지 않은 쪽 결과와 무관하게 해당 셀 전체를 `FAILED`(reason=`PARTIAL_ANALYSIS_FAILURE`) 처리(부분 판정 금지 — 종합 판정은 두 결과가 모두 확보된 경우에만 수행)
 
 ### 2.4 WS 이벤트 발행 (MVP) (FR-06 계열)
-- **이벤트 스키마**: `cell.injected`, `cell.capturing`, `cell.captured`, `cell.analyzing`, `cell.result`, `stats`(주기), `report.ready`
-- **처리**: 단일 WS 연결로 전체 이벤트 발행, 스키마는 별도 아키텍처 문서에서 고정
-- **`cell.result` 페이로드 예시**:
-```json
-  {
-    "cell_id": "cell_001",
-    "final_label": "REJECT",
-    "ct_result": { "label": "REJECT", "confidence": 0.91, "defect_type": "미세결함" },
-    "rgb_result": { "label": "PASS", "confidence": 0.88, "defect_type": null }
-  }
-```
+- **확정된 채널/스키마**: 단일 채널 `/ws/sim`, 메세지 최상위 `event` 필드로 구분
+  - `event: "PROGRESS"` — `batchCount`, `batteryCellCount`, `registered[]`(대기 배치), `capture`(촬영 중 배치 1개, nullable), `analyze`(분석 중 배치 1개, nullable), `completed[]`(완료 배치). 각 배치 원소는 `batchId`, `status`(`REGISTERED`/`CAPTURING`/`CAPTURED`/`ANALYZING`/`ANALYZED`/`COMPLETED`/`FAILED`), `cells[]`(`batteryCellId`/`inspectionId`/`finalLabel`)
+  - `event: "COMPLETED"` — 그 외 필드 없음(스키마 미확정, 종료 신호로만 사용)
+  - 즉 셀 단위 이벤트 스트림이 아니라 **배치 단위 전체 스냅샷을 매번 통째로 push**한다(델타 아님, 재전송 큐 없음)
+- **미확정 항목**: `cell.injected`/`cell.capturing`/`cell.captured`/`cell.analyzing`/`cell.result` 같은 셀 단위 개별 이벤트, `stats` 주기 이벤트, `report.ready` 이벤트는 현재 API_SPEC에 없다. 인프라 설정(nginx)에 이름만 힌트로 남아 있어 계획된 것으로 보이나, 채널·스키마가 확정되지 않아 FE는 구현하지 않은 상태다.
+- **처리**: 대시보드 KPI(§1.4)는 이 WS와 무관하게 별도 HTTP(`POST /dashboard`)로 조회한다 — WS는 시뮬레이션 진행 상황 전용.
+- **복구용 대응 HTTP 엔드포인트**: `GET /sim/status` — `PROGRESS` 페이로드와 동일 스키마를 반환(§1.7 참고)
 
 ### 2.5 저장소 관리 (MVP) (MinIO/S3)
 - **처리**: 개발 환경은 MinIO 엔드포인트, 배포 환경은 S3 엔드포인트로 설정만 교체(NFR-003 준수, S3 호환 API이므로 코드 변경 없음)
@@ -148,10 +148,11 @@
 
 ### 2.6 리포트 디스패치 (MVP) (FR-REPORT-001~005, 비동기)
 - **처리**:
-  - 개별: FE의 명시적 요청 시에만(최종 판정 `REJECT` 건 대상) → LLM 서버에 비동기 디스패치(`@Async` 또는 큐). **CT/RGB 중 어느 쪽이 원인인지, 혹은 양쪽 모두인지 명시하여 전달**
-  - 일일: FE의 명시적 요청 시 → 당일 누적 통계(최종 판정 기준) 집계 후 LLM 서버에 디스패치
-  - 두 경로 모두 별도 엔드포인트(`/reports/individual/...`, `/reports/daily/...`)로 완전 분리
-  - 완료 콜백 수신 시 `reports_individual` / `reports_daily` 각각 별도 테이블에 저장 + `report.ready` WS push
+  - 개별: `POST /report/individual { batteryCellId, forceRegenerate? }` → `{ reportId, status: PENDING, ... }` 즉시 응답 후 LLM 서버에 비동기 디스패치(`@Async` 또는 큐). **CT/RGB 중 어느 쪽이 원인인지, 혹은 양쪽 모두인지 명시하여 전달**
+  - 일일: `POST /report/daily { reportDate, forceRegenerate? }` → 당일 누적 통계(최종 판정 기준) 집계 후 LLM 서버에 디스패치
+  - 두 경로 모두 별도 엔드포인트(`/report/individual`, `/report/daily` — 단수형 `report`)로 완전 분리, 조회는 각각 `GET /report/individual/{reportId}`, `GET /report/daily/{reportId}`
+  - 완료 콜백 수신 시 `reports_individual` / `reports_daily` 각각 별도 테이블에 저장
+- **비고**: 완료 시점을 FE에 알리는 `report.ready` WS push는 **API_SPEC에 아직 확정되어 있지 않고 FE도 구독하지 않는다**(§2.4 참고) — 현재 FE는 생성 요청 후 상세 조회(`GET /report/.../{id}`)를 다시 호출해야 최신 `status`를 확인할 수 있다. 자동 갱신이 필요하면 이 WS 이벤트 스펙을 먼저 확정해야 한다.
 - **예외**: 배치 폭주 시 버퍼링/동시 호출 상한 필요 (§4 LLM 서버 스케줄링 전략과 연동, **정책 미정**)
 
 ### 2.7 로깅

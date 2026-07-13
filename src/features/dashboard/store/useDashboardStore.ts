@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { dashboardService } from '../services/dashboard.service'
+import { dashboardService } from '../services/dashboardService'
 import type { DashboardRequest, KpiData, SummaryItem, GraphDataItem } from '../types'
 import type { AsyncState } from '@/shared/types/store'
 

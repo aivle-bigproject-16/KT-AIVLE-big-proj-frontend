@@ -5,6 +5,15 @@ import type { BatteryListItem, FinalLabel } from '@/features/battery/types'
 
 type ResultFilter = FinalLabel | 'ALL'
 
+function formatDateTime(value: string | null): string {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
 // 스크롤 동작 확인용 더미 목록 (실제 응답이 5개 미만이라 스크롤이 필요한 상황을 재현하기 위함)
 const DUMMY_ITEMS: BatteryListItem[] = [
   { inspectionId: 101, batteryCellId: 1001, cellSerialNo: 'CELL-101', modelName: 'MODEL-A', cellType: 'POUCH', latestFinalLabel: 'PASS', latestAnalyzedAt: '2026-07-07T09:00:00' },
@@ -64,7 +73,7 @@ function ResultSummary() {
           <tbody>
             {displayList.map((item) => (
               <tr key={item.batteryCellId}>
-                <td>{item.latestAnalyzedAt}</td>
+                <td>{formatDateTime(item.latestAnalyzedAt)}</td>
                 <td>{item.cellSerialNo}</td>
                 <td className="result-summary__result">
                   <span

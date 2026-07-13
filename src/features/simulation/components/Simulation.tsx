@@ -2,6 +2,8 @@ import { useState, type ReactNode } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
 import SimulationCard from './SimulationCard'
+import AnalysisCard from './AnalysisCard'
+import CompactCard from './CompactCard'
 import SimControlPanel from './SimControlPanel'
 import { useSimulationStore } from '../store/useSimulationStore'
 import { useSimulationSocket } from '../hooks/useSimulationSocket'
@@ -32,6 +34,7 @@ function Simulation() {
   const completedCells = completed.flatMap((batch) => batch.cells)
   const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
   const rejectCount = completedCells.filter((cell) => cell.finalLabel === 'REJECT').length
+  const failCount = completedCells.filter((cell) => cell.finalLabel === 'FAIL').length
   const completedCount = completedCells.length
 
   return (
@@ -71,15 +74,17 @@ function Simulation() {
             // 배치가 바뀔 때마다(batchId 변경) 애니메이션을 처음부터 다시 시작한다.
             progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
             progressKey={capture?.batchId}
+            batchId={capture?.batchId}
           />
           <div className="simulation__connector" aria-hidden="true" />
-          <SimulationCard
+          <AnalysisCard
             label="분석 (ANALYSIS)"
             icon={<AnalysisIcon />}
             iconColor={ACCENT_COLOR}
             current={analyzingCellCount}
-            total={batteryCellCount}
             unit="queued"
+            active={analyze !== null}
+            batchId={analyze?.batchId}
           />
           <div className="simulation__connector simulation__connector--branch" aria-hidden="true">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -94,8 +99,7 @@ function Simulation() {
           </div>
           <div className="simulation__cards-side">
             {/* current/total은 useSimulationStore의 completed 셀 목록에서 집계한 실연동 값 */}
-            <SimulationCard
-              compact
+            <CompactCard
               label="정상 (PASS)"
               icon={<CheckIcon />}
               iconColor={TEXT_SECONDARY}
@@ -103,15 +107,25 @@ function Simulation() {
               total={completedCount}
               unit="units"
             />
-            <SimulationCard
-              compact
-              label="불량 (REJECT)"
-              icon={<AlertIcon />}
-              iconColor={ACCENT_COLOR}
-              current={rejectCount}
-              total={completedCount}
-              unit="units"
-            />
+            <div className="simulation__cards-side-row">
+              <CompactCard
+                label="불량 (REJECT)"
+                icon={<AlertIcon />}
+                iconColor={ACCENT_COLOR}
+                current={rejectCount}
+                total={completedCount}
+                unit="units"
+              />
+              <div className="simulation__cards-side-link" aria-hidden="true" />
+              <CompactCard
+                label="검사 실패 (FAIL)"
+                icon={<AlertIcon />}
+                iconColor={ACCENT_COLOR}
+                current={failCount}
+                total={completedCount}
+                unit="units"
+              />
+            </div>
           </div>
         </div>
       </div>

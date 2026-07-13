@@ -12,7 +12,7 @@ const PROCESS_STATUS_LABEL: Record<string, string> = {
 }
 
 function KpiCards() {
-  const simulationStatus = useSimulationStore((s) => s.simulationStatus)
+  const event = useSimulationStore((s) => s.event)
   const completed = useSimulationStore((s) => s.completed)
 
   const completedCells = completed.flatMap((batch) => batch.cells)
@@ -20,7 +20,12 @@ function KpiCards() {
   const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
   const yieldRate = totalInspections === 0 ? 0 : Math.round((passCount / totalInspections) * 1000) / 10
 
-  const processStatus = simulationStatus === 'running' ? 'RUNNING' : simulationStatus === 'completed' ? 'COMPLETED' : 'PENDING'
+  const processStatus =
+    event === 'PROGRESS'
+      ? 'RUNNING'
+      : event === 'COMPLETED' && totalInspections > 0
+        ? 'COMPLETED'
+        : 'PENDING'
 
   return (
     <div className="kpi-cards">

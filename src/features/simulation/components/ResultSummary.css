@@ -19,6 +19,23 @@
   color: #191c1d;
 }
 
+.result-summary__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-summary__filter {
+  border: 1px solid #e9bcb6;
+  border-radius: 4px;
+  padding: 7px 10px;
+  background: #fff;
+  color: #191c1d;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 .result-summary__report-button {
   border: none;
   border-radius: 4px;
@@ -30,24 +47,53 @@
   cursor: pointer;
 }
 
+.result-summary__table-wrapper {
+  /* 헤더 1행 + 데이터 5행 높이로 고정 — 필터링으로 행 수가 줄어도 카드 높이가 바뀌지 않는다 */
+  height: 187px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
 .result-summary__table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 13px;
 }
 
+.result-summary__col-time {
+  width: 45%;
+}
+
+.result-summary__col-id {
+  width: 30%;
+}
+
+.result-summary__col-result {
+  width: 25%;
+}
+
 .result-summary__table th {
+  position: sticky;
+  top: 0;
   text-align: left;
   padding: 6px 8px;
   color: #5b5f63;
+  font-size: 16px;
   font-weight: 600;
+  line-height: 1.4;
+  background: #fff;
   border-bottom: 1px solid #e9bcb6;
 }
 
 .result-summary__table td {
   padding: 6px 8px;
   color: #191c1d;
+  line-height: 1.4;
   border-bottom: 1px solid #f8f9fa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .result-summary__result {

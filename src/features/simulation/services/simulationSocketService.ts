@@ -38,32 +38,40 @@ export function disconnectSimulationSocket() {
 
 function connect() {
   callbacks?.onStatusChange(reconnectAttempt === 0 ? 'connecting' : 'reconnecting')
+  console.log('[ws] connecting...')
 
   const ws = createSocket('/ws/sim')
   socket = ws
 
   ws.onopen = () => {
+    console.log('[ws] connected')
     if (socket !== ws) return // 이미 disconnect/재연결로 폐기된 세대의 소켓 — 무시
     reconnectAttempt = 0
     callbacks?.onStatusChange('open')
   }
 
   ws.onmessage = (event) => {
+    console.log('[ws] message received:', event.data)
     if (socket !== ws) return
     try {
-      callbacks?.onMessage(JSON.parse(event.data))
-    } catch {
+      const data = JSON.parse(event.data)
+      console.log('[ws] parsed:', data)
+      callbacks?.onMessage(data)
+    } catch (err) {
+      console.error('[ws] parse error:', err)
       // 파싱 불가한 메세지는 무시
     }
   }
 
   ws.onclose = () => {
+    console.log('[ws] closed')
     if (socket !== ws) return
     callbacks?.onStatusChange('closed')
     scheduleReconnect()
   }
 
-  ws.onerror = () => {
+  ws.onerror = (err) => {
+    console.error('[ws] error:', err)
     ws.close()
   }
 }

@@ -1,5 +1,5 @@
 export { Simulation } from './components/Simulation'
-export { default as SimulationMockPanel } from './components/SimulationMockPanel'
+export { SimulationMockPanel } from './components/SimulationMockPanel'
 export { useSimulationStore } from './store/useSimulationStore'
 export { useSimulationSocket } from './hooks/useSimulationSocket'
 export { disconnectSimulationSocket } from './services/simulationSocketService'

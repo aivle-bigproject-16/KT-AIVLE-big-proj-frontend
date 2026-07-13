@@ -51,6 +51,7 @@
   /* 헤더 1행 + 데이터 5행 높이로 고정 — 필터링으로 행 수가 줄어도 카드 높이가 바뀌지 않는다 */
   height: 187px;
   overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .result-summary__table {
@@ -78,6 +79,7 @@
   text-align: left;
   padding: 6px 8px;
   color: #5b5f63;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
   background: #fff;

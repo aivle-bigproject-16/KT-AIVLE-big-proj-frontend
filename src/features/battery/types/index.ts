@@ -1,5 +1,5 @@
 export type CellType = 'POUCH' | 'CYLINDRICAL' | 'PRISMATIC'
-export type FinalLabel = 'PASS' | 'REJECT'
+export type FinalLabel = 'PASS' | 'REJECT' | 'FAIL'
 
 // GET /battery
 export interface BatteryListItem {

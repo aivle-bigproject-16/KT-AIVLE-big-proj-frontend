@@ -28,7 +28,7 @@ function SimulationCard({
   progressKey,
   batchId,
 }: SimulationCardProps) {
-  const animatedCurrent = useCountUp(current, 0, 420)
+  const animatedCurrent = useCountUp(current, 0, 600)
   const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
   const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
 

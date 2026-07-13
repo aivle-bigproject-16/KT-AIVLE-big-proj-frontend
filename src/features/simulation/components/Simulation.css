@@ -120,10 +120,14 @@
   justify-content: center;
 }
 
-.simulation__cards > .simulation-card,
-.simulation__cards > .simulation__cards-side {
+.simulation__cards > .simulation-card {
   flex: 0 0 220px;
   width: 220px;
+}
+
+.simulation__cards > .simulation__cards-side {
+  flex: 0 0 auto;
+  width: auto;
 }
 
 .simulation__connector {
@@ -153,6 +157,32 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.simulation__cards-side > .simulation-card {
+  flex: 0 0 auto;
+  width: 220px;
+  height: 92px;
+  min-height: 92px;
+}
+
+.simulation__cards-side-row {
+  display: flex;
+  align-items: center;
+}
+
+.simulation__cards-side-row > .simulation-card {
+  flex: 0 0 220px;
+  width: 220px;
+  height: 92px;
+  min-height: 92px;
+}
+
+.simulation__cards-side-link {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 1px;
+  background: #191c1d;
 }
 
 .simulation__steps {

@@ -34,6 +34,7 @@ function Simulation() {
   const completedCells = completed.flatMap((batch) => batch.cells)
   const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
   const rejectCount = completedCells.filter((cell) => cell.finalLabel === 'REJECT').length
+  const failCount = completedCells.filter((cell) => cell.finalLabel === 'FAIL').length
   const completedCount = completedCells.length
 
   return (
@@ -106,14 +107,25 @@ function Simulation() {
               total={completedCount}
               unit="units"
             />
-            <CompactCard
-              label="불량 (REJECT)"
-              icon={<AlertIcon />}
-              iconColor={ACCENT_COLOR}
-              current={rejectCount}
-              total={completedCount}
-              unit="units"
-            />
+            <div className="simulation__cards-side-row">
+              <CompactCard
+                label="불량 (REJECT)"
+                icon={<AlertIcon />}
+                iconColor={ACCENT_COLOR}
+                current={rejectCount}
+                total={completedCount}
+                unit="units"
+              />
+              <div className="simulation__cards-side-link" aria-hidden="true" />
+              <CompactCard
+                label="검사 실패 (FAIL)"
+                icon={<AlertIcon />}
+                iconColor={ACCENT_COLOR}
+                current={failCount}
+                total={completedCount}
+                unit="units"
+              />
+            </div>
           </div>
         </div>
       </div>

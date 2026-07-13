@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './DefectAnalysisChart.css'
 import { dashboardService } from '@/features/dashboard/services/dashboardService'
 import type { GraphDataItem, GraphType } from '@/features/dashboard/types'
@@ -104,8 +104,24 @@ function DefectCausePie({ data }: { data: GraphDataItem[] }) {
 }
 
 function DailyTrendLine({ data }: { data: GraphDataItem[] }) {
-  const width = 300
-  const height = 160
+  const containerRef = useRef<HTMLDivElement>(null)
+  // viewBox 폭을 실제 렌더링 폭(px)과 1:1로 맞춰서, SVG의 기본 스케일링(meet)이
+  // 좌우에 여백을 만들지 않고 카드 폭에 꽉 차게 그려지도록 한다.
+  const [width, setWidth] = useState(300)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver((entries) => {
+      const measured = entries[0]?.contentRect.width
+      if (measured) setWidth(measured)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const height = 220
   const margin = { top: 20, right: 12, bottom: 24, left: 12 }
   const plotWidth = width - margin.left - margin.right
   const plotHeight = height - margin.top - margin.bottom
@@ -121,34 +137,36 @@ function DailyTrendLine({ data }: { data: GraphDataItem[] }) {
   const polylinePoints = points.map((p) => `${p.x},${p.y}`).join(' ')
 
   return (
-    <svg
-      className="defect-analysis-chart__line-svg"
-      viewBox={`0 0 ${width} ${height}`}
-      role="img"
-      aria-label="날짜별 불량 추이 라인 차트"
-    >
-      <line
-        x1={margin.left}
-        y1={baselineY}
-        x2={width - margin.right}
-        y2={baselineY}
-        className="defect-analysis-chart__axis-line"
-      />
-      <polyline points={polylinePoints} className="defect-analysis-chart__trend-line" stroke={LINE_COLOR} />
-      {points.map((p) => (
-        <g key={p.label}>
-          <circle cx={p.x} cy={p.y} r={4} fill={LINE_COLOR} className="defect-analysis-chart__trend-dot">
-            <title>{`${p.label}: ${p.value}건`}</title>
-          </circle>
-          <text x={p.x} y={p.y - 10} textAnchor="middle" className="defect-analysis-chart__trend-value">
-            {p.value}
-          </text>
-          <text x={p.x} y={baselineY + 16} textAnchor="middle" className="defect-analysis-chart__trend-axis-label">
-            {formatDateLabel(p.label)}
-          </text>
-        </g>
-      ))}
-    </svg>
+    <div className="defect-analysis-chart__body" ref={containerRef}>
+      <svg
+        className="defect-analysis-chart__line-svg"
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-label="날짜별 불량 추이 라인 차트"
+      >
+        <line
+          x1={margin.left}
+          y1={baselineY}
+          x2={width - margin.right}
+          y2={baselineY}
+          className="defect-analysis-chart__axis-line"
+        />
+        <polyline points={polylinePoints} className="defect-analysis-chart__trend-line" stroke={LINE_COLOR} />
+        {points.map((p) => (
+          <g key={p.label}>
+            <circle cx={p.x} cy={p.y} r={4} fill={LINE_COLOR} className="defect-analysis-chart__trend-dot">
+              <title>{`${p.label}: ${p.value}건`}</title>
+            </circle>
+            <text x={p.x} y={p.y - 10} textAnchor="middle" className="defect-analysis-chart__trend-value">
+              {p.value}
+            </text>
+            <text x={p.x} y={baselineY + 16} textAnchor="middle" className="defect-analysis-chart__trend-axis-label">
+              {formatDateLabel(p.label)}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
   )
 }
 
@@ -192,7 +210,9 @@ function DefectAnalysisChart() {
         </select>
       </div>
       {graphData.length === 0 ? (
-        <p className="defect-analysis-chart__empty">데이터가 없습니다.</p>
+        <div className="defect-analysis-chart__body defect-analysis-chart__body--empty">
+          <p className="defect-analysis-chart__empty">데이터가 없습니다.</p>
+        </div>
       ) : chartType === 'DEFECT_TYPE' ? (
         <DefectCausePie data={graphData} />
       ) : (

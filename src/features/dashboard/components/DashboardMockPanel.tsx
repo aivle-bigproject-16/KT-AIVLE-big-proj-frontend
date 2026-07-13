@@ -2,8 +2,6 @@ import { useEffect } from 'react'
 import { useDashboardStore } from '../store/useDashboardStore'
 
 function DashboardMockPanel() {
-  const kpiData = useDashboardStore((s) => s.kpiData)
-  const summaryData = useDashboardStore((s) => s.summaryData)
   const graphData = useDashboardStore((s) => s.graphData)
   const isLoading = useDashboardStore((s) => s.isLoading)
   const error = useDashboardStore((s) => s.error)
@@ -20,10 +18,10 @@ function DashboardMockPanel() {
 
   return (
     <section>
-      <h2>대시보드</h2>
+      <h2>대시보드 그래프</h2>
       {isLoading && <p>로딩 중...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {kpiData && (
+      {graphData.length > 0 && (
         <pre
           style={{
             textAlign: 'left',
@@ -38,7 +36,7 @@ function DashboardMockPanel() {
             overflowX: 'auto',
           }}
         >
-          {JSON.stringify({ kpiData, summaryData, graphData }, null, 2)}
+          {JSON.stringify({ graphData }, null, 2)}
         </pre>
       )}
     </section>

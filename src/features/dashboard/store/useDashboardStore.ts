@@ -1,11 +1,9 @@
 import { create } from 'zustand'
 import { dashboardService } from '../services/dashboardService'
-import type { DashboardRequest, KpiData, SummaryItem, GraphDataItem } from '../types'
+import type { DashboardRequest, GraphDataItem } from '../types'
 import type { AsyncState } from '@/shared/types/store'
 
 interface DashboardState extends AsyncState {
-  kpiData: KpiData | null
-  summaryData: SummaryItem[]
   graphData: GraphDataItem[]
 }
 
@@ -17,8 +15,6 @@ interface DashboardActions {
 }
 
 const initialState: DashboardState = {
-  kpiData: null,
-  summaryData: [],
   graphData: [],
   isLoading: false,
   error: null,
@@ -32,8 +28,6 @@ export const useDashboardStore = create<DashboardState & DashboardActions>((set)
       try {
         const res = await dashboardService.getDashboard(body)
         set({
-          kpiData: res.data.kpiData,
-          summaryData: res.data.summaryData,
           graphData: res.data.graphData,
           isLoading: false,
         })

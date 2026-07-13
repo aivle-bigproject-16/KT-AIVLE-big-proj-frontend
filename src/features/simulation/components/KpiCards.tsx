@@ -1,31 +1,26 @@
-import { useEffect } from 'react'
 import './KpiCards.css'
 import { KpiCard } from './KpiCard'
-import { useDashboardStore } from '@/features/dashboard'
+import { useSimulationStore } from '../store/useSimulationStore'
 
 const ACCENT_COLOR = '#E60012'
 const TEXT_SECONDARY = '#5B5F63'
 
 const PROCESS_STATUS_LABEL: Record<string, string> = {
   PENDING: '대기 중',
-  RUNNING: '스캔 진행 중',
+  RUNNING: '진행 중',
   COMPLETED: '완료',
 }
 
 function KpiCards() {
-  const kpiData = useDashboardStore((s) => s.kpiData)
-  const { fetchDashboard } = useDashboardStore((s) => s.actions)
+  const simulationStatus = useSimulationStore((s) => s.simulationStatus)
+  const completed = useSimulationStore((s) => s.completed)
 
-  useEffect(() => {
-    fetchDashboard({
-      todayDate: '2026-07-07',
-      startDate: '2026-07-01',
-      size: 5,
-      graphType: 'DAILY_TREND',
-    })
-  }, [fetchDashboard])
+  const completedCells = completed.flatMap((batch) => batch.cells)
+  const totalInspections = completedCells.length
+  const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
+  const yieldRate = totalInspections === 0 ? 0 : Math.round((passCount / totalInspections) * 1000) / 10
 
-  const processStatus = kpiData?.processStatus
+  const processStatus = simulationStatus === 'running' ? 'RUNNING' : simulationStatus === 'completed' ? 'COMPLETED' : 'PENDING'
 
   return (
     <div className="kpi-cards">
@@ -36,12 +31,12 @@ function KpiCards() {
       />
       <KpiCard
         label="총 검사 수 (TOTAL INSPECTIONS)"
-        value={(kpiData?.totalInspections ?? 0).toLocaleString()}
+        value={totalInspections.toLocaleString()}
         unit="units"
       />
       <KpiCard
         label="양품률 (YIELD RATE)"
-        value={`${kpiData?.yieldRate ?? 0}%`}
+        value={`${yieldRate}%`}
         unit="target 99%"
         accent
       />

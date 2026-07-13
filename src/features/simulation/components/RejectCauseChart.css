@@ -1,0 +1,72 @@
+.reject-cause-chart {
+  flex: 1;
+  border: 1px solid #e9bcb6;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+}
+
+.reject-cause-chart__title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #191c1d;
+}
+
+.reject-cause-chart__empty {
+  margin: 0;
+  font-size: 13px;
+  color: #5b5f63;
+}
+
+.reject-cause-chart__body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.reject-cause-chart__svg {
+  flex: 0 0 140px;
+  width: 140px;
+  height: 140px;
+}
+
+.reject-cause-chart__slice-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.reject-cause-chart__legend {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reject-cause-chart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.reject-cause-chart__legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.reject-cause-chart__legend-label {
+  color: #191c1d;
+  font-weight: 600;
+}
+
+.reject-cause-chart__legend-value {
+  margin-left: auto;
+  color: #5b5f63;
+}

@@ -54,6 +54,20 @@
           "label": "2026-07-07",
           "value": 5
         }
+      ],
+      "defectTypeGraphData": [
+        {
+          "label": "MICRO_DEFECT",
+          "value": 12
+        },
+        {
+          "label": "CRACK",
+          "value": 4
+        },
+        {
+          "label": "SWELLING",
+          "value": 9
+        }
       ]
     }
   ],

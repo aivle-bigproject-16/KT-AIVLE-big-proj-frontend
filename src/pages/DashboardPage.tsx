@@ -1,5 +1,5 @@
 import { DashboardMockPanel } from '@/features/dashboard'
-import { Simulation, SimulationMockPanel, KpiCards, ResultSummary } from '@/features/simulation'
+import { Simulation, SimulationMockPanel, KpiCards, ResultSummary, RejectCauseChart } from '@/features/simulation'
 
 function DashboardPage() {
   return (
@@ -7,8 +7,10 @@ function DashboardPage() {
       <KpiCards />
       <Simulation />
       <div style={{ display: 'flex', gap: 24 }}>
-        <div style={{ flex: 1 }} />
-        <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex', flex: 1 }}>
+          <RejectCauseChart />
+        </div>
+        <div style={{ display: 'flex', flex: 1 }}>
           <ResultSummary />
         </div>
       </div>

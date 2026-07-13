@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
 import SimulationCard from './SimulationCard'
+import AnalysisCard from './AnalysisCard'
 import SimControlPanel from './SimControlPanel'
 import { useSimulationStore } from '../store/useSimulationStore'
 import { useSimulationSocket } from '../hooks/useSimulationSocket'
@@ -71,15 +72,17 @@ function Simulation() {
             // 배치가 바뀔 때마다(batchId 변경) 애니메이션을 처음부터 다시 시작한다.
             progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
             progressKey={capture?.batchId}
+            batchId={capture?.batchId}
           />
           <div className="simulation__connector" aria-hidden="true" />
-          <SimulationCard
+          <AnalysisCard
             label="분석 (ANALYSIS)"
             icon={<AnalysisIcon />}
             iconColor={ACCENT_COLOR}
             current={analyzingCellCount}
-            total={batteryCellCount}
             unit="queued"
+            active={analyze !== null}
+            batchId={analyze?.batchId}
           />
           <div className="simulation__connector simulation__connector--branch" aria-hidden="true">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">

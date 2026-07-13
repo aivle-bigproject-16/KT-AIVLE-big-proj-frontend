@@ -231,7 +231,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 200px;
+  height: 200px;
   border: 2px solid #191c1d;
   border-radius: 10px;
   padding: 20px;
@@ -299,12 +299,65 @@
   animation-fill-mode: forwards;
 }
 
+.simulation-card__snippet-area {
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.simulation-card__footer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.simulation-card__footer-row > .simulation-card__progress-track {
+  flex: 1;
+}
+
+.simulation-card__footer-row > .simulation-card__snippet-area {
+  flex: 1;
+}
+
+.simulation-card__batch-id-area {
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.simulation-card__batch-id {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #5b5f63;
+  letter-spacing: 0.4px;
+}
+
+.simulation-card__snippet-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #f0c9c5;
+  border-top-color: #e60012;
+  animation: simulation-card-snippet-rotate 0.8s linear infinite;
+}
+
 @keyframes simulation-card-fill {
   from {
     width: 0%;
   }
   to {
     width: 100%;
+  }
+}
+
+@keyframes simulation-card-snippet-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

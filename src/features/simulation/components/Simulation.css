@@ -248,6 +248,7 @@
   font-size: 15px;
   font-weight: 600;
   color: #5b5f63;
+  line-height: 1.2;
 }
 
 .simulation-card__icon {
@@ -272,10 +273,12 @@
   font-size: 45px;
   font-weight: 700;
   color: #191c1d;
+  line-height: 1.1;
 }
 
 .simulation-card__unit {
   font-size: 22px;
+  line-height: 1.1;
   color: #5b5f63;
 }
 
@@ -300,7 +303,7 @@
 }
 
 .simulation-card__snippet-area {
-  height: 18px;
+  height: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -328,10 +331,21 @@
 
 .simulation-card__batch-id {
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 20px;
   font-weight: 600;
   color: #5b5f63;
   letter-spacing: 0.4px;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.simulation-card__batch-id--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.simulation-card__batch-id--hidden {
+  opacity: 0;
+  transform: translateY(2px);
 }
 
 .simulation-card__snippet-spinner {
@@ -362,7 +376,8 @@
 }
 
 .simulation-card--compact {
-  min-height: 0;
+  height: 92px;
+  min-height: unset;
   gap: 6px;
   padding: 14px 16px;
 }

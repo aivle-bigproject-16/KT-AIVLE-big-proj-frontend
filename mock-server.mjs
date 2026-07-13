@@ -190,6 +190,7 @@ let analyze = null
 let completed = []
 let captureSpeedSec = null
 let hasStartedOnce = false
+let totalBatchCount = 0
 
 // WS(/ws/sim)와 HTTP(POST·GET /api/sim)가 전부 이 페이로드 하나를 공유한다.
 // 한 번도 시작된 적이 없으면 captureSpeed가 없어 PROGRESS 스키마(비-nullable int)를 만족할 수 없으므로
@@ -197,6 +198,13 @@ let hasStartedOnce = false
 function snapshot() {
   if (!hasStartedOnce) return { event: 'COMPLETED' }
 
+  // 모든 배치가 completed에 들어갔으면 COMPLETED
+  if (completed.length === totalBatchCount && totalBatchCount > 0) {
+    console.log(`[snap] COMPLETED: completed=${completed.length}, total=${totalBatchCount}`)
+    return { event: 'COMPLETED' }
+  }
+
+  console.log(`[snap] PROGRESS: registered=${registered.length}, capture=${capture ? 'yes' : 'no'}, analyze=${analyze ? 'yes' : 'no'}, completed=${completed.length}/${totalBatchCount}`)
   const batches = [...registered, capture, analyze, ...completed].filter(Boolean)
   const batchCount = batches.length
   const batteryCellCount = batches.reduce((sum, b) => sum + b.cells.length, 0)
@@ -249,7 +257,14 @@ function processNextBatch(myRunId) {
   if (myRunId !== runId) return // 이미 재시작되어 폐기된 실행 — 무시
 
   const batch = registered.shift()
-  if (!batch) return // 큐 소진 — 대기
+  if (!batch) {
+    // 큐 소진 — 모든 배치가 완료되었으면 COMPLETED 브로드캐스트
+    if (completed.length === totalBatchCount && totalBatchCount > 0) {
+      broadcastSnapshot()
+      console.log('[sim] all batches completed')
+    }
+    return
+  }
 
   batch.status = 'CAPTURING'
   capture = batch
@@ -288,6 +303,7 @@ function startSimulation({ batchSize, batteryCellCount, captureSpeed }) {
   const myRunId = runId
 
   registered = makeBatches(batchSize, batteryCellCount)
+  totalBatchCount = registered.length
   capture = null
   analyze = null
   completed = []

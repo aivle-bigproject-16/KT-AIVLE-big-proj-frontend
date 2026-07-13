@@ -14,7 +14,12 @@ function KpiCard({ label, value, unit, accent, dotColor }: KpiCardProps) {
       <div className="kpi-card__label">{label}</div>
       <div className="kpi-card__value-row">
         {dotColor && <span className="kpi-card__dot" style={{ background: dotColor }} />}
-        <span className={`kpi-card__value${accent ? ' kpi-card__value--accent' : ''}`}>{value}</span>
+        <span
+          key={value}
+          className={`kpi-card__value kpi-card__value--animate${accent ? ' kpi-card__value--accent' : ''}`}
+        >
+          {value}
+        </span>
         {unit && <span className="kpi-card__unit">{unit}</span>}
       </div>
     </div>

@@ -16,6 +16,7 @@ interface SimulationState {
   captureSpeed: number | null
   wsStatus: WsStatus
   simulationStatus: SimulationRunStatus
+  event: 'PROGRESS' | 'COMPLETED' | null
   lastMessage: unknown
   lastMessageAt: number | null
   isStarting: boolean
@@ -41,6 +42,7 @@ const initialState: SimulationState = {
   captureSpeed: null,
   wsStatus: 'idle',
   simulationStatus: 'idle',
+  event: null,
   lastMessage: null,
   lastMessageAt: null,
   isStarting: false,
@@ -55,6 +57,7 @@ export const useSimulationStore = create<SimulationState & SimulationActions>((s
 
       if (data.event === 'PROGRESS') {
         set({
+          event: 'PROGRESS',
           batchCount: data.batchCount,
           batteryCellCount: data.batteryCellCount,
           captureSpeed: data.captureSpeed,
@@ -71,7 +74,11 @@ export const useSimulationStore = create<SimulationState & SimulationActions>((s
 
       // event === 'COMPLETED'
       set({
+        event: 'COMPLETED',
         simulationStatus: 'completed',
+        registered: [],
+        capture: null,
+        analyze: null,
         lastMessage: data,
         lastMessageAt: Date.now(),
       })

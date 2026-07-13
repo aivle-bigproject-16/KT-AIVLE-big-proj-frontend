@@ -3,6 +3,7 @@ import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
 import SimulationCard from './SimulationCard'
 import AnalysisCard from './AnalysisCard'
+import CompactCard from './CompactCard'
 import SimControlPanel from './SimControlPanel'
 import { useSimulationStore } from '../store/useSimulationStore'
 import { useSimulationSocket } from '../hooks/useSimulationSocket'
@@ -97,8 +98,7 @@ function Simulation() {
           </div>
           <div className="simulation__cards-side">
             {/* current/total은 useSimulationStore의 completed 셀 목록에서 집계한 실연동 값 */}
-            <SimulationCard
-              compact
+            <CompactCard
               label="정상 (PASS)"
               icon={<CheckIcon />}
               iconColor={TEXT_SECONDARY}
@@ -106,8 +106,7 @@ function Simulation() {
               total={completedCount}
               unit="units"
             />
-            <SimulationCard
-              compact
+            <CompactCard
               label="불량 (REJECT)"
               icon={<AlertIcon />}
               iconColor={ACCENT_COLOR}

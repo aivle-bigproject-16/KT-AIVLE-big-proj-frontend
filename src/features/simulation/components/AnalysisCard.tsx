@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import useCountUp from '../hooks/useCountUp'
 import './Simulation.css'
 
@@ -16,6 +16,20 @@ interface AnalysisCardProps {
 
 function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId }: AnalysisCardProps) {
   const animatedCurrent = useCountUp(current, 0, 420)
+  const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
+  const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
+
+  useEffect(() => {
+    if (batchId != null) {
+      setDisplayBatchId(batchId)
+      setIsBatchIdVisible(true)
+      return
+    }
+
+    setIsBatchIdVisible(false)
+    const hideTimer = setTimeout(() => setDisplayBatchId(null), 180)
+    return () => clearTimeout(hideTimer)
+  }, [batchId])
 
   return (
     <div className="simulation-card">
@@ -39,7 +53,13 @@ function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId }
         </div>
       </div>
       <div className="simulation-card__batch-id-area">
-        {batchId != null && <span className="simulation-card__batch-id">Batch #{batchId}</span>}
+        <span
+          className={`simulation-card__batch-id ${
+            isBatchIdVisible ? 'simulation-card__batch-id--visible' : 'simulation-card__batch-id--hidden'
+          }`}
+        >
+          {displayBatchId != null ? `Batch ID : ${displayBatchId}` : ''}
+        </span>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import useCountUp from '../hooks/useCountUp'
 import './Simulation.css'
 
@@ -9,7 +9,6 @@ interface SimulationCardProps {
   current: number
   total: number
   unit: string
-  compact?: boolean
   /** 지정하면 current/total 비율 대신, 이 시간(초) 동안 0→100%로 채워지는 애니메이션 바를 사용한다. */
   progressDurationSec?: number
   /** progressDurationSec 사용 시 이 값이 바뀔 때마다 애니메이션을 처음부터 다시 시작한다(예: 새 배치의 batchId). */
@@ -25,18 +24,31 @@ function SimulationCard({
   current,
   total,
   unit,
-  compact,
   progressDurationSec,
   progressKey,
   batchId,
 }: SimulationCardProps) {
   const animatedCurrent = useCountUp(current, 0, 420)
+  const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
+  const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
+
+  useEffect(() => {
+    if (batchId != null) {
+      setDisplayBatchId(batchId)
+      setIsBatchIdVisible(true)
+      return
+    }
+
+    setIsBatchIdVisible(false)
+    const hideTimer = setTimeout(() => setDisplayBatchId(null), 180)
+    return () => clearTimeout(hideTimer)
+  }, [batchId])
 
   const progress = total > 0 ? Math.min(100, Math.max(0, (current / total) * 100)) : 0
   const isTimed = progressDurationSec != null && progressDurationSec > 0
 
   return (
-    <div className={`simulation-card${compact ? ' simulation-card--compact' : ''}`}>
+    <div className="simulation-card">
       <div className="simulation-card__header">
         <span className="simulation-card__label">{label}</span>
         <span className="simulation-card__icon" style={{ color: iconColor }}>
@@ -65,7 +77,13 @@ function SimulationCard({
         </div>
       </div>
       <div className="simulation-card__batch-id-area">
-        {batchId != null && <span className="simulation-card__batch-id">Batch #{batchId}</span>}
+        <span
+          className={`simulation-card__batch-id ${
+            isBatchIdVisible ? 'simulation-card__batch-id--visible' : 'simulation-card__batch-id--hidden'
+          }`}
+        >
+          {displayBatchId != null ? `Batch ID : ${displayBatchId}` : ''}
+        </span>
       </div>
     </div>
   )

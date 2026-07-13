@@ -28,4 +28,4 @@ function SimulationStep({ label, value, valueColor, caption, dotVariant, active 
   )
 }
 
-export default SimulationStep
+export { SimulationStep }

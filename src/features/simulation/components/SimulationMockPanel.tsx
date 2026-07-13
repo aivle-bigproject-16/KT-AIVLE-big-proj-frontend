@@ -39,4 +39,4 @@ function SimulationMockPanel() {
   )
 }
 
-export default SimulationMockPanel
+export { SimulationMockPanel }

@@ -14,8 +14,6 @@ function DashboardPage() {
           <ResultSummary />
         </div>
       </div>
-      <DashboardMockPanel />
-      <SimulationMockPanel />
     </div>
   )
 }

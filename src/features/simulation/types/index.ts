@@ -19,7 +19,7 @@ export type WsStatus = 'idle' | 'connecting' | 'reconnecting' | 'open' | 'closed
 export type SimulationRunStatus = 'idle' | 'running' | 'completed'
 
 // WS /ws/sim, event: PROGRESS — Response (상태: 추후 진행)
-export type BatchStatus = 'REGISTERED' | 'CAPTURING' | 'CAPTURED' | 'ANALYZING' | 'ANALYZED' | 'COMPLETED' | 'FAILED'
+export type BatchStatus = 'REGISTERED' | 'CAPTURING' | 'CAPTURED' | 'ANALYZING' | 'ANALYZED' | 'COMPLETED'
 
 export interface CellProgress {
   batteryCellId: number

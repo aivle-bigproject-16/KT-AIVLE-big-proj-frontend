@@ -2,33 +2,20 @@ import { useEffect, useState, type ReactNode } from 'react'
 import useCountUp from '../hooks/useCountUp'
 import './Simulation.css'
 
-interface SimulationCardProps {
+interface AnalysisCardProps {
   label: string
   icon: ReactNode
   iconColor: string
   current: number
-  total: number
   unit: string
-  /** 지정하면 current/total 비율 대신, 이 시간(초) 동안 0→100%로 채워지는 애니메이션 바를 사용한다. */
-  progressDurationSec?: number
-  /** progressDurationSec 사용 시 이 값이 바뀔 때마다 애니메이션을 처음부터 다시 시작한다(예: 새 배치의 batchId). */
-  progressKey?: string | number
-  /** 하단에 표시할 현재 배치 ID. 지정하면 프로그레스 바 아래에 노출된다. */
+  /** null이면 하단 스피너를 숨긴다. */
+  active: boolean
+  /** 하단에 표시할 현재 배치 ID */
   batchId?: number | null
 }
 
-function SimulationCard({
-  label,
-  icon,
-  iconColor,
-  current,
-  total,
-  unit,
-  progressDurationSec,
-  progressKey,
-  batchId,
-}: SimulationCardProps) {
-  const animatedCurrent = useCountUp(current, 0, 600)
+function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId }: AnalysisCardProps) {
+  const animatedCurrent = useCountUp(current, 0, 420)
   const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
   const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
 
@@ -43,9 +30,6 @@ function SimulationCard({
     const hideTimer = setTimeout(() => setDisplayBatchId(null), 180)
     return () => clearTimeout(hideTimer)
   }, [batchId])
-
-  const progress = total > 0 ? Math.min(100, Math.max(0, (current / total) * 100)) : 0
-  const isTimed = progressDurationSec != null && progressDurationSec > 0
 
   return (
     <div className="simulation-card">
@@ -63,16 +47,8 @@ function SimulationCard({
         </div>
 
         <div className="simulation-card__footer-row">
-          <div className="simulation-card__progress-track">
-            {isTimed ? (
-              <div
-                key={progressKey}
-                className="simulation-card__progress-fill simulation-card__progress-fill--timed"
-                style={{ animationDuration: `${progressDurationSec}s` }}
-              />
-            ) : (
-              <div className="simulation-card__progress-fill" style={{ width: `${progress}%` }} />
-            )}
+          <div className="simulation-card__snippet-area">
+            {active && <span className="simulation-card__snippet-spinner" />}
           </div>
         </div>
       </div>
@@ -89,4 +65,4 @@ function SimulationCard({
   )
 }
 
-export default SimulationCard
+export default AnalysisCard

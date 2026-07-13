@@ -192,13 +192,21 @@ let analyze = null
 let completed = []
 let captureSpeedSec = null
 let hasStartedOnce = false
+let totalBatchCount = 0
 
 // WS(/ws/sim)와 HTTP(POST·GET /api/sim)가 전부 이 페이로드 하나를 공유한다.
 // 한 번도 시작된 적이 없으면 captureSpeed가 없어 PROGRESS 스키마(비-nullable int)를 만족할 수 없으므로
 // COMPLETED(종료/복구할 것 없음)로 응답한다.
-function snapshot() {
+function snapshot(forceProgress = false) {
   if (!hasStartedOnce) return { event: 'COMPLETED' }
 
+  // 모든 배치가 completed에 들어갔으면 COMPLETED
+  if (!forceProgress && completed.length === totalBatchCount && totalBatchCount > 0) {
+    console.log(`[snap] COMPLETED: completed=${completed.length}, total=${totalBatchCount}`)
+    return { event: 'COMPLETED' }
+  }
+
+  console.log(`[snap] PROGRESS: registered=${registered.length}, capture=${capture ? 'yes' : 'no'}, analyze=${analyze ? 'yes' : 'no'}, completed=${completed.length}/${totalBatchCount}`)
   const batches = [...registered, capture, analyze, ...completed].filter(Boolean)
   const batchCount = batches.length
   const batteryCellCount = batches.reduce((sum, b) => sum + b.cells.length, 0)
@@ -214,8 +222,8 @@ function snapshot() {
   }
 }
 
-function broadcastSnapshot() {
-  const payload = JSON.stringify(snapshot())
+function broadcastSnapshot(forceProgress = false) {
+  const payload = JSON.stringify(snapshot(forceProgress))
   for (const client of wss.clients) {
     if (client.readyState === client.OPEN) client.send(payload)
   }
@@ -241,17 +249,81 @@ function makeBatches(batchSize, batteryCellCount) {
   return batches
 }
 
-const ANALYZE_DELAY_MS = 3000
+const ANALYZE_DELAY_MIN_MS = 1000
+const ANALYZE_DELAY_MAX_MS = 5000
+
+function randomAnalyzeDelayMs() {
+  return Math.floor(Math.random() * (ANALYZE_DELAY_MAX_MS - ANALYZE_DELAY_MIN_MS + 1)) + ANALYZE_DELAY_MIN_MS
+}
 
 // POST /api/sim이 다시 호출되면(재시작) runId가 올라간다 — 이전 실행의 setTimeout 체인은
 // myRunId 검사에 걸려 조용히 무시되고, 새로 시작된 시뮬레이션 상태를 건드리지 않는다.
 let runId = 0
 
+function moveToAnalyze(batch, myRunId) {
+  if (myRunId !== runId) return
+
+  if (capture?.batchId === batch.batchId) {
+    capture = null
+  }
+
+  batch.status = 'ANALYZING'
+  analyze = batch
+  broadcastSnapshot()
+  console.log(`[sim] batch ${batch.batchId} → ANALYZING`)
+
+  // 분석으로 넘어가는 즉시 다음 배치를 CAPTURING으로 올린다.
+  processNextBatch(myRunId)
+
+  const analyzeDelayMs = randomAnalyzeDelayMs()
+  console.log(`[sim] batch ${batch.batchId} analyze delay=${analyzeDelayMs}ms`)
+
+  setTimeout(() => {
+    if (myRunId !== runId) return
+
+    batch.status = 'COMPLETED'
+    batch.cells = batch.cells.map((cell) => ({
+      ...cell,
+      finalLabel: (() => {
+        const r = Math.random()
+        if (r < 0.75) return 'PASS'
+        if (r < 0.95) return 'REJECT'
+        return 'FAIL'
+      })(),
+    }))
+
+    analyze = null
+    completed = [batch, ...completed]
+    // 마지막 배치라도 최종 completed 목록을 먼저 PROGRESS로 한번 보내고,
+    // 다음 루프에서 큐 소진 시 COMPLETED 이벤트를 보낸다.
+    broadcastSnapshot(true)
+    console.log(`[sim] batch ${batch.batchId} → COMPLETED`)
+
+    // 캡처가 이미 끝나서 CAPTURED 상태로 대기 중이면 즉시 분석 슬롯으로 이동.
+    if (capture && capture.status === 'CAPTURED') {
+      moveToAnalyze(capture, myRunId)
+      return
+    }
+
+    processNextBatch(myRunId)
+  }, analyzeDelayMs)
+}
+
 function processNextBatch(myRunId) {
   if (myRunId !== runId) return // 이미 재시작되어 폐기된 실행 — 무시
 
+  // capture 슬롯이 사용 중이면 새 배치를 올리지 않는다.
+  if (capture) return
+
   const batch = registered.shift()
-  if (!batch) return // 큐 소진 — 대기
+  if (!batch) {
+    // 큐 소진 — 모든 배치가 완료되었으면 COMPLETED 브로드캐스트
+    if (completed.length === totalBatchCount && totalBatchCount > 0 && analyze === null && capture === null) {
+      broadcastSnapshot()
+      console.log('[sim] all batches completed')
+    }
+    return
+  }
 
   batch.status = 'CAPTURING'
   capture = batch
@@ -260,28 +332,19 @@ function processNextBatch(myRunId) {
 
   setTimeout(() => {
     if (myRunId !== runId) return
+    if (!capture || capture.batchId !== batch.batchId) return
 
-    batch.status = 'ANALYZING'
-    analyze = batch
-    capture = null
+    batch.status = 'CAPTURED'
+
+    if (analyze === null) {
+      moveToAnalyze(batch, myRunId)
+      return
+    }
+
+    // 분석 슬롯이 비지 않았으면 CAPTURED 상태로 capture 슬롯에서 대기.
+    capture = batch
     broadcastSnapshot()
-    console.log(`[sim] batch ${batch.batchId} → ANALYZING`)
-
-    setTimeout(() => {
-      if (myRunId !== runId) return
-
-      batch.status = 'COMPLETED'
-      batch.cells = batch.cells.map((cell) => ({
-        ...cell,
-        finalLabel: Math.random() < 0.8 ? 'PASS' : 'REJECT',
-      }))
-      analyze = null
-      completed = [batch, ...completed]
-      broadcastSnapshot()
-      console.log(`[sim] batch ${batch.batchId} → COMPLETED`)
-
-      processNextBatch(myRunId)
-    }, ANALYZE_DELAY_MS)
+    console.log(`[sim] batch ${batch.batchId} → CAPTURED (waiting ANALYZING slot)`)
   }, captureSpeedSec * 1000)
 }
 
@@ -290,6 +353,7 @@ function startSimulation({ batchSize, batteryCellCount, captureSpeed }) {
   const myRunId = runId
 
   registered = makeBatches(batchSize, batteryCellCount)
+  totalBatchCount = registered.length
   capture = null
   analyze = null
   completed = []

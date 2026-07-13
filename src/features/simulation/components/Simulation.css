@@ -120,10 +120,14 @@
   justify-content: center;
 }
 
-.simulation__cards > .simulation-card,
-.simulation__cards > .simulation__cards-side {
+.simulation__cards > .simulation-card {
   flex: 0 0 220px;
   width: 220px;
+}
+
+.simulation__cards > .simulation__cards-side {
+  flex: 0 0 auto;
+  width: auto;
 }
 
 .simulation__connector {
@@ -153,6 +157,32 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.simulation__cards-side > .simulation-card {
+  flex: 0 0 auto;
+  width: 220px;
+  height: 92px;
+  min-height: 92px;
+}
+
+.simulation__cards-side-row {
+  display: flex;
+  align-items: center;
+}
+
+.simulation__cards-side-row > .simulation-card {
+  flex: 0 0 220px;
+  width: 220px;
+  height: 92px;
+  min-height: 92px;
+}
+
+.simulation__cards-side-link {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 1px;
+  background: #191c1d;
 }
 
 .simulation__steps {
@@ -231,7 +261,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 200px;
+  height: 200px;
   border: 2px solid #191c1d;
   border-radius: 10px;
   padding: 20px;
@@ -248,6 +278,7 @@
   font-size: 15px;
   font-weight: 600;
   color: #5b5f63;
+  line-height: 1.2;
 }
 
 .simulation-card__icon {
@@ -272,10 +303,12 @@
   font-size: 45px;
   font-weight: 700;
   color: #191c1d;
+  line-height: 1.1;
 }
 
 .simulation-card__unit {
   font-size: 22px;
+  line-height: 1.1;
   color: #5b5f63;
 }
 
@@ -299,6 +332,61 @@
   animation-fill-mode: forwards;
 }
 
+.simulation-card__snippet-area {
+  height: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.simulation-card__footer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.simulation-card__footer-row > .simulation-card__progress-track {
+  flex: 1;
+}
+
+.simulation-card__footer-row > .simulation-card__snippet-area {
+  flex: 1;
+}
+
+.simulation-card__batch-id-area {
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.simulation-card__batch-id {
+  flex-shrink: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #5b5f63;
+  letter-spacing: 0.4px;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.simulation-card__batch-id--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.simulation-card__batch-id--hidden {
+  opacity: 0;
+  transform: translateY(2px);
+}
+
+.simulation-card__snippet-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #f0c9c5;
+  border-top-color: #e60012;
+  animation: simulation-card-snippet-rotate 0.8s linear infinite;
+}
+
 @keyframes simulation-card-fill {
   from {
     width: 0%;
@@ -308,8 +396,18 @@
   }
 }
 
+@keyframes simulation-card-snippet-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .simulation-card--compact {
-  min-height: 0;
+  height: 92px;
+  min-height: unset;
   gap: 6px;
   padding: 14px 16px;
 }

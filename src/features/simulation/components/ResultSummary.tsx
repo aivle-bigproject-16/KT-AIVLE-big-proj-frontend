@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ResultSummary.css'
 import { useBatteryListStore } from '@/features/battery'
 import { useSimulationStore } from '../store/useSimulationStore'
 import type { FinalLabel } from '@/features/battery/types'
+import { ROUTES } from '@/core/navigation/routes'
 
 type ResultLabel = FinalLabel | 'FAIL'
 type ResultFilter = ResultLabel | 'ALL'
@@ -23,6 +25,7 @@ interface CompletedCellRow {
 }
 
 function ResultSummary() {
+  const navigate = useNavigate()
   const { fetchList } = useBatteryListStore((s) => s.actions)
   const completed = useSimulationStore((s) => s.completed)
   const [resultFilter, setResultFilter] = useState<ResultFilter>('ALL')
@@ -77,7 +80,11 @@ function ResultSummary() {
           </thead>
           <tbody>
             {filteredList.map((item) => (
-              <tr key={item.batteryCellId}>
+              <tr
+                key={item.batteryCellId}
+                className="result-summary__row--clickable"
+                onClick={() => navigate(ROUTES.BATTERY_DETAIL(item.batteryCellId))}
+              >
                 <td>CELL-{item.batteryCellId}</td>
                 <td className="result-summary__result">
                   <span

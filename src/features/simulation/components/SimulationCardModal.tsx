@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import { Modal } from '@/shared/ui/Modal'
 import type { FinalLabel } from '@/features/battery/types'
 import type { BatchProgress } from '../types'
+import { ROUTES } from '@/core/navigation/routes'
 import './SimulationCardModal.css'
 
 interface SimulationCardModalProps {
@@ -26,6 +28,7 @@ function SimulationCardModal({
   finalLabelFilter,
   emptyMessage = '현재 처리 중인 셀이 없습니다.',
 }: SimulationCardModalProps) {
+  const navigate = useNavigate()
   const rows = batches.flatMap((batch) =>
     batch.cells
       .filter((cell) => (finalLabelFilter ? cell.finalLabel === finalLabelFilter : true))
@@ -59,7 +62,11 @@ function SimulationCardModal({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={`${row.batchId}-${row.batteryCellId}`}>
+                <tr
+                  key={`${row.batchId}-${row.batteryCellId}`}
+                  className="simulation-card-modal__row--clickable"
+                  onClick={() => navigate(ROUTES.BATTERY_DETAIL(row.batteryCellId))}
+                >
                   <td>{row.batchId}</td>
                   <td>{row.batteryCellId}</td>
                   <td>

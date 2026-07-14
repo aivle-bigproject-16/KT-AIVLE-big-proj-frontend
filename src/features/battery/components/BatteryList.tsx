@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom'
 import './BatteryList.css'
 import {
   DownloadIcon,
-  FilterIcon,
   CalendarIcon,
-  ChevronDownIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
   ChevronRightSmallIcon,
+  WarningIcon,
 } from './BatteryListIcons'
 import { useBatteryListStore } from '../store/useBatteryListStore'
 import { ROUTES } from '@/core/navigation/routes'
@@ -105,11 +104,6 @@ function BatteryList() {
         </div>
         <div className="battery-list__filters">
           <button type="button" className="battery-list__filter">
-            <FilterIcon />
-            Line A1
-            <ChevronDownIcon />
-          </button>
-          <button type="button" className="battery-list__filter">
             <CalendarIcon />
             2024-05-12 - Today
           </button>
@@ -141,7 +135,8 @@ function BatteryList() {
           </thead>
           <tbody>
             {filteredList.map((item, index) => {
-              const isReject = item.latestFinalLabel === 'REJECT' || item.latestFinalLabel === 'FAIL'
+              const isFail = item.latestFinalLabel === 'FAIL'
+              const isReject = item.latestFinalLabel === 'REJECT' || isFail
               return (
                 <tr key={item.batteryCellId}>
                   <td>{index + 1}</td>
@@ -158,13 +153,19 @@ function BatteryList() {
                   <td>{formatDateTime(item.latestAnalyzedAt)}</td>
                   <td>
                     <span className="battery-list__result">
-                      <span
-                        className={
-                          isReject
-                            ? 'battery-list__dot battery-list__dot--reject'
-                            : 'battery-list__dot battery-list__dot--pass'
-                        }
-                      />
+                      <span className="battery-list__result-icon">
+                        {isFail ? (
+                          <WarningIcon />
+                        ) : (
+                          <span
+                            className={
+                              isReject
+                                ? 'battery-list__dot battery-list__dot--reject'
+                                : 'battery-list__dot battery-list__dot--pass'
+                            }
+                          />
+                        )}
+                      </span>
                       {item.latestFinalLabel ?? '-'}
                     </span>
                   </td>

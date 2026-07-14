@@ -56,6 +56,22 @@ function ChevronRightSmallIcon() {
   )
 }
 
+function WarningIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 3.3 21.7 20.3H2.3L12 3.3Z"
+        fill="#fff"
+        stroke="#e60012"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <rect x="11.1" y="9.2" width="1.8" height="6" rx="0.9" fill="#191c1d" />
+      <circle cx="12" cy="17" r="1.15" fill="#191c1d" />
+    </svg>
+  )
+}
+
 export {
   DownloadIcon,
   FilterIcon,
@@ -64,4 +80,5 @@ export {
   ChevronRightIcon,
   ChevronLeftIcon,
   ChevronRightSmallIcon,
+  WarningIcon,
 }

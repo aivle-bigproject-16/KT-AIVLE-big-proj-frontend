@@ -1,0 +1,105 @@
+.simulation-card-modal {
+  width: 600px;
+  overflow: hidden;
+}
+
+.simulation-card-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.simulation-card-modal__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #191c1d;
+}
+
+.simulation-card-modal__close {
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: #5b5f63;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.simulation-card-modal__close:hover {
+  background: #f0f0f0;
+}
+
+.simulation-card-modal__empty {
+  margin: 0;
+  padding: 32px 0;
+  text-align: center;
+  color: #5b5f63;
+  font-size: 14px;
+}
+
+.simulation-card-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.simulation-card-modal__table-wrap {
+  --modal-row-height: 38px;
+  --modal-header-height: 38px;
+
+  height: calc(var(--modal-header-height) + (var(--modal-row-height) * 10));
+  overflow-y: auto;
+}
+
+.simulation-card-modal__table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-weight: 600;
+  color: #5b5f63;
+  border-bottom: 1px solid #e9bcb6;
+}
+
+.simulation-card-modal__table th:nth-child(1),
+.simulation-card-modal__table td:nth-child(1) {
+  width: 120px;
+}
+
+.simulation-card-modal__table th:nth-child(2),
+.simulation-card-modal__table td:nth-child(2) {
+  width: 180px;
+}
+
+.simulation-card-modal__table th:nth-child(3),
+.simulation-card-modal__table td:nth-child(3) {
+  width: 160px;
+}
+
+.simulation-card-modal__table td {
+  padding: 8px 10px;
+  color: #191c1d;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.simulation-card-modal__status {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 92px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.simulation-card-modal__status--registered   { background: #f0f0f0; color: #5b5f63; }
+.simulation-card-modal__status--capturing    { background: #fff3cd; color: #856404; }
+.simulation-card-modal__status--captured     { background: #e8f4fd; color: #0c63a4; }
+.simulation-card-modal__status--analyzing    { background: #e8f4fd; color: #0c63a4; }
+.simulation-card-modal__status--analyzed     { background: #e6f4ea; color: #1e7e34; }
+.simulation-card-modal__status--completed    { background: #e6f4ea; color: #1e7e34; }
+.simulation-card-modal__status--failed       { background: #fdecea; color: #e60012; }

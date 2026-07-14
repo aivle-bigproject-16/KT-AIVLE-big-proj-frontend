@@ -12,9 +12,10 @@ interface AnalysisCardProps {
   active: boolean
   /** 하단에 표시할 현재 배치 ID */
   batchId?: number | null
+  onClick?: () => void
 }
 
-function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId }: AnalysisCardProps) {
+function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId, onClick }: AnalysisCardProps) {
   const animatedCurrent = useCountUp(current, 0, 420)
   const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
   const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
@@ -32,7 +33,11 @@ function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId }
   }, [batchId])
 
   return (
-    <div className="simulation-card">
+    <div
+      className="simulation-card"
+      onClick={onClick}
+      style={onClick ? { cursor: 'pointer' } : undefined}
+    >
       <div className="simulation-card__header">
         <span className="simulation-card__label">{label}</span>
         <span className="simulation-card__icon" style={{ color: iconColor }}>

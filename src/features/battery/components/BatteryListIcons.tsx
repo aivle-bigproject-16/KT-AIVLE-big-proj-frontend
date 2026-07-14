@@ -58,10 +58,10 @@ function ChevronRightSmallIcon() {
 
 function WarningIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
       <path
         d="M12 3.3 21.7 20.3H2.3L12 3.3Z"
-        fill="#fff"
+        fill="#ffcc00"
         stroke="#e60012"
         strokeWidth="2"
         strokeLinejoin="round"

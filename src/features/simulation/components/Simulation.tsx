@@ -53,8 +53,8 @@ function Simulation() {
         </div>
       </div>
 
-      <div>
-        <VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>
+      <div className="simulation__body">
+        {/*<VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>*/}
         <div className="simulation__cards">
           {/* current/total 모두 useSimulationStore(WS) 실연동 — total은 batteryCellCount(전체 셀 개수) */}
           <SimulationCard

@@ -19,28 +19,131 @@
       "cellType": "CYLINDRICAL",
       "latestFinalLabel": "PASS",
       "latestAnalyzedAt": "2026-07-06T11:00:00"
+    },
+    {
+      "id": "1001",
+      "inspectionId": 1001,
+      "batteryCellId": 1001,
+      "cellSerialNo": "CELL-1001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-10T09:00:00"
+    },
+    {
+      "id": "1002",
+      "inspectionId": 1002,
+      "batteryCellId": 1002,
+      "cellSerialNo": "CELL-1002",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-10T09:10:00"
+    },
+    {
+      "id": "1003",
+      "inspectionId": 1003,
+      "batteryCellId": 1003,
+      "cellSerialNo": "CELL-1003",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-10T09:20:00"
+    },
+    {
+      "id": "1004",
+      "inspectionId": 1004,
+      "batteryCellId": 1004,
+      "cellSerialNo": "CELL-1004",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "FAIL",
+      "latestAnalyzedAt": "2026-07-10T09:30:00"
+    },
+    {
+      "id": "1005",
+      "inspectionId": 1005,
+      "batteryCellId": 1005,
+      "cellSerialNo": "CELL-1005",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-10T09:40:00"
+    },
+    {
+      "id": "1006",
+      "inspectionId": 1006,
+      "batteryCellId": 1006,
+      "cellSerialNo": "CELL-1006",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-10T09:50:00"
+    },
+    {
+      "id": "2001",
+      "inspectionId": 2001,
+      "batteryCellId": 2001,
+      "cellSerialNo": "CELL-2001",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-11T10:00:00"
+    },
+    {
+      "id": "2002",
+      "inspectionId": 2002,
+      "batteryCellId": 2002,
+      "cellSerialNo": "CELL-2002",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-11T10:10:00"
+    },
+    {
+      "id": "2003",
+      "inspectionId": 2003,
+      "batteryCellId": 2003,
+      "cellSerialNo": "CELL-2003",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-11T10:20:00"
+    },
+    {
+      "id": "2004",
+      "inspectionId": 2004,
+      "batteryCellId": 2004,
+      "cellSerialNo": "CELL-2004",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "FAIL",
+      "latestAnalyzedAt": "2026-07-11T10:30:00"
+    },
+    {
+      "id": "2005",
+      "inspectionId": 2005,
+      "batteryCellId": 2005,
+      "cellSerialNo": "CELL-2005",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-11T10:40:00"
+    },
+    {
+      "id": "2006",
+      "inspectionId": 2006,
+      "batteryCellId": 2006,
+      "cellSerialNo": "CELL-2006",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-11T10:50:00"
     }
   ],
   "dashboard": [
     {
       "id": "1",
-      "kpiData": {
-        "totalInspections": 100,
-        "yieldRate": 95.6,
-        "processStatus": "COMPLETED"
-      },
-      "summaryData": [
-        {
-          "inspectionId": 1,
-          "finalLabel": "PASS",
-          "createdAt": "2026-07-06T18:00:00"
-        },
-        {
-          "inspectionId": 2,
-          "finalLabel": "REJECT",
-          "createdAt": "2026-07-06T18:00:00"
-        }
-      ],
       "graphData": [
         {
           "label": "2026-07-05",

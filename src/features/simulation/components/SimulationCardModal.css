@@ -96,6 +96,14 @@
   white-space: nowrap;
 }
 
+.simulation-card-modal__row--clickable {
+  cursor: pointer;
+}
+
+.simulation-card-modal__row--clickable:hover td {
+  background: #fef2f2;
+}
+
 .simulation-card-modal__status--registered   { background: #f0f0f0; color: #5b5f63; }
 .simulation-card-modal__status--capturing    { background: #fff3cd; color: #856404; }
 .simulation-card-modal__status--captured     { background: #e8f4fd; color: #0c63a4; }

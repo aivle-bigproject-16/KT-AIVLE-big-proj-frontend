@@ -15,6 +15,7 @@ interface SimulationCardProps {
   progressKey?: string | number
   /** 하단에 표시할 현재 배치 ID. 지정하면 프로그레스 바 아래에 노출된다. */
   batchId?: number | null
+  onClick?: () => void
 }
 
 function SimulationCard({
@@ -27,6 +28,7 @@ function SimulationCard({
   progressDurationSec,
   progressKey,
   batchId,
+  onClick,
 }: SimulationCardProps) {
   const animatedCurrent = useCountUp(current, 0, 600)
   const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
@@ -48,7 +50,11 @@ function SimulationCard({
   const isTimed = progressDurationSec != null && progressDurationSec > 0
 
   return (
-    <div className="simulation-card">
+    <div
+      className="simulation-card"
+      onClick={onClick}
+      style={onClick ? { cursor: 'pointer' } : undefined}
+    >
       <div className="simulation-card__header">
         <span className="simulation-card__label">{label}</span>
         <span className="simulation-card__icon" style={{ color: iconColor }}>

@@ -1,3 +1,11 @@
+.result-summary__row--clickable {
+  cursor: pointer;
+}
+
+.result-summary__row--clickable:hover td {
+  background: #fef2f2;
+}
+
 .result-summary {
   flex: 1;
   border: 1px solid #e9bcb6;

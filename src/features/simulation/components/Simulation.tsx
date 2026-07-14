@@ -20,7 +20,7 @@ function Simulation() {
   useSimulationSocket()
 
   const [isControlOpen, setIsControlOpen] = useState(false)
-  type ModalCard = 'pending' | 'capture' | 'analyze' | null
+  type ModalCard = 'pending' | 'capture' | 'analyze' | 'pass' | 'reject' | 'fail' | null
   const [modalCard, setModalCard] = useState<ModalCard>(null)
 
   const batteryCellCount = useSimulationStore((s) => s.batteryCellCount)
@@ -110,6 +110,7 @@ function Simulation() {
               current={passCount}
               total={completedCount}
               unit="units"
+              onClick={() => setModalCard('pass')}
             />
             <div className="simulation__cards-side-row">
               <CompactCard
@@ -119,6 +120,7 @@ function Simulation() {
                 current={rejectCount}
                 total={completedCount}
                 unit="units"
+                onClick={() => setModalCard('reject')}
               />
               <div className="simulation__cards-side-link" aria-hidden="true" />
               <CompactCard
@@ -128,6 +130,7 @@ function Simulation() {
                 current={failCount}
                 total={completedCount}
                 unit="units"
+                onClick={() => setModalCard('fail')}
               />
             </div>
           </div>
@@ -150,6 +153,33 @@ function Simulation() {
         onClose={() => setModalCard(null)}
         label="분석 (ANALYSIS)"
         batches={analyze ? [analyze] : []}
+      />
+      <SimulationCardModal
+        open={modalCard === 'pass'}
+        onClose={() => setModalCard(null)}
+        label="정상 (PASS)"
+        batches={completed}
+        statusSource="finalLabel"
+        finalLabelFilter="PASS"
+        emptyMessage="현재 정상(PASS) 셀이 없습니다."
+      />
+      <SimulationCardModal
+        open={modalCard === 'reject'}
+        onClose={() => setModalCard(null)}
+        label="불량 (REJECT)"
+        batches={completed}
+        statusSource="finalLabel"
+        finalLabelFilter="REJECT"
+        emptyMessage="현재 불량(REJECT) 셀이 없습니다."
+      />
+      <SimulationCardModal
+        open={modalCard === 'fail'}
+        onClose={() => setModalCard(null)}
+        label="검사 실패 (FAIL)"
+        batches={completed}
+        statusSource="finalLabel"
+        finalLabelFilter="FAIL"
+        emptyMessage="현재 검사 실패(FAIL) 셀이 없습니다."
       />
     </section>
   )

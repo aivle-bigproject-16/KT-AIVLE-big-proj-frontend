@@ -1,5 +1,6 @@
 .simulation-card-modal {
   width: 600px;
+  overflow: hidden;
 }
 
 .simulation-card-modal__header {
@@ -43,6 +44,15 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: fixed;
+}
+
+.simulation-card-modal__table-wrap {
+  --modal-row-height: 38px;
+  --modal-header-height: 38px;
+
+  height: calc(var(--modal-header-height) + (var(--modal-row-height) * 10));
+  overflow-y: auto;
 }
 
 .simulation-card-modal__table th {
@@ -53,6 +63,21 @@
   border-bottom: 1px solid #e9bcb6;
 }
 
+.simulation-card-modal__table th:nth-child(1),
+.simulation-card-modal__table td:nth-child(1) {
+  width: 120px;
+}
+
+.simulation-card-modal__table th:nth-child(2),
+.simulation-card-modal__table td:nth-child(2) {
+  width: 180px;
+}
+
+.simulation-card-modal__table th:nth-child(3),
+.simulation-card-modal__table td:nth-child(3) {
+  width: 160px;
+}
+
 .simulation-card-modal__table td {
   padding: 8px 10px;
   color: #191c1d;
@@ -60,11 +85,15 @@
 }
 
 .simulation-card-modal__status {
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 92px;
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .simulation-card-modal__status--registered   { background: #f0f0f0; color: #5b5f63; }

@@ -63,10 +63,12 @@ const server = http.createServer(async (req, res) => {
   // 액션이라, json-server의 "레코드 생성" 의미(body 그대로 저장)와 맞지 않는다.
   // db.json에 미리 넣어둔 대시보드 데이터를 그대로 반환하도록 특수 처리한다.
   if (req.method === 'POST' && url.pathname === '/api/dashboard') {
+    const { graphType } = JSON.parse(body.toString() || '{}')
     const db = await readDb()
     const dashboard = db.dashboard?.[0]
+    const graphData = graphType === 'DEFECT_TYPE' ? dashboard?.defectTypeGraphData : dashboard?.graphData
     res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' })
-    res.end(JSON.stringify(wrap(dashboard ?? null)))
+    res.end(JSON.stringify(wrap(dashboard ? { ...dashboard, graphData } : null)))
     return
   }
 

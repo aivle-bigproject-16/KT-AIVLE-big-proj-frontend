@@ -1,4 +1,5 @@
 .result-summary {
+  flex: 1;
   border: 1px solid #e9bcb6;
   border-radius: 12px;
   padding: 20px;

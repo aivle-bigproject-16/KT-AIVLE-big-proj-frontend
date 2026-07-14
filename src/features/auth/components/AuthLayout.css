@@ -164,6 +164,7 @@
 
 .auth-submit {
   height: 34px;
+  margin-top: 12px;
   border: none;
   border-radius: 4px;
   background: #e60012;

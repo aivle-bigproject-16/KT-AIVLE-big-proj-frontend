@@ -1,9 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { AuthLayout } from './AuthLayout'
-import { MailIcon, LockIcon, EyeIcon, EyeOffIcon, UserIcon } from './AuthIcons'
 import { ROUTES } from '@/core/navigation/routes'
-import { useSignupStore } from '@/features/auth'
+import { AuthLayout, MailIcon, LockIcon, EyeIcon, EyeOffIcon, UserIcon, useSignupStore } from '@/features/auth'
 
 function SignupPage() {
   const navigate = useNavigate()

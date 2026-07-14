@@ -1,3 +1,5 @@
 export { default as AuthMockPanel } from './components/AuthMockPanel'
+export { AuthLayout } from './components/AuthLayout'
+export { MailIcon, LockIcon, EyeIcon, EyeOffIcon, UserIcon } from './components/AuthIcons'
 export { useLoginStore } from './store/useLoginStore'
 export { useSignupStore } from './store/useSignupStore'

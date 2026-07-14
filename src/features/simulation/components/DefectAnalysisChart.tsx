@@ -4,7 +4,7 @@ import { dashboardService } from '@/features/dashboard/services/dashboardService
 import type { GraphDataItem, GraphType } from '@/features/dashboard/types'
 
 // 8-hue 고정 순서 카테고리 팔레트(색맹 안전성 검증됨) — slot 1부터 순서대로 배정
-const SLICE_COLORS = ['#2a78d6', '#1baf7a', '#eda100', '#008300', '#4a3aa7', '#e34948', '#e87ba4', '#eb6834']
+const SLICE_COLORS = ['#eb6834', '#eda100', '#e87ba4', '#e34948', '#2a78d6', '#1baf7a', '#008300', '#4a3aa7']
 const LINE_COLOR = SLICE_COLORS[0]
 
 function getReadableTextColor(hex: string): string {
@@ -35,7 +35,7 @@ function DefectCausePie({ data }: { data: GraphDataItem[] }) {
   const total = data.reduce((sum, item) => sum + item.value, 0)
   const cx = 100
   const cy = 100
-  const r = 80
+  const r = 96
   let cursorAngle = 0
 
   const slices = data.map((item, index) => {
@@ -45,7 +45,7 @@ function DefectCausePie({ data }: { data: GraphDataItem[] }) {
     cursorAngle = endAngle
 
     const midAngle = (startAngle + endAngle) / 2
-    const labelPos = polarToCartesian(cx, cy, r * 0.65, midAngle)
+    const labelPos = polarToCartesian(cx, cy, r * 0.7, midAngle)
     const color = SLICE_COLORS[index % SLICE_COLORS.length]
 
     return {
@@ -68,7 +68,7 @@ function DefectCausePie({ data }: { data: GraphDataItem[] }) {
         aria-label="불량 원인별 분포 파이 차트"
       >
         {slices.map((slice) => (
-          <path key={slice.label} d={slice.path} fill={slice.color}>
+          <path key={slice.label} d={slice.path} fill={slice.color} stroke="#fff" strokeWidth={2}>
             <title>{`${slice.label}: ${slice.value}건 (${slice.percent}%)`}</title>
           </path>
         ))}

@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/core/navigation/routes'
-import { AuthLayout, MailIcon, LockIcon, EyeIcon, EyeOffIcon, useLoginStore } from '@/features/auth'
+import { AuthLayout, MailIcon, PasswordField, useLoginStore } from '@/features/auth'
 
 function LoginPage() {
   const navigate = useNavigate()
@@ -12,7 +12,6 @@ function LoginPage() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
   useEffect(() => {
@@ -45,28 +44,13 @@ function LoginPage() {
           </span>
         </label>
 
-        <label className="auth-field">
-          <span className="auth-field-label">비밀번호</span>
-          <span className="auth-input-wrap">
-            <LockIcon />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력하세요"
-              autoComplete="current-password"
-              required
-            />
-            <button
-              type="button"
-              className="auth-toggle-visibility"
-              onClick={() => setShowPassword((v) => !v)}
-              aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
-            >
-              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-            </button>
-          </span>
-        </label>
+        <PasswordField
+          label="비밀번호"
+          value={password}
+          onChange={setPassword}
+          placeholder="비밀번호를 입력하세요"
+          autoComplete="current-password"
+        />
 
         <div className="auth-row">
           <label className="auth-remember">

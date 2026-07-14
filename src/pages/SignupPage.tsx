@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/core/navigation/routes'
-import { AuthLayout, MailIcon, LockIcon, EyeIcon, EyeOffIcon, UserIcon, useSignupStore } from '@/features/auth'
+import { AuthLayout, MailIcon, UserIcon, PasswordField, useSignupStore } from '@/features/auth'
 
 function SignupPage() {
   const navigate = useNavigate()
@@ -14,7 +14,6 @@ function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [confirmError, setConfirmError] = useState<string | null>(null)
 
   const handleSubmit = (e: FormEvent) => {
@@ -75,43 +74,21 @@ function SignupPage() {
           </span>
         </label>
 
-        <label className="auth-field">
-          <span className="auth-field-label">비밀번호</span>
-          <span className="auth-input-wrap">
-            <LockIcon />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력하세요"
-              autoComplete="new-password"
-              required
-            />
-            <button
-              type="button"
-              className="auth-toggle-visibility"
-              onClick={() => setShowPassword((v) => !v)}
-              aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
-            >
-              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-            </button>
-          </span>
-        </label>
+        <PasswordField
+          label="비밀번호"
+          value={password}
+          onChange={setPassword}
+          placeholder="비밀번호를 입력하세요"
+          autoComplete="new-password"
+        />
 
-        <label className="auth-field">
-          <span className="auth-field-label">비밀번호 확인</span>
-          <span className="auth-input-wrap">
-            <LockIcon />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="비밀번호를 다시 입력하세요"
-              autoComplete="new-password"
-              required
-            />
-          </span>
-        </label>
+        <PasswordField
+          label="비밀번호 확인"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+          placeholder="비밀번호를 다시 입력하세요"
+          autoComplete="new-password"
+        />
 
         {confirmError && <p className="auth-error">{confirmError}</p>}
         {error && <p className="auth-error">{error}</p>}

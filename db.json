@@ -1,26 +1,6 @@
 {
   "battery": [
     {
-      "id": "1",
-      "inspectionId": 1,
-      "batteryCellId": 1,
-      "cellSerialNo": "CELL-001",
-      "modelName": "MODEL-A",
-      "cellType": "POUCH",
-      "latestFinalLabel": "REJECT",
-      "latestAnalyzedAt": "2026-07-06T10:30:00"
-    },
-    {
-      "id": "2",
-      "inspectionId": 2,
-      "batteryCellId": 2,
-      "cellSerialNo": "CELL-002",
-      "modelName": "MODEL-B",
-      "cellType": "CYLINDRICAL",
-      "latestFinalLabel": "PASS",
-      "latestAnalyzedAt": "2026-07-06T11:00:00"
-    },
-    {
       "id": "1001",
       "inspectionId": 1001,
       "batteryCellId": 1001,

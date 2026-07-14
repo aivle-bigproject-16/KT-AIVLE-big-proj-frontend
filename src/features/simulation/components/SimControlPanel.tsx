@@ -11,9 +11,9 @@ function SimControlPanel({ onClose }: SimControlPanelProps) {
   const startError = useSimulationStore((s) => s.startError)
   const { start } = useSimulationStore((s) => s.actions)
 
-  const [batchSize, setBatchSize] = useState(6)
-  const [batteryCellCount, setBatteryCellCount] = useState(12)
-  const [captureSpeed, setCaptureSpeed] = useState(30)
+  const [batchSize, setBatchSize] = useState(5)
+  const [batteryCellCount, setBatteryCellCount] = useState(100)
+  const [captureSpeed, setCaptureSpeed] = useState(3)
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -34,7 +34,7 @@ function SimControlPanel({ onClose }: SimControlPanelProps) {
         />
       </label>
       <label className="simulation__control-field">
-        사진수
+        배터리 셀 개수
         <input
           type="number"
           min={1}

@@ -9,15 +9,20 @@ interface CompactCardProps {
   current: number
   total: number
   unit: string
+  onClick?: () => void
 }
 
-function CompactCard({ label, icon, iconColor, current, total, unit }: CompactCardProps) {
+function CompactCard({ label, icon, iconColor, current, total, unit, onClick }: CompactCardProps) {
   const animatedCurrent = useCountUp(current, 0, 420)
 
   const progress = total > 0 ? Math.min(100, Math.max(0, (current / total) * 100)) : 0
 
   return (
-    <div className="simulation-card simulation-card--compact">
+    <div
+      className="simulation-card simulation-card--compact"
+      onClick={onClick}
+      style={onClick ? { cursor: 'pointer' } : undefined}
+    >
       <div className="simulation-card__header">
         <span className="simulation-card__label">{label}</span>
         <span className="simulation-card__icon" style={{ color: iconColor }}>

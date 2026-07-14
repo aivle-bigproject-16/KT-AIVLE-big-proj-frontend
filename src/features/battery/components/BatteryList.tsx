@@ -100,7 +100,7 @@ function BatteryList() {
             }
             onClick={() => setActiveTab('INSPECTION_FAIL')}
           >
-            검사 실패 이력 (Failure History)
+            검사 실패 이력 (Fail History)
           </button>
         </div>
         <div className="battery-list__filters">

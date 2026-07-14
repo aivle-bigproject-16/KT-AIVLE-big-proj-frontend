@@ -149,15 +149,15 @@
 }
 
 .battery-list__col-index {
-  width: 8%;
+  width: 6%;
 }
 
 .battery-list__col-id {
-  width: 22%;
+  width: 16%;
 }
 
 .battery-list__col-model {
-  width: 18%;
+  width: 14%;
 }
 
 .battery-list__col-date {
@@ -165,11 +165,11 @@
 }
 
 .battery-list__col-result {
-  width: 15%;
+  width: 20%;
 }
 
 .battery-list__col-detail {
-  width: 15%;
+  width: 22%;
 }
 
 .battery-list__table th {

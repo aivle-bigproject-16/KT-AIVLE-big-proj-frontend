@@ -123,13 +123,6 @@
   white-space: nowrap;
 }
 
-.battery-list__panel {
-  height: 180px;
-  border: 1px solid #e9bcb6;
-  border-radius: 12px;
-  background: #fff;
-}
-
 .battery-list__table-card {
   border: 1px solid #e9bcb6;
   border-radius: 12px;

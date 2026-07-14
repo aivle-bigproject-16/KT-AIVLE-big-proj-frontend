@@ -22,7 +22,7 @@ function formatDateTime(value: string | null): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
-type HistoryTab = 'ALL' | 'DEFECT'
+type HistoryTab = 'ALL' | 'DEFECT' | 'INSPECTION_FAIL'
 
 function BatteryList() {
   const list = useBatteryListStore((s) => s.list)
@@ -37,7 +37,13 @@ function BatteryList() {
     fetchList()
   }, [fetchList])
 
-  const total = pageable?.totalElements ?? list.length
+  const filteredList = list.filter((item) => {
+    if (activeTab === 'DEFECT') return item.latestFinalLabel === 'REJECT'
+    if (activeTab === 'INSPECTION_FAIL') return item.latestFinalLabel === 'FAIL'
+    return true
+  })
+
+  const total = activeTab === 'ALL' ? (pageable?.totalElements ?? list.length) : filteredList.length
 
   return (
     <div className="battery-list">
@@ -83,7 +89,18 @@ function BatteryList() {
             }
             onClick={() => setActiveTab('DEFECT')}
           >
-            불량 이력 (Defect History)
+            불량 이력 (Reject History)
+          </button>
+          <button
+            type="button"
+            className={
+              activeTab === 'INSPECTION_FAIL'
+                ? 'battery-list__tab battery-list__tab--active'
+                : 'battery-list__tab'
+            }
+            onClick={() => setActiveTab('INSPECTION_FAIL')}
+          >
+            검사 실패 이력 (Failure History)
           </button>
         </div>
         <div className="battery-list__filters">
@@ -98,8 +115,6 @@ function BatteryList() {
           </button>
         </div>
       </div>
-
-      <div className="battery-list__panel" />
 
       <div className="battery-list__table-card">
         {isLoading && <p className="battery-list__status">로딩 중...</p>}
@@ -125,7 +140,7 @@ function BatteryList() {
             </tr>
           </thead>
           <tbody>
-            {list.map((item, index) => {
+            {filteredList.map((item, index) => {
               const isReject = item.latestFinalLabel === 'REJECT' || item.latestFinalLabel === 'FAIL'
               return (
                 <tr key={item.batteryCellId}>
@@ -169,7 +184,7 @@ function BatteryList() {
 
         <div className="battery-list__footer">
           <span className="battery-list__footer-text">
-            Showing {list.length === 0 ? 0 : 1} to {list.length} of {total} entries
+            Showing {filteredList.length === 0 ? 0 : 1} to {filteredList.length} of {total} entries
           </span>
           <div className="battery-list__pagination">
             <button type="button" className="battery-list__page-btn">

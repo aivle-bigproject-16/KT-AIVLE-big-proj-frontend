@@ -20,6 +20,7 @@ interface SimulationCardProps {
   startAngle?: number
   exitAngle?: number
   animStartMs?: number
+  onFillComplete?: () => void
   onClick?: () => void
 }
 
@@ -34,6 +35,7 @@ function SimulationCard({
   startAngle = 180,
   exitAngle,
   animStartMs,
+  onFillComplete,
   onClick,
 }: SimulationCardProps) {
   const animatedCurrent = useCountUp(current, 0, 600)
@@ -49,6 +51,11 @@ function SimulationCard({
   const exitRafRef = useRef<number>(0)
   const fillRafRef = useRef<number>(0)
   const fillEndTimeRef = useRef<number>(0)
+  const busyRef = useRef(false)
+  const pendingKeyRef = useRef<typeof progressKey | undefined>(undefined)
+  const nextKeyRef = useRef<typeof progressKey | undefined>(undefined)
+  const onFillCompleteRef = useRef(onFillComplete)
+  onFillCompleteRef.current = onFillComplete
 
   useEffect(() => {
     if (batchId != null) {
@@ -61,23 +68,53 @@ function SimulationCard({
     return () => clearTimeout(t)
   }, [batchId])
 
+  // fill t===1 도달 시 단일 트리거 — exit 시작 + 부모 알림을 동시에 처리
+  const doExitRef = useRef<(nextKey: typeof progressKey) => void>()
+  doExitRef.current = (nextKey) => {
+    setIsExiting(true)
+    setTimeout(() => {
+      setIsExiting(false)
+      setStableKey(nextKey ?? null)
+      if (pendingKeyRef.current !== undefined) {
+        const pending = pendingKeyRef.current
+        pendingKeyRef.current = undefined
+        nextKeyRef.current = pending
+        // busyRef 유지: 새 fill이 완료될 때 doExit(pending) 실행
+      } else {
+        busyRef.current = false
+        nextKeyRef.current = undefined
+      }
+    }, EXIT_DURATION + 100)
+  }
+
+  const handleFillCompleteRef = useRef<() => void>()
+  handleFillCompleteRef.current = () => {
+    onFillCompleteRef.current?.()
+    if (nextKeyRef.current !== undefined) {
+      doExitRef.current!(nextKeyRef.current)
+    }
+  }
+
   useEffect(() => {
     if (progressKey === stableKey) return
     if (stableKey == null) {
       setStableKey(progressKey)
       return
     }
-    // fill 종료 시점까지 대기 후 exit 시작
-    const waitMs = Math.max(0, fillEndTimeRef.current - performance.now())
-    const t1 = setTimeout(() => {
-      setIsExiting(true)
-      const t2 = setTimeout(() => {
-        setIsExiting(false)
-        setStableKey(progressKey ?? null)
-      }, EXIT_DURATION + 100)
-      return () => clearTimeout(t2)
-    }, waitMs)
-    return () => clearTimeout(t1)
+    if (busyRef.current) {
+      pendingKeyRef.current = progressKey
+      return
+    }
+    busyRef.current = true
+    const remaining = fillEndTimeRef.current - performance.now()
+    if (remaining > 16 && isTimed) {
+      // fill 진행 중 — fill 완료 시 handleFillComplete가 exit 실행
+      nextKeyRef.current = progressKey
+    } else {
+      // fill 없음 또는 이미 종료 — 즉시 exit
+      nextKeyRef.current = progressKey
+      doExitRef.current!(progressKey)
+    }
   }, [progressKey])
 
   // exit: exitAngle 수렴 (양 끝에서 exitAngle으로)
@@ -133,6 +170,8 @@ function SimulationCard({
     const delayMs = Math.max(0, fillStartMs - performance.now())
     const delayTimer = setTimeout(() => {
       const startTime = performance.now()
+      // 실제 시작 시각 기준으로 종료 시각 갱신 (exit 대기에 사용)
+      fillEndTimeRef.current = startTime + fillDur
       const tick = (now: number) => {
         const t = Math.min((now - startTime) / fillDur, 1)
         const half = CIRC / 2 * t
@@ -145,7 +184,11 @@ function SimulationCard({
           fillBRef.current.style.strokeDasharray = da
           fillBRef.current.style.strokeDashoffset = String(CIRC / 2 + half)
         }
-        if (t < 1) fillRafRef.current = requestAnimationFrame(tick)
+        if (t < 1) {
+          fillRafRef.current = requestAnimationFrame(tick)
+        } else {
+          handleFillCompleteRef.current?.()
+        }
       }
       fillRafRef.current = requestAnimationFrame(tick)
     }, delayMs)
@@ -164,7 +207,7 @@ function SimulationCard({
     <div className="sim-card" onClick={onClick} style={onClick ? { cursor: 'pointer' } : undefined}>
       <div className="sim-card__ring-wrap">
         <svg className="sim-card__svg" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="125" cy="125" r={R} fill="none" stroke="#003EC7" strokeOpacity="0.12" strokeWidth="9" />
+          <circle cx="125" cy="125" r={R} fill="none" stroke="#E0E7F8" strokeOpacity="1" strokeWidth="9" />
           {isExiting ? (
             <>
               <circle ref={circleARef} cx="125" cy="125" r={R}

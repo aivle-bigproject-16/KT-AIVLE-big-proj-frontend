@@ -33,6 +33,8 @@ function Simulation() {
   // 단일 기준 타임스탬프: 모든 애니메이션의 origin
   const [captureAnimStart, setCaptureAnimStart] = useState<number>(0)
   const [displayAnalyze, setDisplayAnalyze] = useState(analyze)
+  const pendingAnalyzeRef = useRef(analyze)
+  pendingAnalyzeRef.current = analyze
 
   useEffect(() => {
     if (capture?.batchId != null) {
@@ -40,17 +42,13 @@ function Simulation() {
     }
   }, [capture?.batchId])
 
-  // analyze는 fill 완료 시점(captureAnimStart + captureSpeed*1000ms)에 적용
   useEffect(() => {
-    if (analyze == null) {
-      setDisplayAnalyze(null)
-      return
-    }
-    const fillEndTime = captureAnimStart + (captureSpeed ?? 0) * 1000
-    const delay = Math.max(0, fillEndTime - performance.now())
-    const t = setTimeout(() => setDisplayAnalyze(analyze), delay)
-    return () => clearTimeout(t)
-  }, [analyze?.batchId, captureSpeed, captureAnimStart])
+    if (analyze == null) setDisplayAnalyze(null)
+  }, [analyze])
+
+  const handleCaptureFillComplete = () => {
+    setDisplayAnalyze(pendingAnalyzeRef.current)
+  }
 
   const registeredCellCount = registered.reduce((sum, batch) => sum + batch.cells.length, 0)
   const capturingCellCount = capture?.cells.length ?? 0
@@ -104,6 +102,7 @@ function Simulation() {
               progressKey={capture?.batchId}
               batchId={capture?.batchId}
               animStartMs={captureAnimStart}
+              onFillComplete={handleCaptureFillComplete}
               onClick={() => setModalCard('capture')}
             />
             <div key={`analyze-${displayAnalyze?.batchId ?? 'none'}`} className={`simulation__flow-line${displayAnalyze !== null ? ' simulation__flow-line--active' : ''}`} aria-hidden="true" />

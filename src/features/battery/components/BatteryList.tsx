@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import './BatteryList.css'
-import { DownloadIcon, CalendarIcon, ChevronRightIcon, WarningIcon } from './BatteryListIcons'
+import { DownloadIcon, CalendarIcon, WarningIcon } from './BatteryListIcons'
 import { useBatteryListStore } from '../store/useBatteryListStore'
 import { ROUTES } from '@/core/navigation/routes'
 import { Pagination } from '@/shared/ui/Pagination'
+import { DetailLinkButton } from '@/shared/ui/DetailLinkButton'
 
 const PAGE_SIZE = 20
 
@@ -174,12 +174,7 @@ function BatteryList() {
                     </span>
                   </td>
                   <td>
-                    <Link
-                      to={ROUTES.BATTERY_DETAIL(item.batteryCellId)}
-                      className="battery-list__detail-link"
-                    >
-                      <ChevronRightIcon />
-                    </Link>
+                    <DetailLinkButton to={ROUTES.BATTERY_DETAIL(item.batteryCellId)} />
                   </td>
                 </tr>
               )

@@ -238,17 +238,6 @@
   text-align: center;
 }
 
-.battery-list__detail-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid #e60012;
-  border-radius: 50%;
-  color: #e60012;
-}
-
 .battery-list__footer {
   display: flex;
   align-items: center;

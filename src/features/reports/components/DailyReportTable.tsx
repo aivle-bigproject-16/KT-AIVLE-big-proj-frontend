@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import './ReportTable.css'
 import './DailyReportTable.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { DetailLinkButton } from '@/shared/ui/DetailLinkButton'
@@ -61,23 +62,23 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
 
   return (
     <section>
-      <div className="daily-report-table__header">
+      <div className="report-table__header">
         <div>
-          <h1 className="daily-report-table__title">
-            일일 리포트 <span className="daily-report-table__title-en">(Daily Report)</span>
+          <h1 className="report-table__title">
+            일일 리포트 <span className="report-table__title-en">(Daily Report)</span>
           </h1>
-          <p className="daily-report-table__subtitle">
+          <p className="report-table__subtitle">
             Review daily inspection summaries and defect trends across all production lines.
           </p>
         </div>
         {headerActions}
       </div>
 
-      <div className="daily-report-table__card">
-        {isLoading && <p className="daily-report-table__status">로딩 중...</p>}
-        {error && <p className="daily-report-table__status daily-report-table__status--error">{error}</p>}
+      <div className="report-table__card">
+        {isLoading && <p className="report-table__status">로딩 중...</p>}
+        {error && <p className="report-table__status report-table__status--error">{error}</p>}
 
-        <table className="daily-report-table__table">
+        <table className="report-table__table">
           <colgroup>
             <col className="daily-report-table__col-date" />
             <col className="daily-report-table__col-status" />
@@ -97,7 +98,7 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
           <tbody>
             {!isLoading && list.length === 0 && (
               <tr>
-                <td colSpan={5} className="daily-report-table__empty">
+                <td colSpan={5} className="report-table__empty">
                   등록된 리포트가 없습니다.
                 </td>
               </tr>
@@ -106,21 +107,21 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
               <tr key={item.reportId}>
                 <td>{item.reportDate}</td>
                 <td>
-                  <span className="daily-report-table__status-cell">
-                    <span className="daily-report-table__status-icon">
+                  <span className="report-table__status-cell">
+                    <span className="report-table__status-icon">
                       {item.status === 'FAILED' && <WarningIcon />}
                       {item.status === 'COMPLETED' && (
-                        <span className="daily-report-table__dot daily-report-table__dot--completed" />
+                        <span className="report-table__dot report-table__dot--completed" />
                       )}
                       {item.status === 'PENDING' && (
-                        <span className="daily-report-table__dot daily-report-table__dot--pending" />
+                        <span className="report-table__dot report-table__dot--pending" />
                       )}
                     </span>
                     {STATUS_LABEL[item.status] ?? item.status}
                   </span>
                 </td>
                 <td>{item.title ?? `리포트 #${item.reportId}`}</td>
-                <td className="daily-report-table__created">{formatDateTime(item.createdAt)}</td>
+                <td className="report-table__created">{formatDateTime(item.createdAt)}</td>
                 <td>
                   <DetailLinkButton to={ROUTES.REPORT_DAILY_DETAIL(item.reportId)} />
                 </td>
@@ -129,8 +130,8 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
           </tbody>
         </table>
 
-        <div className="daily-report-table__footer">
-          <span className="daily-report-table__footer-text">
+        <div className="report-table__footer">
+          <span className="report-table__footer-text">
             Showing {rangeStart} to {rangeEnd} of {list.length} entries
           </span>
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />

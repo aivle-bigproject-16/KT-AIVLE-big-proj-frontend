@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import './ReportTable.css'
 import './IndividualReportTable.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { DetailLinkButton } from '@/shared/ui/DetailLinkButton'
@@ -61,25 +62,23 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
 
   return (
     <section>
-      <div className="individual-report-table__header">
+      <div className="report-table__header">
         <div>
-          <h1 className="individual-report-table__title">
-            개별 리포트 <span className="individual-report-table__title-en">(Individual Report)</span>
+          <h1 className="report-table__title">
+            개별 리포트 <span className="report-table__title-en">(Individual Report)</span>
           </h1>
-          <p className="individual-report-table__subtitle">
+          <p className="report-table__subtitle">
             Review detailed inspection reports for individual battery cells across all production lines.
           </p>
         </div>
         {headerActions}
       </div>
 
-      <div className="individual-report-table__card">
-        {isLoading && <p className="individual-report-table__status">로딩 중...</p>}
-        {error && (
-          <p className="individual-report-table__status individual-report-table__status--error">{error}</p>
-        )}
+      <div className="report-table__card">
+        {isLoading && <p className="report-table__status">로딩 중...</p>}
+        {error && <p className="report-table__status report-table__status--error">{error}</p>}
 
-        <table className="individual-report-table__table">
+        <table className="report-table__table">
           <colgroup>
             <col className="individual-report-table__col-status" />
             <col className="individual-report-table__col-title" />
@@ -97,7 +96,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           <tbody>
             {!isLoading && list.length === 0 && (
               <tr>
-                <td colSpan={4} className="individual-report-table__empty">
+                <td colSpan={4} className="report-table__empty">
                   등록된 리포트가 없습니다.
                 </td>
               </tr>
@@ -105,21 +104,21 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
             {pagedList.map((item) => (
               <tr key={item.reportId}>
                 <td>
-                  <span className="individual-report-table__status-cell">
-                    <span className="individual-report-table__status-icon">
+                  <span className="report-table__status-cell">
+                    <span className="report-table__status-icon">
                       {item.status === 'FAILED' && <WarningIcon />}
                       {item.status === 'COMPLETED' && (
-                        <span className="individual-report-table__dot individual-report-table__dot--completed" />
+                        <span className="report-table__dot report-table__dot--completed" />
                       )}
                       {item.status === 'PENDING' && (
-                        <span className="individual-report-table__dot individual-report-table__dot--pending" />
+                        <span className="report-table__dot report-table__dot--pending" />
                       )}
                     </span>
                     {STATUS_LABEL[item.status] ?? item.status}
                   </span>
                 </td>
                 <td>{item.title ?? `리포트 #${item.reportId}`}</td>
-                <td className="individual-report-table__created">{formatDateTime(item.createdAt)}</td>
+                <td className="report-table__created">{formatDateTime(item.createdAt)}</td>
                 <td>
                   <DetailLinkButton to={ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId)} />
                 </td>
@@ -128,8 +127,8 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           </tbody>
         </table>
 
-        <div className="individual-report-table__footer">
-          <span className="individual-report-table__footer-text">
+        <div className="report-table__footer">
+          <span className="report-table__footer-text">
             Showing {rangeStart} to {rangeEnd} of {list.length} entries
           </span>
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />

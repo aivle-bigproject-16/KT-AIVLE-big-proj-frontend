@@ -1,0 +1,148 @@
+.individual-report-table__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.individual-report-table__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #191c1d;
+}
+
+.individual-report-table__title-en {
+  font-weight: 500;
+  color: #5b5f63;
+}
+
+.individual-report-table__subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #5b5f63;
+}
+
+.individual-report-table__status {
+  margin: 0;
+  padding: 16px 20px 0;
+  font-size: 13px;
+  color: #5b5f63;
+}
+
+.individual-report-table__status--error {
+  color: #e60012;
+}
+
+.individual-report-table__card {
+  border: 1px solid #e9bcb6;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.individual-report-table__table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.individual-report-table__col-status {
+  width: 16%;
+}
+
+.individual-report-table__col-title {
+  width: 50%;
+}
+
+.individual-report-table__col-created {
+  width: 22%;
+}
+
+.individual-report-table__col-detail {
+  width: 12%;
+}
+
+.individual-report-table__table th {
+  text-align: left;
+  padding: 14px 20px;
+  background: #f8f9fa;
+  color: #191c1d;
+  font-weight: 700;
+  border-bottom: 1px solid #e9bcb6;
+}
+
+.individual-report-table__table td {
+  height: 60px;
+  padding: 0 20px;
+  color: #191c1d;
+  border-bottom: 1px solid #f8f9fa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.individual-report-table__created {
+  color: #5b5f63;
+}
+
+.individual-report-table__status-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.individual-report-table__status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.individual-report-table__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.individual-report-table__dot--completed {
+  background: #191c1d;
+}
+
+.individual-report-table__dot--pending {
+  background: #e60012;
+}
+
+.individual-report-table__table th:last-child {
+  text-align: center;
+}
+
+.individual-report-table__table td:last-child {
+  text-align: center;
+}
+
+.individual-report-table__empty {
+  padding: 24px;
+  text-align: center;
+  color: #5b5f63;
+}
+
+.individual-report-table__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+}
+
+.individual-report-table__footer-text {
+  font-size: 13px;
+  color: #5b5f63;
+}

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
 import SimulationCard from './SimulationCard'
@@ -30,9 +30,31 @@ function Simulation() {
   const completed = useSimulationStore((s) => s.completed)
   const captureSpeed = useSimulationStore((s) => s.captureSpeed)
 
+  // 단일 기준 타임스탬프: 모든 애니메이션의 origin
+  const [captureAnimStart, setCaptureAnimStart] = useState<number>(0)
+  const [displayAnalyze, setDisplayAnalyze] = useState(analyze)
+
+  useEffect(() => {
+    if (capture?.batchId != null) {
+      setCaptureAnimStart(performance.now())
+    }
+  }, [capture?.batchId])
+
+  // analyze는 fill 완료 시점(captureAnimStart + captureSpeed*1000ms)에 적용
+  useEffect(() => {
+    if (analyze == null) {
+      setDisplayAnalyze(null)
+      return
+    }
+    const fillEndTime = captureAnimStart + (captureSpeed ?? 0) * 1000
+    const delay = Math.max(0, fillEndTime - performance.now())
+    const t = setTimeout(() => setDisplayAnalyze(analyze), delay)
+    return () => clearTimeout(t)
+  }, [analyze?.batchId, captureSpeed, captureAnimStart])
+
   const registeredCellCount = registered.reduce((sum, batch) => sum + batch.cells.length, 0)
   const capturingCellCount = capture?.cells.length ?? 0
-  const analyzingCellCount = analyze?.cells.length ?? 0
+  const analyzingCellCount = displayAnalyze?.cells.length ?? 0
 
   const completedCells = completed.flatMap((batch) => batch.cells)
   const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
@@ -56,53 +78,49 @@ function Simulation() {
       <div className="simulation__body">
         {/*<VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>*/}
         <div className="simulation__cards">
-          {/* current/total 모두 useSimulationStore(WS) 실연동 — total은 batteryCellCount(전체 셀 개수) */}
-          <SimulationCard
-            label="대기 (PENDING)"
-            icon={<InputIcon />}
-            iconColor={TEXT_SECONDARY}
-            current={registeredCellCount}
-            total={batteryCellCount}
-            unit="units"
-            onClick={() => setModalCard('pending')}
-          />
-          <div className="simulation__connector" aria-hidden="true" />
-          <SimulationCard
-            label="촬영 (CAPTURING)"
-            icon={<CaptureIcon />}
-            iconColor={ACCENT_COLOR}
-            current={capturingCellCount}
-            total={batteryCellCount}
-            unit="active"
-            progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
-            progressKey={capture?.batchId}
-            batchId={capture?.batchId}
-            onClick={() => setModalCard('capture')}
-          />
-          <div className="simulation__connector" aria-hidden="true" />
-          <AnalysisCard
-            label="분석 (ANALYSIS)"
-            icon={<AnalysisIcon />}
-            iconColor={ACCENT_COLOR}
-            current={analyzingCellCount}
-            unit="queued"
-            active={analyze !== null}
-            batchId={analyze?.batchId}
-            onClick={() => setModalCard('analyze')}
-          />
-          <div className="simulation__connector simulation__connector--branch" aria-hidden="true">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path
-                d="M0 50 H50 M50 25 V75 M50 25 H100 M50 75 H100"
-                stroke="#191C1D"
-                strokeWidth="1"
-                fill="none"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
+          {/* 왼쪽 그룹: 대기 / 촬영 / 분析 */}
+          <div className="simulation__cards-main">
+            <SimulationCard
+              label="대기 (PENDING)"
+              icon={<InputIcon />}
+              iconColor={TEXT_SECONDARY}
+              current={registeredCellCount}
+              total={batteryCellCount}
+              unit="units"
+              startAngle={-1.6}
+              onClick={() => setModalCard('pending')}
+            />
+            <div key={`capture-${capture?.batchId ?? 'none'}`} className={`simulation__flow-line${capture !== null ? ' simulation__flow-line--active' : ''}`} aria-hidden="true" />
+            <SimulationCard
+              label="촬영 (CAPTURING)"
+              icon={<CaptureIcon />}
+              iconColor={ACCENT_COLOR}
+              current={capturingCellCount}
+              total={batteryCellCount}
+              unit="active"
+              startAngle={177.5}
+              exitAngle={-1.6}
+              progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
+              progressKey={capture?.batchId}
+              batchId={capture?.batchId}
+              animStartMs={captureAnimStart}
+              onClick={() => setModalCard('capture')}
+            />
+            <div key={`analyze-${displayAnalyze?.batchId ?? 'none'}`} className={`simulation__flow-line${displayAnalyze !== null ? ' simulation__flow-line--active' : ''}`} aria-hidden="true" />
+            <AnalysisCard
+              label="분석 (ANALYSIS)"
+              icon={<AnalysisIcon />}
+              iconColor={ACCENT_COLOR}
+              current={analyzingCellCount}
+              unit="queued"
+              active={displayAnalyze !== null}
+              batchId={displayAnalyze?.batchId}
+              onClick={() => setModalCard('analyze')}
+            />
           </div>
-          <div className="simulation__cards-side">
-            {/* current/total은 useSimulationStore의 completed 셀 목록에서 집계한 실연동 값 */}
+
+          {/* 오른쪽 그룹: 정상 / 불량 / 검사실패 */}
+          <div className="simulation__cards-results">
             <CompactCard
               label="정상 (PASS)"
               icon={<CheckIcon />}
@@ -122,8 +140,7 @@ function Simulation() {
                 unit="units"
                 onClick={() => setModalCard('reject')}
               />
-              <div className="simulation__cards-side-link" aria-hidden="true" />
-              <CompactCard
+<CompactCard
                 label="검사 실패 (FAIL)"
                 icon={<AlertIcon />}
                 iconColor={ACCENT_COLOR}

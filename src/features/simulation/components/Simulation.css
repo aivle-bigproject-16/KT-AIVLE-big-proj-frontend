@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: #fff;
   border: 1px solid #e9bcb6;
   border-radius: 12px;
   padding: 20px;
@@ -32,7 +31,6 @@
   padding: 8px 14px;
   border: 1px solid #e9bcb6;
   border-radius: 6px;
-  background: #fff;
   color: #5b5f63;
   font-size: 13px;
   font-weight: 500;
@@ -51,7 +49,6 @@
   padding: 16px;
   border: 1px solid #e9bcb6;
   border-radius: 8px;
-  background: #fff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
@@ -88,7 +85,6 @@
   padding: 6px 12px;
   border: 1px solid #e9bcb6;
   border-radius: 6px;
-  background: #fff;
   color: #5b5f63;
   font-size: 13px;
   font-weight: 500;
@@ -107,7 +103,6 @@
 }
 
 .simulation__body {
-  padding: 20px 0;
 }
 
 .simulation__variant-label {
@@ -121,32 +116,57 @@
 
 .simulation__cards {
   display: flex;
-  justify-content: center;
+  align-items: flex-start;
 }
 
-.simulation__cards > .simulation-card {
-  flex: 0 0 220px;
-  width: 220px;
+/* 대기/촬영/분析 그룹 */
+.simulation__cards-main {
+  display: flex;
+  align-items: flex-start;
 }
 
-.simulation__cards > .simulation__cards-side {
-  flex: 0 0 auto;
-  width: auto;
+.simulation__flow-line {
+  flex-shrink: 0;
+  width: 60px;
+  height: 9px;
+  align-self: flex-start;
+  margin-top: 121px;
+  margin-left: -5.6px;
+  margin-right: -6px;
+  border-radius: 0px;
+  background: rgba(0, 62, 199, 0.12);
+  overflow: hidden;
+  position: relative;
+}
+
+.simulation__flow-line--active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #0052FF;
+  animation: flow-fill 1.6s linear forwards;
+}
+
+@keyframes flow-fill {
+  0%   { clip-path: inset(0 100% 0 0); }
+  45%  { clip-path: inset(0 0% 0 0); }
+  55%  { clip-path: inset(0 0% 0 0); }
+  100% { clip-path: inset(0 0% 0 100%); }
 }
 
 .simulation__connector {
   flex: 0 0 45px;
   width: 45px;
-}
-
-.simulation__connector:not(.simulation__connector--branch) {
-  align-self: center;
+  align-self: auto;
+  margin-top: 125px;
   height: 1px;
   background: #191c1d;
 }
 
+/* 분기 커넥터: SVG 중간(111px)이 분析 원 중앙(125px)에 오도록 margin-top = 14px */
 .simulation__connector--branch {
-  align-self: stretch;
+  flex-shrink: 0;
+  margin-top: 14px;
   display: flex;
 }
 
@@ -155,29 +175,17 @@
   height: 100%;
 }
 
-.simulation__cards-side {
-  flex: 1;
-  min-width: 0;
+/* 정상/불량/검사실패 그룹: PASS 원 중앙이 125px에 오도록 margin-top = 35px */
+.simulation__cards-results {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.simulation__cards-side > .simulation-card {
-  flex: 1;
-  width: 220px;
+  margin-top: 35px;
 }
 
 .simulation__cards-side-row {
-  flex: 1;
   display: flex;
-  align-items: stretch;
-}
-
-.simulation__cards-side-row > .simulation-card {
-  flex: 0 0 220px;
-  width: 220px;
-  height: auto;
+  align-items: center;
 }
 
 .simulation__cards-side-link {
@@ -207,12 +215,10 @@
   gap: 6px;
   padding: 14px 16px;
   border-radius: 8px;
-  background: #f8f9fa;
   border: 1px solid transparent;
 }
 
 .simulation-step--active {
-  background: #fff;
   border-color: #e9bcb6;
 }
 
@@ -258,6 +264,132 @@
   color: #5b5f63;
 }
 
+/* ── Circular card ── */
+
+.sim-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sim-card__ring-wrap {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  flex-shrink: 0;
+}
+
+.sim-card--compact .sim-card__ring-wrap {
+  width: 180px;
+  height: 180px;
+}
+
+.sim-card__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.sim-card__glass {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 222px;
+  height: 222px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.sim-card--compact .sim-card__glass {
+  width: 155px;
+  height: 155px;
+}
+
+.sim-card__value {
+  font-size: 52px;
+  font-weight: 700;
+  color: #0b1c30;
+  line-height: 1;
+}
+
+.sim-card--compact .sim-card__value {
+  font-size: 32px;
+}
+
+.sim-card__unit {
+  font-size: 12px;
+  color: #5b5f63;
+  line-height: 1;
+}
+
+.sim-card__label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0b1c30;
+  text-align: center;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.sim-card__pill {
+  padding: 3px 12px;
+  border-radius: 10px;
+  color: #003ec7;
+  font-size: 11px;
+  font-weight: 600;
+  transition: opacity 180ms ease;
+  visibility: visible;
+}
+
+.sim-card__pill--hidden {
+  visibility: hidden;
+}
+
+@keyframes sim-arc-fill {
+  from { stroke-dashoffset: 722.57; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.sim-card__arc--static {
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+@keyframes sim-arc-exit-a {
+  from { stroke-dasharray: 361.28 361.28; stroke-dashoffset: 0; }
+  to   { stroke-dasharray: 0 722.57; stroke-dashoffset: 361.28; }
+}
+
+@keyframes sim-arc-exit-b {
+  from { stroke-dasharray: 361.28 361.28; stroke-dashoffset: 0; }
+  to   { stroke-dasharray: 0 722.57; stroke-dashoffset: 0; }
+}
+
+.sim-card__arc--exit-a {
+  animation: sim-arc-exit-a 0.6s linear forwards;
+}
+
+.sim-card__arc--exit-b {
+  animation: sim-arc-exit-b 0.6s linear forwards;
+}
+
+.sim-card__arc--timed {
+  stroke-dasharray: 722.57;
+  stroke-dashoffset: 722.57;
+  animation: sim-arc-fill linear forwards;
+  animation-delay: 0.72s;
+}
+
+
+/* ─────────────────────────── */
+
 .simulation-card {
   flex: 1;
   max-width: 240px;
@@ -268,7 +400,6 @@
   border: 2px solid #191c1d;
   border-radius: 10px;
   padding: 20px;
-  background: #fff;
 }
 
 .simulation-card__header {
@@ -318,7 +449,6 @@
 .simulation-card__progress-track {
   height: 4px;
   border-radius: 999px;
-  background: #f0f0f0;
   overflow: hidden;
 }
 

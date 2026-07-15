@@ -2,20 +2,23 @@ import { useEffect, useState, type ReactNode } from 'react'
 import useCountUp from '../hooks/useCountUp'
 import './Simulation.css'
 
+const R = 115
+const CIRC = 2 * Math.PI * R
+
+const ANALYSIS_DURATION_SEC = 3
+
 interface AnalysisCardProps {
   label: string
   icon: ReactNode
   iconColor: string
   current: number
   unit: string
-  /** null이면 하단 스피너를 숨긴다. */
   active: boolean
-  /** 하단에 표시할 현재 배치 ID */
   batchId?: number | null
   onClick?: () => void
 }
 
-function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId, onClick }: AnalysisCardProps) {
+function AnalysisCard({ label, current, unit, active, batchId, onClick }: AnalysisCardProps) {
   const animatedCurrent = useCountUp(current, 0, 420)
   const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
   const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
@@ -26,45 +29,39 @@ function AnalysisCard({ label, icon, iconColor, current, unit, active, batchId, 
       setIsBatchIdVisible(true)
       return
     }
-
     setIsBatchIdVisible(false)
-    const hideTimer = setTimeout(() => setDisplayBatchId(null), 180)
-    return () => clearTimeout(hideTimer)
+    const t = setTimeout(() => setDisplayBatchId(null), 180)
+    return () => clearTimeout(t)
   }, [batchId])
 
+  const isTimed = active
+
   return (
-    <div
-      className="simulation-card"
-      onClick={onClick}
-      style={onClick ? { cursor: 'pointer' } : undefined}
-    >
-      <div className="simulation-card__header">
-        <span className="simulation-card__label">{label}</span>
-        <span className="simulation-card__icon" style={{ color: iconColor }}>
-          {icon}
-        </span>
-      </div>
-
-      <div className="simulation-card__body">
-        <div className="simulation-card__value-row">
-          <span className="simulation-card__value">{animatedCurrent.toLocaleString()}</span>
-          <span className="simulation-card__unit">{unit}</span>
-        </div>
-
-        <div className="simulation-card__footer-row">
-          <div className="simulation-card__snippet-area">
-            {active && <span className="simulation-card__snippet-spinner" />}
-          </div>
+    <div className="sim-card" onClick={onClick} style={onClick ? { cursor: 'pointer' } : undefined}>
+      <div className="sim-card__ring-wrap">
+        <svg className="sim-card__svg" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="125" cy="125" r={R} fill="none" stroke="#003EC7" strokeOpacity="0.12" strokeWidth="9" />
+          <circle
+            key={String(batchId ?? 'none')}
+            cx="125" cy="125" r={R}
+            fill="none"
+            stroke="#0052FF"
+            strokeWidth="9"
+            strokeDasharray={CIRC}
+            strokeDashoffset={isTimed ? CIRC : CIRC}
+            transform="rotate(177.5 125 125)"
+            className={isTimed ? 'sim-card__arc--timed' : undefined}
+            style={isTimed ? { animationDuration: `${Math.max(0, ANALYSIS_DURATION_SEC - 0.72)}s` } : undefined}
+          />
+        </svg>
+        <div className="sim-card__glass">
+          <span className="sim-card__value">{animatedCurrent.toLocaleString()}</span>
+          <span className="sim-card__unit">{unit}</span>
         </div>
       </div>
-      <div className="simulation-card__batch-id-area">
-        <span
-          className={`simulation-card__batch-id ${
-            isBatchIdVisible ? 'simulation-card__batch-id--visible' : 'simulation-card__batch-id--hidden'
-          }`}
-        >
-          {displayBatchId != null ? `Batch ID : ${displayBatchId}` : ''}
-        </span>
+      <p className="sim-card__label">{label}</p>
+      <div className={`sim-card__pill${isBatchIdVisible ? '' : ' sim-card__pill--hidden'}`}>
+        배치 ID · {displayBatchId ?? ''}
       </div>
     </div>
   )

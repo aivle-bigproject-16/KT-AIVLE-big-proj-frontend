@@ -339,52 +339,73 @@
   white-space: pre-line;
 }
 
+@keyframes sim-pill-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .sim-card__pill {
   padding: 3px 12px;
   border-radius: 10px;
   color: #003ec7;
   font-size: 11px;
   font-weight: 600;
-  transition: opacity 180ms ease;
-  visibility: visible;
+  animation: sim-pill-in 300ms ease forwards;
 }
 
 .sim-card__pill--hidden {
-  visibility: hidden;
-}
-
-@keyframes sim-arc-fill {
-  from { stroke-dashoffset: 722.57; }
-  to   { stroke-dashoffset: 0; }
+  opacity: 0;
+  pointer-events: none;
+  animation: none;
 }
 
 .sim-card__arc--static {
   transition: stroke-dashoffset 0.6s ease;
 }
 
-@keyframes sim-arc-exit-a {
-  from { stroke-dasharray: 361.28 361.28; stroke-dashoffset: 0; }
-  to   { stroke-dasharray: 0 722.57; stroke-dashoffset: 361.28; }
+@keyframes capture-arc-fadeout {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
-@keyframes sim-arc-exit-b {
-  from { stroke-dasharray: 361.28 361.28; stroke-dashoffset: 0; }
-  to   { stroke-dasharray: 0 722.57; stroke-dashoffset: 0; }
+.sim-card__arc--capture-fadeout {
+  animation: capture-arc-fadeout var(--fade-dur, 400ms) ease forwards;
 }
 
-.sim-card__arc--exit-a {
-  animation: sim-arc-exit-a 0.6s linear forwards;
+@keyframes capture-arc-fill {
+  from { stroke-dasharray: 0 722.57; }
+  to   { stroke-dasharray: 361.28 722.57; }
 }
 
-.sim-card__arc--exit-b {
-  animation: sim-arc-exit-b 0.6s linear forwards;
+.sim-card__arc--capture-fill {
+  animation: capture-arc-fill var(--fill-dur, 3000ms) linear forwards;
 }
 
-.sim-card__arc--timed {
-  stroke-dasharray: 722.57;
-  stroke-dashoffset: 722.57;
-  animation: sim-arc-fill linear forwards;
-  animation-delay: 0.72s;
+@keyframes arc-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.sim-card__arc--fadein {
+  animation: arc-fadein 400ms ease forwards, sim-arc-spin 1.2s linear infinite;
+}
+
+@keyframes arc-fadeout {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.sim-card__arc--fadeout-spin {
+  animation: arc-fadeout 400ms ease forwards, sim-arc-spin 1.2s linear infinite;
+}
+
+@keyframes sim-arc-spin {
+  from { transform: rotate(-90deg); transform-origin: 125px 125px; }
+  to   { transform: rotate(270deg); transform-origin: 125px 125px; }
+}
+
+.sim-card__arc--spin {
+  animation: sim-arc-spin 1.2s linear infinite;
 }
 
 

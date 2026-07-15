@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, type ReactNode } from 'react'
+﻿import { useState, type ReactNode } from 'react'
 import './Simulation.css'
 import { InputIcon, CaptureIcon, AnalysisIcon, SimControlIcon, CheckIcon, AlertIcon } from './Icons'
-import SimulationCard from './SimulationCard'
+import PendingCard from './PendingCard'
+import CaptureCard from './CaptureCard'
 import AnalysisCard from './AnalysisCard'
 import CompactCard from './CompactCard'
 import SimControlPanel from './SimControlPanel'
@@ -30,29 +31,9 @@ function Simulation() {
   const completed = useSimulationStore((s) => s.completed)
   const captureSpeed = useSimulationStore((s) => s.captureSpeed)
 
-  // 단일 기준 타임스탬프: 모든 애니메이션의 origin
-  const [captureAnimStart, setCaptureAnimStart] = useState<number>(0)
-  const [displayAnalyze, setDisplayAnalyze] = useState(analyze)
-  const pendingAnalyzeRef = useRef(analyze)
-  pendingAnalyzeRef.current = analyze
-
-  useEffect(() => {
-    if (capture?.batchId != null) {
-      setCaptureAnimStart(performance.now())
-    }
-  }, [capture?.batchId])
-
-  useEffect(() => {
-    if (analyze == null) setDisplayAnalyze(null)
-  }, [analyze])
-
-  const handleCaptureFillComplete = () => {
-    setDisplayAnalyze(pendingAnalyzeRef.current)
-  }
-
   const registeredCellCount = registered.reduce((sum, batch) => sum + batch.cells.length, 0)
   const capturingCellCount = capture?.cells.length ?? 0
-  const analyzingCellCount = displayAnalyze?.cells.length ?? 0
+  const analyzingCellCount = analyze?.cells.length ?? 0
 
   const completedCells = completed.flatMap((batch) => batch.cells)
   const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
@@ -78,42 +59,35 @@ function Simulation() {
         <div className="simulation__cards">
           {/* 왼쪽 그룹: 대기 / 촬영 / 분析 */}
           <div className="simulation__cards-main">
-            <SimulationCard
+            <PendingCard
               label="대기 (PENDING)"
               icon={<InputIcon />}
               iconColor={TEXT_SECONDARY}
               current={registeredCellCount}
               total={batteryCellCount}
               unit="units"
-              startAngle={-1.6}
               onClick={() => setModalCard('pending')}
             />
-            <div key={`capture-${capture?.batchId ?? 'none'}`} className={`simulation__flow-line${capture !== null ? ' simulation__flow-line--active' : ''}`} aria-hidden="true" />
-            <SimulationCard
+            <CaptureCard
               label="촬영 (CAPTURING)"
               icon={<CaptureIcon />}
               iconColor={ACCENT_COLOR}
               current={capturingCellCount}
               total={batteryCellCount}
               unit="active"
-              startAngle={177.5}
-              exitAngle={-1.6}
               progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
               progressKey={capture?.batchId}
               batchId={capture?.batchId}
-              animStartMs={captureAnimStart}
-              onFillComplete={handleCaptureFillComplete}
               onClick={() => setModalCard('capture')}
             />
-            <div key={`analyze-${displayAnalyze?.batchId ?? 'none'}`} className={`simulation__flow-line${displayAnalyze !== null ? ' simulation__flow-line--active' : ''}`} aria-hidden="true" />
             <AnalysisCard
               label="분석 (ANALYSIS)"
               icon={<AnalysisIcon />}
               iconColor={ACCENT_COLOR}
               current={analyzingCellCount}
               unit="queued"
-              active={displayAnalyze !== null}
-              batchId={displayAnalyze?.batchId}
+              active={analyze !== null}
+              batchId={analyze?.batchId}
               onClick={() => setModalCard('analyze')}
             />
           </div>

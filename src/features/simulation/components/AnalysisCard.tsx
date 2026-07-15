@@ -1,16 +1,13 @@
-import { useEffect, useState, type ReactNode } from 'react'
-import useCountUp from '../hooks/useCountUp'
-import './Simulation.css'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import RingCard, { CIRC, R } from './RingCard'
 
-const R = 115
-const CIRC = 2 * Math.PI * R
-
-const ANALYSIS_DURATION_SEC = 3
+const SPIN_DASH = CIRC * 0.25
+const FADE_DUR = 400
 
 interface AnalysisCardProps {
   label: string
-  icon: ReactNode
-  iconColor: string
+  icon?: ReactNode
+  iconColor?: string
   current: number
   unit: string
   active: boolean
@@ -18,8 +15,14 @@ interface AnalysisCardProps {
   onClick?: () => void
 }
 
+type Phase = 'idle' | 'fadeout' | 'spin'
+
 function AnalysisCard({ label, current, unit, active, batchId, onClick }: AnalysisCardProps) {
-  const animatedCurrent = useCountUp(current, 0, 420)
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [spinKey, setSpinKey] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const prevActiveRef = useRef(false)
+
   const [displayBatchId, setDisplayBatchId] = useState<number | null>(batchId ?? null)
   const [isBatchIdVisible, setIsBatchIdVisible] = useState(batchId != null)
 
@@ -27,43 +30,76 @@ function AnalysisCard({ label, current, unit, active, batchId, onClick }: Analys
     if (batchId != null) {
       setDisplayBatchId(batchId)
       setIsBatchIdVisible(true)
-      return
+    } else {
+      setIsBatchIdVisible(false)
+      const t = setTimeout(() => setDisplayBatchId(null), 300)
+      return () => clearTimeout(t)
     }
-    setIsBatchIdVisible(false)
-    const t = setTimeout(() => setDisplayBatchId(null), 180)
-    return () => clearTimeout(t)
   }, [batchId])
 
-  const isTimed = active
+  useEffect(() => {
+    clearTimeout(timerRef.current)
+
+    if (!active) {
+      if (prevActiveRef.current) {
+        // 기존 아이템 사라짐: 스피닝 페이드 아웃
+        setPhase('fadeout')
+        timerRef.current = setTimeout(() => setPhase('idle'), FADE_DUR)
+      }
+      prevActiveRef.current = false
+      return
+    }
+
+    // 새 배치 도착: 바로 페이드 인
+    setPhase('spin')
+    setSpinKey((k) => k + 1)
+    prevActiveRef.current = true
+
+    return () => clearTimeout(timerRef.current)
+  }, [active])
+
+  let arc: ReactNode = null
+  if (phase === 'fadeout') {
+    arc = (
+      <circle
+        cx="125" cy="125" r={R}
+        fill="none" stroke="#0052FF" strokeWidth="9"
+        strokeDasharray={`${SPIN_DASH} ${CIRC - SPIN_DASH}`}
+        strokeDashoffset={0}
+        className="sim-card__arc--spin sim-card__arc--fadeout-spin"
+      />
+    )
+  } else if (phase === 'spin') {
+    arc = (
+      <circle
+        key={spinKey}
+        cx="125" cy="125" r={R}
+        fill="none" stroke="#0052FF" strokeWidth="9"
+        strokeDasharray={`${SPIN_DASH} ${CIRC - SPIN_DASH}`}
+        strokeDashoffset={0}
+        className="sim-card__arc--spin sim-card__arc--fadein"
+      />
+    )
+  }
+
+  const pill = (
+    <span
+      key={displayBatchId ?? 'none'}
+      className={`sim-card__pill${isBatchIdVisible ? '' : ' sim-card__pill--hidden'}`}
+    >
+      배치 ID · {displayBatchId ?? ''}
+    </span>
+  )
 
   return (
-    <div className="sim-card" onClick={onClick} style={onClick ? { cursor: 'pointer' } : undefined}>
-      <div className="sim-card__ring-wrap">
-        <svg className="sim-card__svg" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="125" cy="125" r={R} fill="none" stroke="#003EC7" strokeOpacity="0.12" strokeWidth="9" />
-          <circle
-            key={String(batchId ?? 'none')}
-            cx="125" cy="125" r={R}
-            fill="none"
-            stroke="#0052FF"
-            strokeWidth="9"
-            strokeDasharray={CIRC}
-            strokeDashoffset={isTimed ? CIRC : CIRC}
-            transform="rotate(177.5 125 125)"
-            className={isTimed ? 'sim-card__arc--timed' : undefined}
-            style={isTimed ? { animationDuration: `${Math.max(0, ANALYSIS_DURATION_SEC - 0.72)}s` } : undefined}
-          />
-        </svg>
-        <div className="sim-card__glass">
-          <span className="sim-card__value">{animatedCurrent.toLocaleString()}</span>
-          <span className="sim-card__unit">{unit}</span>
-        </div>
-      </div>
-      <p className="sim-card__label">{label}</p>
-      <div className={`sim-card__pill${isBatchIdVisible ? '' : ' sim-card__pill--hidden'}`}>
-        배치 ID · {displayBatchId ?? ''}
-      </div>
-    </div>
+    <RingCard
+      label={label}
+      current={current}
+      unit={unit}
+      arc={arc}
+      pill={pill}
+      onClick={onClick}
+    />
   )
 }
 

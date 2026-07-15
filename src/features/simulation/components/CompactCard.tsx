@@ -37,6 +37,7 @@ function CompactCard({ label, current, total, unit, onClick }: CompactCardProps)
             strokeDasharray={CIRC}
             strokeDashoffset={offset}
             transform="rotate(-90 90 90)"
+            className="sim-card__arc--static"
           />
         </svg>
         <div className="sim-card__glass">

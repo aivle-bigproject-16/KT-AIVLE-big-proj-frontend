@@ -239,10 +239,14 @@
 }
 
 .battery-list__detail-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #5b5f63;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e60012;
+  border-radius: 50%;
+  color: #e60012;
 }
 
 .battery-list__footer {

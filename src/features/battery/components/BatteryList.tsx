@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './BatteryList.css'
-import {
-  DownloadIcon,
-  CalendarIcon,
-  ChevronRightIcon,
-  ChevronLeftIcon,
-  ChevronRightSmallIcon,
-  WarningIcon,
-} from './BatteryListIcons'
+import { DownloadIcon, CalendarIcon, ChevronRightIcon, WarningIcon } from './BatteryListIcons'
 import { useBatteryListStore } from '../store/useBatteryListStore'
 import { ROUTES } from '@/core/navigation/routes'
+import { Pagination } from '@/shared/ui/Pagination'
+
+const PAGE_SIZE = 20
 
 function formatDateTime(value: string | null): string {
   if (!value) return '-'
@@ -25,12 +21,12 @@ type HistoryTab = 'ALL' | 'DEFECT' | 'INSPECTION_FAIL'
 
 function BatteryList() {
   const list = useBatteryListStore((s) => s.list)
-  const pageable = useBatteryListStore((s) => s.pageable)
   const isLoading = useBatteryListStore((s) => s.isLoading)
   const error = useBatteryListStore((s) => s.error)
   const { fetchList } = useBatteryListStore((s) => s.actions)
 
   const [activeTab, setActiveTab] = useState<HistoryTab>('ALL')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchList()
@@ -42,7 +38,15 @@ function BatteryList() {
     return true
   })
 
-  const total = activeTab === 'ALL' ? (pageable?.totalElements ?? list.length) : filteredList.length
+  const totalPages = Math.max(1, Math.ceil(filteredList.length / PAGE_SIZE))
+  const pagedList = filteredList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const rangeStart = filteredList.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, filteredList.length)
+
+  const handleTabChange = (tab: HistoryTab) => {
+    setActiveTab(tab)
+    setCurrentPage(1)
+  }
 
   return (
     <div className="battery-list">
@@ -75,7 +79,7 @@ function BatteryList() {
                 ? 'battery-list__tab battery-list__tab--active'
                 : 'battery-list__tab'
             }
-            onClick={() => setActiveTab('ALL')}
+            onClick={() => handleTabChange('ALL')}
           >
             전체 이력 (All History)
           </button>
@@ -86,7 +90,7 @@ function BatteryList() {
                 ? 'battery-list__tab battery-list__tab--active'
                 : 'battery-list__tab'
             }
-            onClick={() => setActiveTab('DEFECT')}
+            onClick={() => handleTabChange('DEFECT')}
           >
             불량 이력 (Reject History)
           </button>
@@ -97,7 +101,7 @@ function BatteryList() {
                 ? 'battery-list__tab battery-list__tab--active'
                 : 'battery-list__tab'
             }
-            onClick={() => setActiveTab('INSPECTION_FAIL')}
+            onClick={() => handleTabChange('INSPECTION_FAIL')}
           >
             검사 실패 이력 (Fail History)
           </button>
@@ -134,12 +138,12 @@ function BatteryList() {
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((item, index) => {
+            {pagedList.map((item, index) => {
               const isFail = item.latestFinalLabel === 'FAIL'
               const isReject = item.latestFinalLabel === 'REJECT' || isFail
               return (
                 <tr key={item.batteryCellId}>
-                  <td>{index + 1}</td>
+                  <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
                   <td
                     className={
                       isReject
@@ -185,26 +189,9 @@ function BatteryList() {
 
         <div className="battery-list__footer">
           <span className="battery-list__footer-text">
-            Showing {filteredList.length === 0 ? 0 : 1} to {filteredList.length} of {total} entries
+            Showing {rangeStart} to {rangeEnd} of {filteredList.length} entries
           </span>
-          <div className="battery-list__pagination">
-            <button type="button" className="battery-list__page-btn">
-              <ChevronLeftIcon />
-            </button>
-            <button type="button" className="battery-list__page-btn battery-list__page-btn--active">
-              1
-            </button>
-            <button type="button" className="battery-list__page-btn">
-              2
-            </button>
-            <button type="button" className="battery-list__page-btn">
-              3
-            </button>
-            <span className="battery-list__page-ellipsis">...</span>
-            <button type="button" className="battery-list__page-btn">
-              <ChevronRightSmallIcon />
-            </button>
-          </div>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
       </div>
     </div>

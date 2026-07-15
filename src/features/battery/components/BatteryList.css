@@ -258,36 +258,3 @@
   font-size: 13px;
   color: #5b5f63;
 }
-
-.battery-list__pagination {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.battery-list__page-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid #e9bcb6;
-  border-radius: 6px;
-  background: #fff;
-  color: #5b5f63;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.battery-list__page-btn--active {
-  border-color: #e60012;
-  background: #e60012;
-  color: #fff;
-}
-
-.battery-list__page-ellipsis {
-  padding: 0 4px;
-  color: #5b5f63;
-  font-size: 13px;
-}

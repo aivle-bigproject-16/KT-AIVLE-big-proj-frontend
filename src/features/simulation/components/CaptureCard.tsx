@@ -50,7 +50,12 @@ function CaptureCard({
   }, [batchId])
 
   useEffect(() => {
-    if (progressKey == null) return
+    if (progressKey == null) {
+      clearTimeout(timerRef.current)
+      setPhase('idle')
+      hasPrevFillRef.current = false
+      return
+    }
 
     batchStartTimeRef.current = performance.now()
     setPhase('fadeout')
@@ -73,7 +78,7 @@ function CaptureCard({
       key={displayBatchId ?? 'none'}
       className={`sim-card__pill${isBatchIdVisible ? '' : ' sim-card__pill--hidden'}`}
     >
-      배치 ID · {displayBatchId ?? ''}
+      Batch ID · {displayBatchId ?? ''}
     </span>
   )
 

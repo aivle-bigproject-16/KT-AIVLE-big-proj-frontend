@@ -116,13 +116,16 @@
 
 .simulation__cards {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 48px;
 }
 
 /* 대기/촬영/분析 그룹 */
 .simulation__cards-main {
   display: flex;
   align-items: flex-start;
+  margin-top: -60px;
+  gap: 50px;
 }
 
 .simulation__flow-line {
@@ -179,13 +182,13 @@
 .simulation__cards-results {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 35px;
+  gap: -10px;
 }
 
 .simulation__cards-side-row {
   display: flex;
   align-items: center;
+  gap: 30px;
 }
 
 .simulation__cards-side-link {
@@ -307,6 +310,14 @@
   gap: 2px;
 }
 
+.sim-card__pill-slot {
+  position: absolute;
+  bottom: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
 .sim-card--compact .sim-card__glass {
   width: 155px;
   height: 155px;
@@ -324,14 +335,14 @@
 }
 
 .sim-card__unit {
-  font-size: 12px;
+  font-size: 20px;
   color: #5b5f63;
   line-height: 1;
 }
 
 .sim-card__label {
   margin: 0;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   color: #0b1c30;
   text-align: center;
@@ -348,7 +359,7 @@
   padding: 3px 12px;
   border-radius: 10px;
   color: #003ec7;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   animation: sim-pill-in 300ms ease forwards;
 }

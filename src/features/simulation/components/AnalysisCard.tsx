@@ -87,7 +87,7 @@ function AnalysisCard({ label, current, unit, active, batchId, onClick }: Analys
       key={displayBatchId ?? 'none'}
       className={`sim-card__pill${isBatchIdVisible ? '' : ' sim-card__pill--hidden'}`}
     >
-      배치 ID · {displayBatchId ?? ''}
+      Batch ID · {displayBatchId ?? ''}
     </span>
   )
 

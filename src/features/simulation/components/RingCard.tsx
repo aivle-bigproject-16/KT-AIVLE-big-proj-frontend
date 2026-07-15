@@ -27,7 +27,7 @@ function RingCard({ label, current, unit, arc, pill, onClick }: RingCardProps) {
         <div className="sim-card__glass">
           <span className="sim-card__value">{animatedCurrent.toLocaleString()}</span>
           <span className="sim-card__unit">{unit}</span>
-          {pill}
+          {pill && <div className="sim-card__pill-slot">{pill}</div>}
         </div>
       </div>
       <p className="sim-card__label">{label}</p>

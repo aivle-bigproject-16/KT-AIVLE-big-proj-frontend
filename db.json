@@ -193,7 +193,12 @@
             {
               "imageType": "CT",
               "imageId": 1,
-              "bbox": { "x": 120, "y": 80, "width": 240, "height": 160 }
+              "bbox": {
+                "x": 120,
+                "y": 80,
+                "width": 240,
+                "height": 160
+              }
             }
           ]
         },
@@ -212,7 +217,12 @@
             {
               "imageType": "RGB",
               "imageId": 2,
-              "bbox": { "x": 60, "y": 40, "width": 100, "height": 100 }
+              "bbox": {
+                "x": 60,
+                "y": 40,
+                "width": 100,
+                "height": 100
+              }
             }
           ]
         },
@@ -251,8 +261,14 @@
             "rejectCount": 14,
             "failedCount": 2,
             "defects": [
-              { "defectType": "MICRO_DEFECT", "count": 5 },
-              { "defectType": "CRACK", "count": 2 }
+              {
+                "defectType": "MICRO_DEFECT",
+                "count": 5
+              },
+              {
+                "defectType": "CRACK",
+                "count": 2
+              }
             ]
           }
         },
@@ -273,8 +289,14 @@
             "rejectCount": 6,
             "failedCount": 0,
             "defects": [
-              { "defectType": "SWELLING", "count": 3 },
-              { "defectType": "CRACK", "count": 3 }
+              {
+                "defectType": "SWELLING",
+                "count": 3
+              },
+              {
+                "defectType": "CRACK",
+                "count": 3
+              }
             ]
           }
         },

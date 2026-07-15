@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState, type ReactNode } from 'react'
+import './DailyReportTable.css'
 import { ROUTES } from '@/core/navigation/routes'
+import { DetailLinkButton } from '@/shared/ui/DetailLinkButton'
+import { Pagination } from '@/shared/ui/Pagination'
 import { useDailyReportListStore } from '../store/useDailyReportListStore'
 
-const COLUMNS = '140px 100px 1fr 170px 96px'
-const BORDER_COLOR = '#E9BCB6'
-const ACCENT_COLOR = '#E60012'
+const PAGE_SIZE = 20
 
 const STATUS_LABEL: Record<string, string> = {
   PENDING: '대기중',
@@ -13,110 +13,128 @@ const STATUS_LABEL: Record<string, string> = {
   FAILED: '실패',
 }
 
-function ArrowRightIcon() {
+function WarningIcon() {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 6l6 6-6 6" />
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 3.3 21.7 20.3H2.3L12 3.3Z"
+        fill="#ffcc00"
+        stroke="#e60012"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <rect x="11.1" y="9.2" width="1.8" height="6" rx="0.9" fill="#191c1d" />
+      <circle cx="12" cy="17" r="1.15" fill="#191c1d" />
     </svg>
   )
 }
 
-function DailyReportTable() {
+function formatDateTime(value: string | null): string {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+interface DailyReportTableProps {
+  headerActions?: ReactNode
+}
+
+function DailyReportTable({ headerActions }: DailyReportTableProps) {
   const list = useDailyReportListStore((s) => s.list)
   const isLoading = useDailyReportListStore((s) => s.isLoading)
   const error = useDailyReportListStore((s) => s.error)
   const { fetchList } = useDailyReportListStore((s) => s.actions)
 
+  const [currentPage, setCurrentPage] = useState(1)
+
   useEffect(() => {
-    fetchList(0, 10)
+    fetchList(0, 100)
   }, [fetchList])
+
+  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE))
+  const pagedList = list.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const rangeStart = list.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, list.length)
 
   return (
     <section>
-      <h2 style={{ marginBottom: 16 }}>일일 리포트</h2>
-
-      {isLoading && <p>로딩 중...</p>}
-      {error && <p style={{ color: ACCENT_COLOR }}>{error}</p>}
-
-      <div
-        style={{
-          background: '#fff',
-          border: `1px solid ${BORDER_COLOR}`,
-          borderRadius: 8,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: COLUMNS,
-            padding: '12px 24px',
-            borderBottom: `1px solid ${BORDER_COLOR}`,
-            fontSize: 13,
-            fontWeight: 600,
-            color: '#5B5F63',
-          }}
-        >
-          <span>판정일자</span>
-          <span>상태</span>
-          <span>제목</span>
-          <span>생성일시</span>
-          <span style={{ textAlign: 'center' }}>상세</span>
+      <div className="daily-report-table__header">
+        <div>
+          <h1 className="daily-report-table__title">
+            일일 리포트 <span className="daily-report-table__title-en">(Daily Report)</span>
+          </h1>
+          <p className="daily-report-table__subtitle">
+            Review daily inspection summaries and defect trends across all production lines.
+          </p>
         </div>
+        {headerActions}
+      </div>
 
-        {!isLoading && list.length === 0 && (
-          <div style={{ padding: 24, textAlign: 'center', color: '#5B5F63' }}>
-            등록된 리포트가 없습니다.
-          </div>
-        )}
+      <div className="daily-report-table__card">
+        {isLoading && <p className="daily-report-table__status">로딩 중...</p>}
+        {error && <p className="daily-report-table__status daily-report-table__status--error">{error}</p>}
 
-        {list.map((item, index) => (
-          <div
-            key={item.reportId}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: COLUMNS,
-              alignItems: 'center',
-              padding: '16px 24px',
-              borderBottom: index === list.length - 1 ? 'none' : `1px solid ${BORDER_COLOR}`,
-              fontSize: 14,
-              color: '#191C1D',
-            }}
-          >
-            <span>{item.reportDate}</span>
-            <span>{STATUS_LABEL[item.status] ?? item.status}</span>
-            <span>{item.title ?? `리포트 #${item.reportId}`}</span>
-            <span style={{ color: '#5B5F63' }}>{item.createdAt}</span>
-            <span style={{ display: 'flex', justifyContent: 'center' }}>
-              <Link
-                to={ROUTES.REPORT_DAILY_DETAIL(item.reportId)}
-                aria-label="상세보기"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 32,
-                  height: 32,
-                  borderRadius: '50%',
-                  border: `1px solid ${ACCENT_COLOR}`,
-                  color: ACCENT_COLOR,
-                  textDecoration: 'none',
-                }}
-              >
-                <ArrowRightIcon />
-              </Link>
-            </span>
-          </div>
-        ))}
+        <table className="daily-report-table__table">
+          <colgroup>
+            <col className="daily-report-table__col-date" />
+            <col className="daily-report-table__col-status" />
+            <col className="daily-report-table__col-title" />
+            <col className="daily-report-table__col-created" />
+            <col className="daily-report-table__col-detail" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>판정일자</th>
+              <th>상태</th>
+              <th>제목</th>
+              <th>생성일시</th>
+              <th>상세</th>
+            </tr>
+          </thead>
+          <tbody>
+            {!isLoading && list.length === 0 && (
+              <tr>
+                <td colSpan={5} className="daily-report-table__empty">
+                  등록된 리포트가 없습니다.
+                </td>
+              </tr>
+            )}
+            {pagedList.map((item) => (
+              <tr key={item.reportId}>
+                <td>{item.reportDate}</td>
+                <td>
+                  <span className="daily-report-table__status-cell">
+                    <span className="daily-report-table__status-icon">
+                      {item.status === 'FAILED' && <WarningIcon />}
+                      {item.status === 'COMPLETED' && (
+                        <span className="daily-report-table__dot daily-report-table__dot--completed" />
+                      )}
+                      {item.status === 'PENDING' && (
+                        <span className="daily-report-table__dot daily-report-table__dot--pending" />
+                      )}
+                    </span>
+                    {STATUS_LABEL[item.status] ?? item.status}
+                  </span>
+                </td>
+                <td>{item.title ?? `리포트 #${item.reportId}`}</td>
+                <td className="daily-report-table__created">{formatDateTime(item.createdAt)}</td>
+                <td>
+                  <DetailLinkButton to={ROUTES.REPORT_DAILY_DETAIL(item.reportId)} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="daily-report-table__footer">
+          <span className="daily-report-table__footer-text">
+            Showing {rangeStart} to {rangeEnd} of {list.length} entries
+          </span>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </div>
       </div>
     </section>
   )

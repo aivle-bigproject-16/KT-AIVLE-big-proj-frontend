@@ -20,7 +20,7 @@ function SideBar() {
         <ul className="side-bar__nav">
             <SideBarTab icon={<DashboardIcon />} label="대시보드" to={ROUTES.DASHBOARD}/>
             <SideBarTab icon={<ChecklistIcon />} label="배터리 목록" to={ROUTES.BATTERY}/>
-            <SideBarTab icon={<ReportIcon />} label="리포트 목록" to={ROUTES.REPORT_DAILY}/>
+            <SideBarTab icon={<ReportIcon />} label="리포트 목록" to={ROUTES.REPORT_DAILY} matchPrefix="/reports"/>
         </ul>
 
         <ul className="side-bar__nav side-bar__nav--bottom">

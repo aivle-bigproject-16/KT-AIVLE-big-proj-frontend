@@ -1,0 +1,265 @@
+.battery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+}
+
+.battery-list__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.battery-list__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #191c1d;
+}
+
+.battery-list__title-en {
+  font-weight: 500;
+  color: #5b5f63;
+}
+
+.battery-list__subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #5b5f63;
+}
+
+.battery-list__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.battery-list__btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.battery-list__btn--outline {
+  border: 1px solid #e9bcb6;
+  background: #fff;
+  color: #191c1d;
+}
+
+.battery-list__btn--primary {
+  border: none;
+  background: #e60012;
+  color: #fff;
+}
+
+.battery-list__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.battery-list__tabs {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.battery-list__tab {
+  position: relative;
+  border: none;
+  background: none;
+  padding: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5b5f63;
+  cursor: pointer;
+}
+
+.battery-list__tab--active {
+  color: #e60012;
+}
+
+.battery-list__tab--active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #e60012;
+}
+
+.battery-list__filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.battery-list__filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #e9bcb6;
+  border-radius: 6px;
+  background: #fff;
+  color: #191c1d;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.battery-list__table-card {
+  border: 1px solid #e9bcb6;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.battery-list__status {
+  margin: 0;
+  padding: 16px 20px 0;
+  font-size: 13px;
+  color: #5b5f63;
+}
+
+.battery-list__status--error {
+  color: #e60012;
+}
+
+.battery-list__table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.battery-list__col-index {
+  width: 6%;
+}
+
+.battery-list__col-id {
+  width: 16%;
+}
+
+.battery-list__col-model {
+  width: 14%;
+}
+
+.battery-list__col-date {
+  width: 22%;
+}
+
+.battery-list__col-result {
+  width: 20%;
+}
+
+.battery-list__col-detail {
+  width: 22%;
+}
+
+.battery-list__table th {
+  text-align: left;
+  padding: 14px 20px;
+  background: #f8f9fa;
+  color: #191c1d;
+  font-weight: 700;
+  border-bottom: 1px solid #e9bcb6;
+}
+
+.battery-list__table tbody tr {
+  background: #fff;
+}
+
+.battery-list__table tbody tr:hover {
+  background: #d6e4ff;
+}
+
+.battery-list__table td {
+  height: 60px;
+  padding: 0 20px;
+  color: #191c1d;
+  border-bottom: 1px solid #f8f9fa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.battery-list__id {
+  font-weight: 600;
+}
+
+.battery-list__id--reject {
+  color: #e60012;
+}
+
+.battery-list__result {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.battery-list__result-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.battery-list__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.battery-list__dot--pass {
+  background: #2a78d6;
+}
+
+.battery-list__dot--reject {
+  background: #e60012;
+}
+
+.battery-list__dot--fail {
+  background: #f97316;
+}
+
+.battery-list__table th:last-child {
+  text-align: center;
+}
+
+.battery-list__table td:last-child {
+  text-align: center;
+}
+
+.battery-list__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+}
+
+.battery-list__footer-text {
+  font-size: 13px;
+  color: #5b5f63;
+}

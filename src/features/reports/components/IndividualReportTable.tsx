@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ReportTable.css'
 import './IndividualReportTable.css'
 import { ROUTES } from '@/core/navigation/routes'
@@ -14,21 +15,6 @@ const STATUS_LABEL: Record<string, string> = {
   FAILED: '실패',
 }
 
-function WarningIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M12 3.3 21.7 20.3H2.3L12 3.3Z"
-        fill="#ffcc00"
-        stroke="#e60012"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <rect x="11.1" y="9.2" width="1.8" height="6" rx="0.9" fill="#191c1d" />
-      <circle cx="12" cy="17" r="1.15" fill="#191c1d" />
-    </svg>
-  )
-}
 
 function formatDateTime(value: string | null): string {
   if (!value) return '-'
@@ -44,6 +30,7 @@ interface IndividualReportTableProps {
 }
 
 function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
+  const navigate = useNavigate()
   const list = useIndividualReportListStore((s) => s.list)
   const isLoading = useIndividualReportListStore((s) => s.isLoading)
   const error = useIndividualReportListStore((s) => s.error)
@@ -80,7 +67,6 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
 
         <table className="report-table__table">
           <colgroup>
-            <col className="individual-report-table__col-date" />
             <col className="individual-report-table__col-status" />
             <col className="individual-report-table__col-title" />
             <col className="individual-report-table__col-created" />
@@ -88,7 +74,6 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           </colgroup>
           <thead>
             <tr>
-              <th></th>
               <th>상태</th>
               <th>제목</th>
               <th>생성일시</th>
@@ -98,18 +83,19 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           <tbody>
             {!isLoading && list.length === 0 && (
               <tr>
-                <td colSpan={5} className="report-table__empty">
+                <td colSpan={4} className="report-table__empty">
                   등록된 리포트가 없습니다.
                 </td>
               </tr>
             )}
             {pagedList.map((item) => (
-              <tr key={item.reportId}>
-                <td></td>
+              <tr key={item.reportId} onClick={() => navigate(ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId))} style={{ cursor: 'pointer' }}>
                 <td>
                   <span className="report-table__status-cell">
                     <span className="report-table__status-icon">
-                      {item.status === 'FAILED' && <WarningIcon />}
+                      {item.status === 'FAILED' && (
+                        <span className="report-table__dot report-table__dot--failed" />
+                      )}
                       {item.status === 'COMPLETED' && (
                         <span className="report-table__dot report-table__dot--completed" />
                       )}

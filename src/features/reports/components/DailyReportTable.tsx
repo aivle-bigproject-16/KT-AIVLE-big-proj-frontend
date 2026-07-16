@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ReportTable.css'
 import './DailyReportTable.css'
 import { ROUTES } from '@/core/navigation/routes'
@@ -14,21 +15,6 @@ const STATUS_LABEL: Record<string, string> = {
   FAILED: '실패',
 }
 
-function WarningIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M12 3.3 21.7 20.3H2.3L12 3.3Z"
-        fill="#ffcc00"
-        stroke="#e60012"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <rect x="11.1" y="9.2" width="1.8" height="6" rx="0.9" fill="#191c1d" />
-      <circle cx="12" cy="17" r="1.15" fill="#191c1d" />
-    </svg>
-  )
-}
 
 function formatDateTime(value: string | null): string {
   if (!value) return '-'
@@ -44,6 +30,7 @@ interface DailyReportTableProps {
 }
 
 function DailyReportTable({ headerActions }: DailyReportTableProps) {
+  const navigate = useNavigate()
   const list = useDailyReportListStore((s) => s.list)
   const isLoading = useDailyReportListStore((s) => s.isLoading)
   const error = useDailyReportListStore((s) => s.error)
@@ -104,12 +91,14 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
               </tr>
             )}
             {pagedList.map((item) => (
-              <tr key={item.reportId}>
+              <tr key={item.reportId} onClick={() => navigate(ROUTES.REPORT_DAILY_DETAIL(item.reportId))} style={{ cursor: 'pointer' }}>
                 <td>{item.reportDate}</td>
                 <td>
                   <span className="report-table__status-cell">
                     <span className="report-table__status-icon">
-                      {item.status === 'FAILED' && <WarningIcon />}
+                      {item.status === 'FAILED' && (
+                        <span className="report-table__dot report-table__dot--failed" />
+                      )}
                       {item.status === 'COMPLETED' && (
                         <span className="report-table__dot report-table__dot--completed" />
                       )}

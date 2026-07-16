@@ -12,7 +12,7 @@ function RootLayout() {
       <SideBar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
         <TopAppBar onSearch={setSearchValue} onSettingsClick={() => console.log('설정 클릭')} />
-        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0, scrollbarGutter: 'stable' }}>
           <Outlet context={{ searchValue }} />
         </div>
       </div>

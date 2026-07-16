@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 280px;
+  width: 28rem;
   background: #ffffff;
   border-right: 1px solid #e9bcb6;
   box-sizing: border-box;
@@ -11,17 +11,18 @@
 .side-bar__logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 24px;
+  gap: 1.2rem;
+  padding: 2.4rem;
+  flex-shrink: 0;
 }
 
 .side-bar__logo-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 2px;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.2rem;
   background: #fef2f2;
   color: #e11d48;
   flex-shrink: 0;
@@ -30,12 +31,12 @@
 .side-bar__logo-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.4rem;
   overflow: hidden;
 }
 
 .side-bar__logo-subtitle {
-  font-size: 12px;
+  font-size: 1.2rem;
   color: #6b7280;
   white-space: nowrap;
 }
@@ -48,8 +49,8 @@
 .side-bar__nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px;
+  gap: 0.4rem;
+  padding: 1.2rem;
   list-style: none;
   margin: 0;
 }
@@ -58,18 +59,20 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 40px;
-  padding-inline: 12px;
-  border-radius: 10px 0 0 10px;
+  gap: 1.2rem;
+  height: 4rem;
+  padding-inline: 1.2rem;
+  border-radius: 1rem 0 0 1rem;
   color: #5b5f63;
+  font-size: 1.4rem;
   cursor: pointer;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .side-bar__nav-item:hover {
   background: #f3f4f5;
-  border-radius: 10px;
+  border-radius: 1rem;
 }
 
 .side-bar__nav-item--active {
@@ -83,7 +86,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 4px;
+  width: 0.4rem;
   height: 100%;
   background: #b7000c;
 }

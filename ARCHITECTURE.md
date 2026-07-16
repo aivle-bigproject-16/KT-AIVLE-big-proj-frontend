@@ -269,6 +269,32 @@ feature 하나에서만 쓰임    → feature 안에 위치
 | 폴더 | 소문자 camelCase | `battery`, `dashboard` |
 | 상수 | UPPER_SNAKE_CASE | `API_BASE_URL` |
 
+## CSS 디자인 전략
+
+### rem 스케일링
+
+Figma 1920px 기준으로 디자인하고, `:root`에 아래를 설정한다:
+
+```css
+font-size: clamp(6px, calc(100vw / 192), 10px);
+```
+
+1920px에서 1rem = 10px. 화면이 좁아지면 전체 UI가 비율을 유지하며 자동 스케일된다.
+
+### CSS 값 입력 규칙
+
+| 대상 | 규칙 | 예시 |
+|---|---|---|
+| 일반 크기/간격 | 피그마 px ÷ 10 = rem | `260px → 26rem` |
+| border 두께 | px 그대로 유지 | `border: 1px solid ...` |
+| box-shadow | px 그대로 유지 | `0 8px 24px rgba(...)` |
+
+### 고정 레이아웃 규칙
+
+- 고정 크기 컴포넌트(카드, 버튼, 사이드바 등)에 `flex-shrink: 0` 적용
+- flex 컨테이너가 좁아져도 자식이 찌그러지지 않도록 명시적 `width`/`height` rem 사용
+- `flex: 1`로 늘어나야 하는 영역은 예외 (레이아웃 컨테이너, 빈 공간 채우기 등)
+
 ## 커밋 컨벤션
 feat: 새 기능
 fix: 버그 수정

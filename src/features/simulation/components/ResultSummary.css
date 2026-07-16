@@ -9,21 +9,22 @@
 .result-summary {
   flex: 1;
   border: 1px solid #e9bcb6;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 1.2rem;
+  padding: 2rem;
   background: #fff;
+  flex-shrink: 0;
 }
 
 .result-summary__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 1.6rem;
 }
 
 .result-summary__title {
   margin: 0;
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #191c1d;
 }
@@ -31,34 +32,33 @@
 .result-summary__actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.8rem;
 }
 
 .result-summary__filter {
   border: 1px solid #e9bcb6;
-  border-radius: 4px;
-  padding: 7px 10px;
+  border-radius: 0.4rem;
+  padding: 0.7rem 1rem;
   background: #fff;
   color: #191c1d;
-  font-size: 13px;
+  font-size: 1.3rem;
   font-weight: 500;
   cursor: pointer;
 }
 
 .result-summary__report-button {
   border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
+  border-radius: 0.4rem;
+  padding: 0.8rem 1.6rem;
   background: #e60012;
   color: #fff;
-  font-size: 13px;
+  font-size: 1.3rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .result-summary__table-wrapper {
-  /* 헤더 1행 + 데이터 5행 높이로 고정 — 필터링으로 행 수가 줄어도 카드 높이가 바뀌지 않는다 */
-  height: 187px;
+  height: 18.7rem;
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
@@ -67,7 +67,7 @@
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 1.3rem;
 }
 
 .result-summary__col-time {
@@ -86,9 +86,9 @@
   position: sticky;
   top: 0;
   text-align: left;
-  padding: 6px 8px;
+  padding: 0.6rem 0.8rem;
   color: #5b5f63;
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.4;
   background: #fff;
@@ -96,7 +96,7 @@
 }
 
 .result-summary__table td {
-  padding: 6px 8px;
+  padding: 0.6rem 0.8rem;
   color: #191c1d;
   line-height: 1.4;
   border-bottom: 1px solid #f8f9fa;
@@ -108,14 +108,14 @@
 .result-summary__result {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.6rem;
   font-weight: 600;
   color: #191c1d;
 }
 
 .result-summary__dot {
-  width: 8px;
-  height: 8px;
+  width: 0.8rem;
+  height: 0.8rem;
   border-radius: 50%;
   flex-shrink: 0;
   background: #5b5f63;

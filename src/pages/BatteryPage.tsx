@@ -1,11 +1,7 @@
-import { BatteryListMockTable } from '@/features/battery'
+import { BatteryList } from '@/features/battery'
 
 function BatteryPage() {
-  return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <BatteryListMockTable />
-    </div>
-  )
+  return <BatteryList />
 }
 
 export default BatteryPage

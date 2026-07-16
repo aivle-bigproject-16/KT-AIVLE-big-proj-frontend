@@ -139,6 +139,106 @@
       "cellType": "PRISMATIC",
       "latestFinalLabel": "REJECT",
       "latestAnalyzedAt": "2026-07-11T10:50:00"
+    },
+    {
+      "id": "3001",
+      "inspectionId": 3001,
+      "batteryCellId": 3001,
+      "cellSerialNo": "CELL-3001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-12T08:00:00"
+    },
+    {
+      "id": "3002",
+      "inspectionId": 3002,
+      "batteryCellId": 3002,
+      "cellSerialNo": "CELL-3002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-12T08:10:00"
+    },
+    {
+      "id": "3003",
+      "inspectionId": 3003,
+      "batteryCellId": 3003,
+      "cellSerialNo": "CELL-3003",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-12T08:20:00"
+    },
+    {
+      "id": "3004",
+      "inspectionId": 3004,
+      "batteryCellId": 3004,
+      "cellSerialNo": "CELL-3004",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "FAIL",
+      "latestAnalyzedAt": "2026-07-12T08:30:00"
+    },
+    {
+      "id": "3005",
+      "inspectionId": 3005,
+      "batteryCellId": 3005,
+      "cellSerialNo": "CELL-3005",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-12T08:40:00"
+    },
+    {
+      "id": "3006",
+      "inspectionId": 3006,
+      "batteryCellId": 3006,
+      "cellSerialNo": "CELL-3006",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-12T08:50:00"
+    },
+    {
+      "id": "3007",
+      "inspectionId": 3007,
+      "batteryCellId": 3007,
+      "cellSerialNo": "CELL-3007",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-12T09:00:00"
+    },
+    {
+      "id": "3008",
+      "inspectionId": 3008,
+      "batteryCellId": 3008,
+      "cellSerialNo": "CELL-3008",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-12T09:10:00"
+    },
+    {
+      "id": "3009",
+      "inspectionId": 3009,
+      "batteryCellId": 3009,
+      "cellSerialNo": "CELL-3009",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "latestFinalLabel": "REJECT",
+      "latestAnalyzedAt": "2026-07-12T09:20:00"
+    },
+    {
+      "id": "3010",
+      "inspectionId": 3010,
+      "batteryCellId": 3010,
+      "cellSerialNo": "CELL-3010",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "latestFinalLabel": "PASS",
+      "latestAnalyzedAt": "2026-07-12T09:30:00"
     }
   ],
   "dashboard": [
@@ -193,7 +293,12 @@
             {
               "imageType": "CT",
               "imageId": 1,
-              "bbox": { "x": 120, "y": 80, "width": 240, "height": 160 }
+              "bbox": {
+                "x": 120,
+                "y": 80,
+                "width": 240,
+                "height": 160
+              }
             }
           ]
         },
@@ -212,7 +317,12 @@
             {
               "imageType": "RGB",
               "imageId": 2,
-              "bbox": { "x": 60, "y": 40, "width": 100, "height": 100 }
+              "bbox": {
+                "x": 60,
+                "y": 40,
+                "width": 100,
+                "height": 100
+              }
             }
           ]
         },
@@ -251,8 +361,14 @@
             "rejectCount": 14,
             "failedCount": 2,
             "defects": [
-              { "defectType": "MICRO_DEFECT", "count": 5 },
-              { "defectType": "CRACK", "count": 2 }
+              {
+                "defectType": "MICRO_DEFECT",
+                "count": 5
+              },
+              {
+                "defectType": "CRACK",
+                "count": 2
+              }
             ]
           }
         },
@@ -273,8 +389,14 @@
             "rejectCount": 6,
             "failedCount": 0,
             "defects": [
-              { "defectType": "SWELLING", "count": 3 },
-              { "defectType": "CRACK", "count": 3 }
+              {
+                "defectType": "SWELLING",
+                "count": 3
+              },
+              {
+                "defectType": "CRACK",
+                "count": 3
+              }
             ]
           }
         },

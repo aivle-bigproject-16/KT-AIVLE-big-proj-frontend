@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './BatteryList.css'
-import { DownloadIcon, CalendarIcon, WarningIcon } from './BatteryListIcons'
+import { DownloadIcon, CalendarIcon } from './BatteryListIcons'
 import { useBatteryListStore } from '../store/useBatteryListStore'
 import { ROUTES } from '@/core/navigation/routes'
 import { Pagination } from '@/shared/ui/Pagination'
@@ -20,6 +21,7 @@ function formatDateTime(value: string | null): string {
 type HistoryTab = 'ALL' | 'DEFECT' | 'INSPECTION_FAIL'
 
 function BatteryList() {
+  const navigate = useNavigate()
   const list = useBatteryListStore((s) => s.list)
   const isLoading = useBatteryListStore((s) => s.isLoading)
   const error = useBatteryListStore((s) => s.error)
@@ -142,7 +144,11 @@ function BatteryList() {
               const isFail = item.latestFinalLabel === 'FAIL'
               const isReject = item.latestFinalLabel === 'REJECT' || isFail
               return (
-                <tr key={item.batteryCellId}>
+                <tr
+                  key={item.batteryCellId}
+                  onClick={() => navigate(ROUTES.BATTERY_DETAIL(item.batteryCellId))}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
                   <td
                     className={
@@ -158,17 +164,15 @@ function BatteryList() {
                   <td>
                     <span className="battery-list__result">
                       <span className="battery-list__result-icon">
-                        {isFail ? (
-                          <WarningIcon />
-                        ) : (
-                          <span
-                            className={
-                              isReject
+                        <span
+                          className={
+                            isFail
+                              ? 'battery-list__dot battery-list__dot--fail'
+                              : isReject
                                 ? 'battery-list__dot battery-list__dot--reject'
                                 : 'battery-list__dot battery-list__dot--pass'
-                            }
-                          />
-                        )}
+                          }
+                        />
                       </span>
                       {item.latestFinalLabel ?? '-'}
                     </span>

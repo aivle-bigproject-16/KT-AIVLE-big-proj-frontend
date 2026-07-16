@@ -181,6 +181,14 @@
   border-bottom: 1px solid #e9bcb6;
 }
 
+.battery-list__table tbody tr {
+  background: #fff;
+}
+
+.battery-list__table tbody tr:hover {
+  background: #d6e4ff;
+}
+
 .battery-list__table td {
   height: 60px;
   padding: 0 20px;
@@ -228,6 +236,10 @@
 
 .battery-list__dot--reject {
   background: #e60012;
+}
+
+.battery-list__dot--fail {
+  background: #f97316;
 }
 
 .battery-list__table th:last-child {

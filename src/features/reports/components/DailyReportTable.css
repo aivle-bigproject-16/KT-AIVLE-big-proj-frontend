@@ -1,0 +1,19 @@
+.daily-report-table__col-date {
+  width: 16%;
+}
+
+.daily-report-table__col-status {
+  width: 14%;
+}
+
+.daily-report-table__col-title {
+  width: 38%;
+}
+
+.daily-report-table__col-created {
+  width: 20%;
+}
+
+.daily-report-table__col-detail {
+  width: 12%;
+}

@@ -80,6 +80,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
 
         <table className="report-table__table">
           <colgroup>
+            <col className="individual-report-table__col-date" />
             <col className="individual-report-table__col-status" />
             <col className="individual-report-table__col-title" />
             <col className="individual-report-table__col-created" />
@@ -87,6 +88,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           </colgroup>
           <thead>
             <tr>
+              <th></th>
               <th>상태</th>
               <th>제목</th>
               <th>생성일시</th>
@@ -96,13 +98,14 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           <tbody>
             {!isLoading && list.length === 0 && (
               <tr>
-                <td colSpan={4} className="report-table__empty">
+                <td colSpan={5} className="report-table__empty">
                   등록된 리포트가 없습니다.
                 </td>
               </tr>
             )}
             {pagedList.map((item) => (
               <tr key={item.reportId}>
+                <td></td>
                 <td>
                   <span className="report-table__status-cell">
                     <span className="report-table__status-icon">

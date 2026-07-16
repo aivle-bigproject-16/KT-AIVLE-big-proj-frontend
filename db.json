@@ -422,6 +422,69 @@
       ]
     }
   ],
+  "batteryDetail": [
+    {
+      "id": "1",
+      "batteryCellId": 1,
+      "cellSerialNo": "CELL-001",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-01",
+      "createdAt": "2026-07-07T10:00:00Z",
+      "updatedAt": "2026-07-07T10:30:00Z",
+      "inspections": [
+        {
+          "inspectionId": 101,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-07T10:20:00Z",
+          "image": [
+            {
+              "imageId": 1001,
+              "imageType": "CT",
+              "imageUrl": "https://storage.example.com/ct-source/line-a/cell-001/ct-001.png"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 501,
+              "label": "REJECT",
+              "imageId": 1001,
+              "imageType": "CT",
+              "defectType": "MICRO_DEFECT",
+              "imageUrl": "https://storage.example.com/ct-source/line-a/cell-001/ct-001.png",
+              "confidence": 0.9321,
+              "bbox": { "x": 120, "y": 80, "width": 240, "height": 160 }
+            }
+          ]
+        },
+        {
+          "inspectionId": 102,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-07T10:21:00Z",
+          "image": [
+            {
+              "imageId": 1002,
+              "imageType": "RGB",
+              "imageUrl": "https://storage.example.com/rgb-source/line-a/cell-001/rgb-001.png"
+            }
+          ],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 1,
+          "inspectionId": 101,
+          "status": "COMPLETED",
+          "title": "CELL-001 CT 검사 상세 리포트",
+          "createdAt": "2026-07-07T10:40:00Z",
+          "updatedAt": "2026-07-07T10:45:00Z"
+        }
+      ]
+    }
+  ],
   "users": [
     {
       "email": "testid123",

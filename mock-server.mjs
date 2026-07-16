@@ -115,6 +115,22 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
+  // GET /api/battery/:batteryCellId — 상세 조회. batteryDetail 컬렉션에서 찾아 반환한다.
+  const batteryDetailMatch = url.pathname.match(/^\/api\/battery\/(\d+)$/)
+  if (req.method === 'GET' && batteryDetailMatch) {
+    const batteryCellId = Number(batteryDetailMatch[1])
+    const db = await readDb()
+    const item = db.batteryDetail?.find((b) => b.batteryCellId === batteryCellId)
+    if (!item) {
+      res.writeHead(404, { 'content-type': 'application/json', 'access-control-allow-origin': '*' })
+      res.end(JSON.stringify({ success: false, message: '해당 배터리가 존재하지 않습니다.', data: null }))
+      return
+    }
+    res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' })
+    res.end(JSON.stringify({ success: true, message: '배터리 상세 조회가 완료되었습니다.', data: item }))
+    return
+  }
+
   // GET /api/reports/individual/:reportId, GET /api/reports/daily/:reportId
   // 3단계 경로라 json-server의 /:name/:id 라우트가 못 잡는다.
   // db.json의 reports[].content 배열에서 직접 항목을 찾아 반환한다.

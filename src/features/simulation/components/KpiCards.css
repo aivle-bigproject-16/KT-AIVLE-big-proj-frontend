@@ -4,8 +4,8 @@
 }
 
 .kpi-card {
-  flex: 1;
-  min-width: 0;
+  flex: none;
+  width: 51.5rem;
   height: 10rem;
   background: #fff;
   border: 1px solid #e9bcb6;

@@ -13,10 +13,12 @@
 
 .dashboard__defect {
   flex: none;
-  width: 41rem;
+  width: 62rem;
+  height: 31rem;
 }
 
 .dashboard__result {
   flex: none;
-  width: 62rem;
+  width: 93.5rem;
+  height: 31rem;
 }

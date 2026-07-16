@@ -9,7 +9,10 @@
   position: relative;
   display: flex;
   align-items: flex-end;
-  background: linear-gradient(160deg, #191c1d 0%, #3a1012 55%, #e60012 130%);
+  background-color: #191c1d;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
 }
 
@@ -17,7 +20,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.12), transparent 60%);
+  background: linear-gradient(180deg, rgba(25, 28, 29, 0.15) 0%, rgba(25, 28, 29, 0.75) 100%);
 }
 
 .auth-layout__visual-overlay {

@@ -49,6 +49,14 @@
   font-size: 14px;
 }
 
+.report-table__table tbody tr {
+  background: #fff;
+}
+
+.report-table__table tbody tr:hover {
+  background: #d6e4ff;
+}
+
 .report-table__table th {
   text-align: left;
   padding: 14px 20px;
@@ -100,6 +108,10 @@
 }
 
 .report-table__dot--pending {
+  background: #22c55e;
+}
+
+.report-table__dot--failed {
   background: #e60012;
 }
 

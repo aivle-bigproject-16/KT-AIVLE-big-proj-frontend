@@ -1,11 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './ReportTable.css'
-import './DailyReportTable.css'
+import './IndividualReportTable.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { DetailLinkButton } from '@/shared/ui/DetailLinkButton'
 import { Pagination } from '@/shared/ui/Pagination'
-import { useDailyReportListStore } from '../store/useDailyReportListStore'
+import { useIndividualReportListStore } from '../store/useIndividualReportListStore'
 
 const PAGE_SIZE = 20
 
@@ -25,16 +25,16 @@ function formatDateTime(value: string | null): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
-interface DailyReportTableProps {
+interface IndividualReportTableProps {
   headerActions?: ReactNode
 }
 
-function DailyReportTable({ headerActions }: DailyReportTableProps) {
+function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
   const navigate = useNavigate()
-  const list = useDailyReportListStore((s) => s.list)
-  const isLoading = useDailyReportListStore((s) => s.isLoading)
-  const error = useDailyReportListStore((s) => s.error)
-  const { fetchList } = useDailyReportListStore((s) => s.actions)
+  const list = useIndividualReportListStore((s) => s.list)
+  const isLoading = useIndividualReportListStore((s) => s.isLoading)
+  const error = useIndividualReportListStore((s) => s.error)
+  const { fetchList } = useIndividualReportListStore((s) => s.actions)
 
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -52,10 +52,10 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
       <div className="report-table__header">
         <div>
           <h1 className="report-table__title">
-            일일 리포트 <span className="report-table__title-en">(Daily Report)</span>
+            개별 리포트 <span className="report-table__title-en">(Individual Report)</span>
           </h1>
           <p className="report-table__subtitle">
-            Review daily inspection summaries and defect trends across all production lines.
+            Review detailed inspection reports for individual battery cells across all production lines.
           </p>
         </div>
         {headerActions}
@@ -67,15 +67,13 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
 
         <table className="report-table__table">
           <colgroup>
-            <col className="daily-report-table__col-date" />
-            <col className="daily-report-table__col-status" />
-            <col className="daily-report-table__col-title" />
-            <col className="daily-report-table__col-created" />
-            <col className="daily-report-table__col-detail" />
+            <col className="individual-report-table__col-status" />
+            <col className="individual-report-table__col-title" />
+            <col className="individual-report-table__col-created" />
+            <col className="individual-report-table__col-detail" />
           </colgroup>
           <thead>
             <tr>
-              <th>판정일자</th>
               <th>상태</th>
               <th>제목</th>
               <th>생성일시</th>
@@ -85,14 +83,13 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
           <tbody>
             {!isLoading && list.length === 0 && (
               <tr>
-                <td colSpan={5} className="report-table__empty">
+                <td colSpan={4} className="report-table__empty">
                   등록된 리포트가 없습니다.
                 </td>
               </tr>
             )}
             {pagedList.map((item) => (
-              <tr key={item.reportId} onClick={() => navigate(ROUTES.REPORT_DAILY_DETAIL(item.reportId))} style={{ cursor: 'pointer' }}>
-                <td>{item.reportDate}</td>
+              <tr key={item.reportId} onClick={() => navigate(ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId))} style={{ cursor: 'pointer' }}>
                 <td>
                   <span className="report-table__status-cell">
                     <span className="report-table__status-icon">
@@ -112,7 +109,7 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
                 <td>{item.title ?? `리포트 #${item.reportId}`}</td>
                 <td className="report-table__created">{formatDateTime(item.createdAt)}</td>
                 <td>
-                  <DetailLinkButton to={ROUTES.REPORT_DAILY_DETAIL(item.reportId)} />
+                  <DetailLinkButton to={ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId)} />
                 </td>
               </tr>
             ))}
@@ -130,4 +127,4 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
   )
 }
 
-export default DailyReportTable
+export default IndividualReportTable

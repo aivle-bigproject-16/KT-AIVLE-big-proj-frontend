@@ -1,4 +1,5 @@
 export { default as BatteryListMockTable } from './components/BatteryListMockTable'
 export { default as BatteryDetailMockCard } from './components/BatteryDetailMockCard'
+export { BatteryList } from './components/BatteryList'
 export { useBatteryListStore } from './store/useBatteryListStore'
 export { useBatteryDetailStore } from './store/useBatteryDetailStore'

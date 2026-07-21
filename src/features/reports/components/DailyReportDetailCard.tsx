@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import './DailyReportDetailCard.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { useDailyReportDetailStore } from '../store/useDailyReportDetailStore'
+import DailyReportHeader from './DailyReportHeader'
+import DefectDistribution from './DefectDistribution'
 import type { DailyReportDetail } from '../types'
-
-const DEFECT_COLORS = ['#2a78d6', '#008300', '#e87ba4', '#eda100']
 
 const FAILURE_REASON_LABEL: Record<string, string> = {
   INCOMPLETE_SET: '당일 검사 데이터가 충분하지 않습니다.',
@@ -13,15 +13,6 @@ const FAILURE_REASON_LABEL: Record<string, string> = {
   TIMEOUT: '리포트 생성 시간이 초과되었습니다.',
   MALFORMED_RESPONSE: 'AI 응답 형식이 올바르지 않습니다.',
   PARTIAL_ANALYSIS_FAILURE: '일부 검사 결과 분석에 실패했습니다.',
-}
-
-function formatDateTime(value: string | null): string {
-  if (!value) return '-'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
 interface DailyReportDetailCardProps {
@@ -69,39 +60,12 @@ function DailyReportDetailCard({ reportId }: DailyReportDetailCardProps) {
 function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
   const { totalCount, rejectCount, defects } = detail.summary
   const defectRate = totalCount > 0 ? (rejectCount / totalCount) * 100 : 0
-  const defectTotal = defects.reduce((sum, d) => sum + d.count, 0)
   const image = detail.ctImageUrl ?? detail.rgbImageUrl
   const imageType = detail.ctImageUrl ? 'CT' : 'RGB'
 
   return (
     <>
-      <header className="daily-detail__header">
-        <div className="daily-detail__header-top">
-          <div className="daily-detail__badges">
-            <span className="daily-detail__badge">ID: RPT-{detail.reportId}</span>
-          </div>
-          <div className="daily-detail__actions">
-            <button type="button" className="daily-detail__btn" onClick={() => window.print()}>
-              🖨 인쇄하기
-            </button>
-          </div>
-        </div>
-        <h1 className="daily-detail__title">{detail.title ?? `일일 리포트 #${detail.reportId}`}</h1>
-        <ul className="daily-detail__meta">
-          <li>
-            <strong>기준일</strong>
-            {detail.reportDate}
-          </li>
-          <li>
-            <strong>생성일시</strong>
-            {formatDateTime(detail.createdAt)}
-          </li>
-          <li>
-            <strong>수정일시</strong>
-            {formatDateTime(detail.updatedAt)}
-          </li>
-        </ul>
-      </header>
+      <DailyReportHeader detail={detail} />
 
       <div className="daily-detail__summary-row">
         <div className="daily-detail__kpi-col">
@@ -117,30 +81,7 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
           </div>
         </div>
 
-        <div className="daily-detail__distribution">
-          <h2 className="daily-detail__section-title">결함 유형별 분포 (DEFECT DISTRIBUTION)</h2>
-          {defectTotal === 0 ? (
-            <p className="daily-detail__empty">집계된 결함이 없습니다.</p>
-          ) : (
-            <div className="daily-detail__distribution-body">
-              <ul className="daily-detail__legend">
-                {defects.map((d, i) => (
-                  <li key={d.defectType} className="daily-detail__legend-item">
-                    <span
-                      className="daily-detail__legend-dot"
-                      style={{ background: DEFECT_COLORS[i % DEFECT_COLORS.length] }}
-                    />
-                    <span className="daily-detail__legend-label">{d.defectType}</span>
-                    <span className="daily-detail__legend-value">
-                      {((d.count / defectTotal) * 100).toFixed(0)}% ({d.count})
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <DefectDonut defects={defects} total={defectTotal} />
-            </div>
-          )}
-        </div>
+        <DefectDistribution defects={defects} />
       </div>
 
       <div className="daily-detail__notes-row">
@@ -166,45 +107,6 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
         </div>
       </div>
     </>
-  )
-}
-
-function DefectDonut({ defects, total }: { defects: DailyReportDetail['summary']['defects']; total: number }) {
-  const radius = 70
-  const strokeWidth = 24
-  const circumference = 2 * Math.PI * radius
-
-  const segments = defects.reduce<{ defectType: string; dash: number; offset: number }[]>((acc, d) => {
-    const prevOffset = acc.length > 0 ? acc[acc.length - 1].offset + acc[acc.length - 1].dash : 0
-    const dash = (d.count / total) * circumference
-    acc.push({ defectType: d.defectType, dash, offset: prevOffset })
-    return acc
-  }, [])
-
-  return (
-    <div className="daily-detail__donut-wrap">
-      <svg viewBox="0 0 200 200" className="daily-detail__donut" role="img" aria-label="결함 유형별 분포">
-        <circle cx="100" cy="100" r={radius} fill="none" stroke="#e1e0d9" strokeWidth={strokeWidth} />
-        {segments.map((s, i) => (
-          <circle
-            key={s.defectType}
-            cx="100"
-            cy="100"
-            r={radius}
-            fill="none"
-            stroke={DEFECT_COLORS[i % DEFECT_COLORS.length]}
-            strokeWidth={strokeWidth}
-            strokeDasharray={`${s.dash} ${circumference - s.dash}`}
-            strokeDashoffset={-s.offset}
-            transform="rotate(-90 100 100)"
-          />
-        ))}
-      </svg>
-      <div className="daily-detail__donut-center">
-        <span className="daily-detail__donut-total">{total.toLocaleString()}</span>
-        <span className="daily-detail__donut-total-label">Total</span>
-      </div>
-    </div>
   )
 }
 

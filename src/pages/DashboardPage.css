@@ -1,0 +1,24 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  padding: 2.4rem;
+  box-sizing: border-box;
+}
+
+.dashboard__bottom {
+  display: flex;
+  gap: 2.4rem;
+}
+
+.dashboard__defect {
+  flex: none;
+  width: 62rem;
+  height: 31rem;
+}
+
+.dashboard__result {
+  flex: none;
+  width: 93.5rem;
+  height: 31rem;
+}

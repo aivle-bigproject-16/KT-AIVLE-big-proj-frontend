@@ -1,10 +1,12 @@
 .defect-analysis-chart {
   flex: 1;
+  height: 31rem;
   border: 1px solid #e9bcb6;
   border-radius: 1.2rem;
   padding: 2rem;
   background: #fff;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .defect-analysis-chart__header {

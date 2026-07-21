@@ -283,17 +283,40 @@ font-size: clamp(6px, calc(100vw / 192), 10px);
 
 ### CSS 값 입력 규칙
 
-| 대상 | 규칙 | 예시 |
-|---|---|---|
-| 일반 크기/간격 | 피그마 px ÷ 10 = rem | `260px → 26rem` |
-| border 두께 | px 그대로 유지 | `border: 1px solid ...` |
-| box-shadow | px 그대로 유지 | `0 8px 24px rgba(...)` |
+| 대상 | 규칙 | 예시 | 이유 |
+|---|---|---|---|
+| 일반 크기/간격 | 피그마 px ÷ 10 = rem | `260px → 26rem` | 화면 크기에 따라 비율 유지 |
+| border 두께 | px 그대로 유지 | `border: 1px solid ...` | 선은 화면 크기와 무관하게 항상 "얇은 선"이어야 함. rem으로 하면 작은 화면에서 선이 rem 배율만큼 두꺼워짐 |
+| box-shadow | px 그대로 유지 | `0 8px 24px rgba(...)` | 그림자는 레이아웃이 아닌 시각적 디테일. 비례 축소 시 너무 작아져 보이지 않게 되며, 요소 크기에 영향을 주지 않으므로 px 고정이 더 안정적 |
 
 ### 고정 레이아웃 규칙
 
-- 고정 크기 컴포넌트(카드, 버튼, 사이드바 등)에 `flex-shrink: 0` 적용
-- flex 컨테이너가 좁아져도 자식이 찌그러지지 않도록 명시적 `width`/`height` rem 사용
-- `flex: 1`로 늘어나야 하는 영역은 예외 (레이아웃 컨테이너, 빈 공간 채우기 등)
+**영역(wrapper/container)과 컴포넌트를 구분한다.**
+
+| 구분 | 역할 | 크기 고정 |
+|---|---|---|
+| 영역 (wrapper) | 요소 배치·정렬만 담당 | 불필요 — `display: flex`로 자유롭게 |
+| 디자인 컴포넌트 | 실제 화면에 보이는 카드·버튼·패널 등 | **필수** — 피그마 수치로 rem 고정 |
+
+- 디자인 컴포넌트에는 반드시 `width`/`height` rem + `flex-shrink: 0` 적용
+- 컴포넌트 내부의 콘텐츠 정렬용 `flex: 1`은 허용 (카드 body 영역 등)
+- `flex: 1` / `flex-grow`는 wrapper에만 사용, 컴포넌트에는 사용 금지
+
+```css
+/* wrapper — flex로 배치만 */
+.dashboard__bottom {
+  display: flex;
+  gap: 2.4rem;
+}
+
+/* 디자인 컴포넌트 — 피그마 수치로 고정 */
+.kpi-card {
+  flex: none;
+  flex-shrink: 0;
+  width: 51.5rem;
+  height: 10rem;
+}
+```
 
 ## 커밋 컨벤션
 feat: 새 기능

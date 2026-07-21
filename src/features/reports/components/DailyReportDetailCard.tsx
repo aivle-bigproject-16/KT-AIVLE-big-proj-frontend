@@ -103,61 +103,67 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
         </ul>
       </header>
 
-      <div className="daily-detail__kpi-row">
-        <div className="daily-detail__kpi-card">
-          <span className="daily-detail__kpi-label">총 검사 수량 (TOTAL SCANNED)</span>
-          <span className="daily-detail__kpi-value">{totalCount.toLocaleString()}</span>
-        </div>
-        <div className="daily-detail__kpi-card daily-detail__kpi-card--accent">
-          <span className="daily-detail__kpi-label">종합 불량률 (OVERALL DEFECT RATE)</span>
-          <span className="daily-detail__kpi-value daily-detail__kpi-value--accent">{defectRate.toFixed(2)}%</span>
-        </div>
-      </div>
-
-      <div className="daily-detail__distribution">
-        <h2 className="daily-detail__section-title">결함 유형별 분포 (DEFECT DISTRIBUTION)</h2>
-        {defectTotal === 0 ? (
-          <p className="daily-detail__empty">집계된 결함이 없습니다.</p>
-        ) : (
-          <div className="daily-detail__distribution-body">
-            <ul className="daily-detail__legend">
-              {defects.map((d, i) => (
-                <li key={d.defectType} className="daily-detail__legend-item">
-                  <span
-                    className="daily-detail__legend-dot"
-                    style={{ background: DEFECT_COLORS[i % DEFECT_COLORS.length] }}
-                  />
-                  <span className="daily-detail__legend-label">{d.defectType}</span>
-                  <span className="daily-detail__legend-value">
-                    {((d.count / defectTotal) * 100).toFixed(0)}% ({d.count})
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <DefectDonut defects={defects} total={defectTotal} />
+      <div className="daily-detail__summary-row">
+        <div className="daily-detail__kpi-col">
+          <div className="daily-detail__kpi-card">
+            <span className="daily-detail__kpi-label">총 검사 수량 (TOTAL SCANNED)</span>
+            <span className="daily-detail__kpi-value">{totalCount.toLocaleString()}</span>
           </div>
-        )}
+          <div className="daily-detail__kpi-card daily-detail__kpi-card--accent">
+            <span className="daily-detail__kpi-label">종합 불량률 (OVERALL DEFECT RATE)</span>
+            <span className="daily-detail__kpi-value daily-detail__kpi-value--accent">
+              {defectRate.toFixed(2)}%
+            </span>
+          </div>
+        </div>
+
+        <div className="daily-detail__distribution">
+          <h2 className="daily-detail__section-title">결함 유형별 분포 (DEFECT DISTRIBUTION)</h2>
+          {defectTotal === 0 ? (
+            <p className="daily-detail__empty">집계된 결함이 없습니다.</p>
+          ) : (
+            <div className="daily-detail__distribution-body">
+              <ul className="daily-detail__legend">
+                {defects.map((d, i) => (
+                  <li key={d.defectType} className="daily-detail__legend-item">
+                    <span
+                      className="daily-detail__legend-dot"
+                      style={{ background: DEFECT_COLORS[i % DEFECT_COLORS.length] }}
+                    />
+                    <span className="daily-detail__legend-label">{d.defectType}</span>
+                    <span className="daily-detail__legend-value">
+                      {((d.count / defectTotal) * 100).toFixed(0)}% ({d.count})
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <DefectDonut defects={defects} total={defectTotal} />
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="daily-detail__notes">
-        <h2 className="daily-detail__section-title">작업자 특이사항</h2>
-        {detail.content ? (
-          <p className="daily-detail__notes-body">{detail.content}</p>
-        ) : (
-          <p className="daily-detail__empty">본문이 없습니다.</p>
-        )}
-      </div>
+      <div className="daily-detail__notes-row">
+        <div className="daily-detail__notes">
+          <h2 className="daily-detail__section-title">작업자 특이사항</h2>
+          {detail.content ? (
+            <p className="daily-detail__notes-body">{detail.content}</p>
+          ) : (
+            <p className="daily-detail__empty">본문이 없습니다.</p>
+          )}
+        </div>
 
-      <div className="daily-detail__reference">
-        <h2 className="daily-detail__section-title">참조 이미지</h2>
-        {image ? (
-          <figure className="daily-detail__reference-image">
-            <img src={image} alt="대표 이미지" />
-            <figcaption>{imageType} 이미지</figcaption>
-          </figure>
-        ) : (
-          <p className="daily-detail__empty">참조 이미지가 없습니다.</p>
-        )}
+        <div className="daily-detail__reference">
+          <h2 className="daily-detail__section-title">참조 이미지</h2>
+          {image ? (
+            <figure className="daily-detail__reference-image">
+              <img src={image} alt="대표 이미지" />
+              <figcaption>{imageType} 이미지</figcaption>
+            </figure>
+          ) : (
+            <p className="daily-detail__empty">참조 이미지가 없습니다.</p>
+          )}
+        </div>
       </div>
     </>
   )

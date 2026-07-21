@@ -79,19 +79,14 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
         <div className="daily-detail__header-top">
           <div className="daily-detail__badges">
             <span className="daily-detail__badge">ID: RPT-{detail.reportId}</span>
-            <span className="daily-detail__badge daily-detail__badge--placeholder" />
           </div>
           <div className="daily-detail__actions">
             <button type="button" className="daily-detail__btn" onClick={() => window.print()}>
               🖨 인쇄하기
             </button>
-            <button type="button" className="daily-detail__btn daily-detail__btn--disabled" disabled>
-              📄 PDF 내보내기
-            </button>
           </div>
         </div>
         <h1 className="daily-detail__title">{detail.title ?? `일일 리포트 #${detail.reportId}`}</h1>
-        <div className="daily-detail__subtitle-placeholder" />
         <ul className="daily-detail__meta">
           <li>
             <strong>기준일</strong>
@@ -115,10 +110,7 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
         </div>
         <div className="daily-detail__kpi-card daily-detail__kpi-card--accent">
           <span className="daily-detail__kpi-label">종합 불량률 (OVERALL DEFECT RATE)</span>
-          <span className="daily-detail__kpi-value daily-detail__kpi-value--accent">
-            {defectRate.toFixed(2)}%
-            <span className="daily-detail__kpi-trend-placeholder" />
-          </span>
+          <span className="daily-detail__kpi-value daily-detail__kpi-value--accent">{defectRate.toFixed(2)}%</span>
         </div>
       </div>
 
@@ -147,10 +139,6 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
         )}
       </div>
 
-      <div className="daily-detail__table-placeholder">
-        <span className="daily-detail__table-placeholder-label">상세 탐지 내역 (준비 중)</span>
-      </div>
-
       <div className="daily-detail__notes">
         <h2 className="daily-detail__section-title">작업자 특이사항</h2>
         {detail.content ? (
@@ -162,17 +150,14 @@ function DailyDetailBody({ detail }: { detail: DailyReportDetail }) {
 
       <div className="daily-detail__reference">
         <h2 className="daily-detail__section-title">참조 이미지</h2>
-        <div className="daily-detail__reference-body">
-          {image ? (
-            <figure className="daily-detail__reference-image">
-              <img src={image} alt="대표 이미지" />
-              <figcaption>{imageType} 이미지</figcaption>
-            </figure>
-          ) : (
-            <div className="daily-detail__reference-placeholder" />
-          )}
-          <div className="daily-detail__reference-placeholder daily-detail__reference-placeholder--grid" />
-        </div>
+        {image ? (
+          <figure className="daily-detail__reference-image">
+            <img src={image} alt="대표 이미지" />
+            <figcaption>{imageType} 이미지</figcaption>
+          </figure>
+        ) : (
+          <p className="daily-detail__empty">참조 이미지가 없습니다.</p>
+        )}
       </div>
     </>
   )

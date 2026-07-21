@@ -78,13 +78,6 @@
   flex-shrink: 0;
 }
 
-.daily-detail__badge--placeholder {
-  width: 12rem;
-  height: 2.2rem;
-  background: #ececeb;
-  color: transparent;
-}
-
 .daily-detail__actions {
   display: flex;
   gap: 0.8rem;
@@ -106,26 +99,11 @@
   background: #f8f9fa;
 }
 
-.daily-detail__btn--disabled {
-  background: #ececeb;
-  color: #b3b2ad;
-  border-color: #ececeb;
-  cursor: not-allowed;
-}
-
 .daily-detail__title {
   margin: 1.6rem 0 0.8rem;
   font-size: 2.6rem;
   font-weight: 700;
   color: #191c1d;
-}
-
-.daily-detail__subtitle-placeholder {
-  width: 24rem;
-  height: 1.4rem;
-  margin-bottom: 1.6rem;
-  border-radius: 0.4rem;
-  background: #ececeb;
 }
 
 .daily-detail__meta {
@@ -185,13 +163,6 @@
 
 .daily-detail__kpi-value--accent {
   color: #e60012;
-}
-
-.daily-detail__kpi-trend-placeholder {
-  width: 5rem;
-  height: 1.4rem;
-  border-radius: 0.4rem;
-  background: #ececeb;
 }
 
 /* distribution */
@@ -288,25 +259,6 @@
   color: #5b5f63;
 }
 
-/* detection table placeholder */
-
-.daily-detail__table-placeholder {
-  height: 20rem;
-  margin-bottom: 2.4rem;
-  border: 1px dashed #d8d7d2;
-  border-radius: 1.2rem;
-  background: #f4f4f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.daily-detail__table-placeholder-label {
-  font-size: 1.3rem;
-  color: #b3b2ad;
-  font-weight: 600;
-}
-
 /* notes */
 
 .daily-detail__notes {
@@ -327,12 +279,6 @@
 
 /* reference images */
 
-.daily-detail__reference-body {
-  display: flex;
-  gap: 1.6rem;
-  flex-wrap: wrap;
-}
-
 .daily-detail__reference-image {
   margin: 0;
   flex-shrink: 0;
@@ -352,18 +298,4 @@
   font-size: 1.2rem;
   color: #5b5f63;
   text-align: center;
-}
-
-.daily-detail__reference-placeholder {
-  width: 16rem;
-  height: 16rem;
-  border: 1px dashed #d8d7d2;
-  border-radius: 0.8rem;
-  background: #f4f4f2;
-  flex-shrink: 0;
-}
-
-.daily-detail__reference-placeholder--grid {
-  flex: 1;
-  min-width: 20rem;
 }

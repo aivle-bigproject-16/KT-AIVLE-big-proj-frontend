@@ -318,6 +318,18 @@ font-size: clamp(6px, calc(100vw / 192), 10px);
 }
 ```
 
+### 스크롤바 레이아웃 고정
+
+`overflow-y: auto` 컨테이너는 스크롤바가 나타날 때 콘텐츠가 옆으로 밀리는 레이아웃 시프트가 발생한다.
+`scrollbar-gutter: stable`을 함께 적용하면 스크롤바 유무에 관계없이 항상 스크롤바 영역을 예약해 레이아웃이 흔들리지 않는다.
+
+```css
+.scrollable-container {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+```
+
 ## 커밋 컨벤션
 feat: 새 기능
 fix: 버그 수정

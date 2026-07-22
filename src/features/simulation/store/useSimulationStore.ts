@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { simulationService } from '../services/simulationService'
-import type { BatchProgress, SimStartRequest, SimulationRunStatus, SimulationSocketMessage, WsStatus } from '../types'
+import type { CellProgress, SimStartRequest, SimulationRunStatus, SimulationSocketMessage, WsStatus } from '../types'
 
 function isSimulationSocketMessage(data: unknown): data is SimulationSocketMessage {
   return typeof data === 'object' && data !== null && 'event' in data
@@ -9,10 +9,10 @@ function isSimulationSocketMessage(data: unknown): data is SimulationSocketMessa
 interface SimulationState {
   batchCount: number
   batteryCellCount: number
-  registered: BatchProgress[]
-  capture: BatchProgress | null
-  analyze: BatchProgress | null
-  completed: BatchProgress[]
+  registered: CellProgress[]
+  capture: CellProgress[]
+  analyze: CellProgress | null
+  completed: CellProgress[]
   captureSpeed: number | null
   wsStatus: WsStatus
   simulationStatus: SimulationRunStatus
@@ -36,7 +36,7 @@ const initialState: SimulationState = {
   batchCount: 0,
   batteryCellCount: 0,
   registered: [],
-  capture: null,
+  capture: [],
   analyze: null,
   completed: [],
   captureSpeed: null,
@@ -53,7 +53,7 @@ export const useSimulationStore = create<SimulationState & SimulationActions>((s
   ...initialState,
   actions: {
     applyMessage: (data) => {
-      if (!isSimulationSocketMessage(data)) return // event 구분자가 없는 메세지는 무시
+      if (!isSimulationSocketMessage(data)) return
 
       if (data.event === 'PROGRESS') {
         set({
@@ -61,10 +61,10 @@ export const useSimulationStore = create<SimulationState & SimulationActions>((s
           batchCount: data.batchCount,
           batteryCellCount: data.batteryCellCount,
           captureSpeed: data.captureSpeed,
-          registered: data.registered,
-          capture: data.capture,
-          analyze: data.analyze,
-          completed: data.completed,
+          registered: Array.isArray(data.registered) ? data.registered : [],
+          capture: Array.isArray(data.capture) ? data.capture : [],
+          analyze: Array.isArray(data.analyze) ? null : (data.analyze ?? null),
+          completed: Array.isArray(data.completed) ? data.completed : [],
           simulationStatus: 'running',
           lastMessage: data,
           lastMessageAt: Date.now(),
@@ -77,7 +77,7 @@ export const useSimulationStore = create<SimulationState & SimulationActions>((s
         event: 'COMPLETED',
         simulationStatus: 'completed',
         registered: [],
-        capture: null,
+        capture: [],
         analyze: null,
         lastMessage: data,
         lastMessageAt: Date.now(),

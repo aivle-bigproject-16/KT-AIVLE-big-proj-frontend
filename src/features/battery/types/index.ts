@@ -1,5 +1,7 @@
 export type CellType = 'POUCH' | 'CYLINDRICAL' | 'PRISMATIC'
 export type FinalLabel = 'PASS' | 'REJECT' | 'FAIL'
+export type ImageType = 'CT' | 'RGB'
+export type ReportStatus = 'COMPLETED' | 'PENDING' | 'FAILED'
 
 // GET /battery
 export interface BatteryListItem {
@@ -12,25 +14,58 @@ export interface BatteryListItem {
   latestAnalyzedAt: string | null
 }
 
-export interface BatteryReportSummary {
+// GET /battery/:batteryCellId
+export interface InspectionImage {
+  imageId: number
+  imageType: ImageType
+  imageUrl: string
+}
+
+export interface Bbox {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export interface DefectResult {
+  defectResultId: number
+  label: FinalLabel
+  imageId: number
+  imageType: ImageType
+  defectType: string
+  imageUrl: string
+  confidence: number
+  bbox: Bbox | null
+}
+
+export interface Inspection {
+  inspectionId: number
+  finalLabel: FinalLabel
+  analyzedAt: string
+  image: InspectionImage[]
+  defectResults: DefectResult[]
+}
+
+export interface BatteryDetailReport {
   reportId: number
-  title: string | null
+  inspectionId: number
+  status: ReportStatus
+  title: string
   createdAt: string
   updatedAt: string | null
 }
 
-// GET /battery/:batteryCellId
 export interface BatteryDetail {
   batteryCellId: number
   cellSerialNo: string
   purchaseId: string | null
-  rgbImages: string[]
-  ctImages: string[]
   productId: string | null
   modelName: string | null
   cellType: CellType | null
   manufacturedDate: string | null
   createdAt: string
   updatedAt: string | null
-  reports: BatteryReportSummary[]
+  inspections: Inspection[]
+  reports: BatteryDetailReport[]
 }

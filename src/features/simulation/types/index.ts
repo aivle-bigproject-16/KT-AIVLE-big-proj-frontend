@@ -1,54 +1,51 @@
 import type { FinalLabel } from '@/features/battery/types'
 
-// POST /sim — Request (시뮬레이션 설정 + 시작)
+// POST /sim — Request
 export interface SimStartRequest {
   batchSize: number
   batteryCellCount: number
   captureSpeed: number
 }
 
-// PUT /sim — Request (일시중단/재개, 상태: 추후 진행 — 아직 미구현)
+// PUT /sim — Request (미구현)
 export interface SimPauseResumeRequest {
   running: boolean
 }
 
-// WS /ws/sim 연결 상태 (프론트 전용 — 소켓 연결 자체의 lifecycle)
+// WS 연결 lifecycle (프론트 전용)
 export type WsStatus = 'idle' | 'connecting' | 'reconnecting' | 'open' | 'closed'
 
-// event: PROGRESS / COMPLETED 중 어느 쪽인지 (프론트 전용 — 시뮬레이션 실행의 lifecycle)
+// 시뮬레이션 실행 lifecycle (프론트 전용)
 export type SimulationRunStatus = 'idle' | 'running' | 'completed'
 
-// WS /ws/sim, event: PROGRESS — Response (상태: 추후 진행)
-export type BatchStatus = 'REGISTERED' | 'CAPTURING' | 'CAPTURED' | 'ANALYZING' | 'ANALYZED' | 'COMPLETED'
+// 셀 단위 상태
+export type CellStatus = 'REGISTERED' | 'CAPTURING' | 'CAPTURED' | 'ANALYZING' | 'COMPLETED'
 
+// 셀 단위 진행 정보 (registered / capture / analyze / completed 공통)
 export interface CellProgress {
   batteryCellId: number
   inspectionId: number
   finalLabel: FinalLabel | null
-}
-
-export interface BatchProgress {
   batchId: number
-  status: BatchStatus
-  cells: CellProgress[]
+  status: CellStatus
 }
 
+// WS event: PROGRESS
 export interface SimulationProgressPayload {
   event: 'PROGRESS'
   batchCount: number
   batteryCellCount: number
   captureSpeed: number
-  registered: BatchProgress[]
-  capture: BatchProgress | null
-  analyze: BatchProgress | null
-  completed: BatchProgress[]
+  registered: CellProgress[]      // 대기 중 셀
+  capture: CellProgress[]         // 촬영 중/완료 셀 (CAPTURING + CAPTURED, 배치 단위 묶음)
+  analyze: CellProgress | null    // 분석 중인 단일 셀
+  completed: CellProgress[]       // 공정 완료 셀
 }
 
-// WS /ws/sim, event: COMPLETED — Response
+// WS event: COMPLETED
 export interface SimulationCompletedPayload {
   event: 'COMPLETED'
 }
 
-// WS PROGRESS/COMPLETED와 POST·GET /sim 응답이 전부 동일한 스키마를 공유한다.
 export type SimulationSocketMessage = SimulationProgressPayload | SimulationCompletedPayload
 export type SimStatusPayload = SimulationSocketMessage

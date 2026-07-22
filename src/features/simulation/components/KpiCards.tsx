@@ -15,9 +15,8 @@ function KpiCards() {
   const event = useSimulationStore((s) => s.event)
   const completed = useSimulationStore((s) => s.completed)
 
-  const completedCells = completed.flatMap((batch) => batch.cells)
-  const totalInspections = completedCells.length
-  const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
+  const totalInspections = completed.length
+  const passCount = completed.filter((cell) => cell.finalLabel === 'PASS').length
   const yieldRate = totalInspections === 0 ? 0 : Math.round((passCount / totalInspections) * 1000) / 10
 
   const processStatus =

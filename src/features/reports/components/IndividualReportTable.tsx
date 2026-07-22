@@ -67,17 +67,17 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
 
         <table className="report-table__table">
           <colgroup>
-            <col className="individual-report-table__col-date" />
             <col className="individual-report-table__col-status" />
             <col className="individual-report-table__col-title" />
+            <col className="individual-report-table__col-date" />
             <col className="individual-report-table__col-created" />
             <col className="individual-report-table__col-detail" />
           </colgroup>
           <thead>
             <tr>
-              <th></th>
               <th>상태</th>
               <th>제목</th>
+              <th></th>
               <th>생성일시</th>
               <th>상세</th>
             </tr>
@@ -92,7 +92,6 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
             )}
             {pagedList.map((item) => (
               <tr key={item.reportId} onClick={() => navigate(ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId))} style={{ cursor: 'pointer' }}>
-                <td></td>
                 <td>
                   <span className="report-table__status-cell">
                     <span className="report-table__status-icon">
@@ -110,6 +109,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
                   </span>
                 </td>
                 <td>{item.title ?? `리포트 #${item.reportId}`}</td>
+                <td></td>
                 <td className="report-table__created">{formatDateTime(item.createdAt)}</td>
                 <td>
                   <DetailLinkButton to={ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId)} />

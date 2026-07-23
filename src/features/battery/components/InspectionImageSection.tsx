@@ -1,7 +1,13 @@
 import { useState, useRef } from 'react'
-import { BatteryImageModal } from './BatteryImageModal'
+import { ImageBboxModal } from '@/shared/ui/ImageBboxModal'
 import './InspectionImageSection.css'
 import type { Inspection } from '../types'
+
+const LABEL_TONE: Record<string, 'reject' | 'fail' | 'pass'> = {
+  REJECT: 'reject',
+  FAIL: 'fail',
+  PASS: 'pass',
+}
 
 type LightboxImg = Inspection['image'][number]
 
@@ -114,9 +120,23 @@ export function ImageSection({
       )}
 
       {lightboxImg && (
-        <BatteryImageModal
-          image={lightboxImg}
-          defects={defects.filter((d) => d.imageId === lightboxImg.imageId)}
+        <ImageBboxModal
+          title={`${lightboxImg.imageType} · ID ${lightboxImg.imageId}`}
+          imageUrl={lightboxImg.imageUrl}
+          regions={defects
+            .filter((d) => d.imageId === lightboxImg.imageId && d.bbox)
+            .map((d) => ({ id: d.defectResultId, bbox: d.bbox!, tone: LABEL_TONE[d.label] ?? 'pass' }))}
+          infoItems={defects
+            .filter((d) => d.imageId === lightboxImg.imageId)
+            .map((d) => ({
+              id: d.defectResultId,
+              badgeText: d.label,
+              badgeTone: LABEL_TONE[d.label] ?? 'pass',
+              primaryText: d.defectType,
+              secondaryText: `${d.imageType} · 신뢰도 ${Math.round(d.confidence * 100)}%${
+                d.bbox ? ` · bbox (${d.bbox.x}, ${d.bbox.y}) ${d.bbox.width}×${d.bbox.height}` : ''
+              }`,
+            }))}
           open={lightboxOpen}
           onClose={closeLightbox}
         />

@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './IndividualReportDetailCard.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { useIndividualReportDetailStore } from '../store/useIndividualReportDetailStore'
 import { BatteryInfoHeader } from '@/shared/ui/BatteryInfoHeader'
+import { ImageBboxModal } from '@/shared/ui/ImageBboxModal'
 import type { IndividualReportDetail, ImageMapping } from '../types'
 
 function formatDateTime(value: string | null): string {
@@ -68,8 +69,18 @@ function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
 
       <div className="individual-detail__layout">
         <div className="individual-detail__col individual-detail__col--images">
-          <ImageBox title="CT 데이터 분석 (CT DATA ANALYSIS)" images={detail.ctImages} emptyText="CT 이미지가 없습니다." />
-          <ImageBox title="RGB 이미지 분석 (RGB IMAGE ANALYSIS)" images={detail.rgbImages} emptyText="RGB 이미지가 없습니다." />
+          <ImageBox
+            title="CT 데이터 분석 (CT DATA ANALYSIS)"
+            images={detail.ctImages}
+            emptyText="CT 이미지가 없습니다."
+            mappings={detail.imageMappings.filter((m) => m.imageType === 'CT')}
+          />
+          <ImageBox
+            title="RGB 이미지 분석 (RGB IMAGE ANALYSIS)"
+            images={detail.rgbImages}
+            emptyText="RGB 이미지가 없습니다."
+            mappings={detail.imageMappings.filter((m) => m.imageType === 'RGB')}
+          />
         </div>
 
         <div className="individual-detail__col individual-detail__col--side">
@@ -106,7 +117,20 @@ function CoordItem({ mapping }: { mapping: ImageMapping }) {
   )
 }
 
-function ImageBox({ title, images, emptyText }: { title: string; images: string[]; emptyText: string }) {
+function ImageBox({
+  title,
+  images,
+  emptyText,
+  mappings,
+}: {
+  title: string
+  images: string[]
+  emptyText: string
+  mappings: ImageMapping[]
+}) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const openMapping = openIndex !== null ? mappings[openIndex] : undefined
+
   return (
     <div className="individual-detail__box">
       <h2 className="individual-detail__box-title">{title}</h2>
@@ -115,9 +139,37 @@ function ImageBox({ title, images, emptyText }: { title: string; images: string[
       ) : (
         <div className="individual-detail__image-grid">
           {images.map((src, i) => (
-            <img key={src} src={src} alt={`${title} ${i + 1}`} className="individual-detail__image" />
+            <button
+              key={src}
+              type="button"
+              className="individual-detail__image-btn"
+              onClick={() => setOpenIndex(i)}
+            >
+              <img src={src} alt={`${title} ${i + 1}`} className="individual-detail__image" />
+            </button>
           ))}
         </div>
+      )}
+
+      {openIndex !== null && (
+        <ImageBboxModal
+          title={openMapping ? `${openMapping.imageType} · ID ${openMapping.imageId}` : `${title} ${openIndex + 1}`}
+          imageUrl={images[openIndex]}
+          regions={openMapping ? [{ id: openMapping.imageId, bbox: openMapping.bbox, tone: 'neutral' }] : []}
+          infoItems={
+            openMapping
+              ? [
+                  {
+                    id: openMapping.imageId,
+                    primaryText: openMapping.imageType,
+                    secondaryText: `bbox (${openMapping.bbox.x}, ${openMapping.bbox.y}) ${openMapping.bbox.width}×${openMapping.bbox.height}`,
+                  },
+                ]
+              : []
+          }
+          open={openIndex !== null}
+          onClose={() => setOpenIndex(null)}
+        />
       )}
     </div>
   )

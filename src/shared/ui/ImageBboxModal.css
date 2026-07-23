@@ -1,4 +1,4 @@
-.battery-image-modal-overlay {
+.image-bbox-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.88);
@@ -10,13 +10,13 @@
   transition: opacity 200ms ease;
 }
 
-.battery-image-modal-overlay[data-visible='true'] {
+.image-bbox-modal-overlay[data-visible='true'] {
   opacity: 1;
 }
 
 /* ── Modal shell ─────────────────────────────────────────────────────────────── */
 
-.battery-image-modal {
+.image-bbox-modal {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -24,7 +24,7 @@
 
 /* ── Header ─────────────────────────────────────────────────────────────────── */
 
-.battery-image-modal__header {
+.image-bbox-modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -34,13 +34,13 @@
   flex-shrink: 0;
 }
 
-.battery-image-modal__title {
+.image-bbox-modal__title {
   font-size: 1.5rem;
   font-weight: 600;
   color: #f3f4f6;
 }
 
-.battery-image-modal__close {
+.image-bbox-modal__close {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,13 +55,13 @@
   flex-shrink: 0;
 }
 
-.battery-image-modal__close:hover {
+.image-bbox-modal__close:hover {
   background: rgba(255, 255, 255, 0.18);
 }
 
 /* ── Image body ──────────────────────────────────────────────────────────────── */
 
-.battery-image-modal__body {
+.image-bbox-modal__body {
   flex: 1;
   min-height: 0;
   position: relative;
@@ -69,7 +69,7 @@
 }
 
 /* body를 꽉 채운 뒤 object-fit: contain으로 비율 유지 — 좌우 여백 없음 */
-.battery-image-modal__img {
+.image-bbox-modal__img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -78,7 +78,7 @@
   display: block;
 }
 
-.battery-image-modal__loading {
+.image-bbox-modal__loading {
   position: absolute;
   inset: 0;
   display: flex;
@@ -88,9 +88,9 @@
   color: #6b7280;
 }
 
-/* ── Defect list ─────────────────────────────────────────────────────────────── */
+/* ── Info list ───────────────────────────────────────────────────────────────── */
 
-.battery-image-modal__defects {
+.image-bbox-modal__info-list {
   list-style: none;
   margin: 0;
   padding: 1.2rem 2rem 1.6rem;
@@ -101,7 +101,7 @@
   flex-shrink: 0;
 }
 
-.battery-image-modal__defect-item {
+.image-bbox-modal__info-item {
   display: flex;
   align-items: center;
   gap: 1.2rem;
@@ -111,7 +111,7 @@
   border: 1px solid #2a2a2a;
 }
 
-.battery-image-modal__badge {
+.image-bbox-modal__badge {
   display: inline-block;
   padding: 0.2rem 0.8rem;
   border-radius: 9999px;
@@ -120,11 +120,12 @@
   flex-shrink: 0;
 }
 
-.battery-image-modal__badge--pass   { background: #1e3a5f; color: #93c5fd; }
-.battery-image-modal__badge--reject { background: #4c1010; color: #fca5a5; }
-.battery-image-modal__badge--fail   { background: #4c2c10; color: #fdba74; }
+.image-bbox-modal__badge--pass    { background: #1e3a5f; color: #93c5fd; }
+.image-bbox-modal__badge--reject  { background: #4c1010; color: #fca5a5; }
+.image-bbox-modal__badge--fail    { background: #4c2c10; color: #fdba74; }
+.image-bbox-modal__badge--neutral { background: #1e3a5f; color: #93c5fd; }
 
-.battery-image-modal__defect-type {
+.image-bbox-modal__primary {
   font-size: 1.3rem;
   font-weight: 600;
   color: #e5e7eb;
@@ -132,21 +133,8 @@
   min-width: 0;
 }
 
-.battery-image-modal__image-type {
+.image-bbox-modal__secondary {
   font-size: 1.2rem;
   color: #6b7280;
-  flex-shrink: 0;
-}
-
-.battery-image-modal__conf {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #d1d5db;
-  flex-shrink: 0;
-}
-
-.battery-image-modal__bbox-info {
-  font-size: 1.2rem;
-  color: #4b5563;
   flex-shrink: 0;
 }

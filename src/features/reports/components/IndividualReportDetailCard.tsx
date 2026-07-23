@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import './IndividualReportDetailCard.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { useIndividualReportDetailStore } from '../store/useIndividualReportDetailStore'
-import IndividualReportHeader from './IndividualReportHeader'
+import { BatteryInfoHeader } from '@/shared/ui/BatteryInfoHeader'
 import type { IndividualReportDetail, ImageMapping } from '../types'
 
 function formatDateTime(value: string | null): string {
@@ -58,7 +58,11 @@ function IndividualReportDetailCard({ reportId }: IndividualReportDetailCardProp
 function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
   return (
     <>
-      <IndividualReportHeader detail={detail} />
+      <BatteryInfoHeader
+        title={detail.title ?? `개별 리포트 #${detail.reportId}`}
+        idLabel={`RPT-${detail.reportId}`}
+        badges={[{ text: detail.cellSerialNo, tone: 'neutral' }]}
+      />
 
       <div className="individual-detail__layout">
         <div className="individual-detail__col individual-detail__col--images">

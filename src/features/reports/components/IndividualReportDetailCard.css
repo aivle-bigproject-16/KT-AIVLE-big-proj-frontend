@@ -24,6 +24,13 @@
   flex-shrink: 0;
 }
 
+.individual-detail__card > .detail-info-card {
+  border: none;
+  padding: 0 0 2.4rem;
+  margin-bottom: 2.4rem;
+  border-bottom: 1px solid #f8f9fa;
+}
+
 .individual-detail__notice {
   margin: 0;
   padding: 4rem 0;

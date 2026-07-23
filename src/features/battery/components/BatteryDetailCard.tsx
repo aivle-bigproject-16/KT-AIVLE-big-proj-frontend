@@ -4,6 +4,7 @@ import './BatteryDetailCard.css'
 import { useBatteryDetailStore } from '../store/useBatteryDetailStore'
 import { ImageSection } from './InspectionImageSection'
 import { ROUTES } from '@/core/navigation/routes'
+import { BatteryInfoHeader } from '@/shared/ui/BatteryInfoHeader'
 import type { BatteryDetail, Inspection, BatteryDetailReport } from '../types'
 
 interface Props {
@@ -21,6 +22,14 @@ function formatDateTime(value: string | null): string {
   if (Number.isNaN(d.getTime())) return value
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function buildBatteryBadges(detail: BatteryDetail): { text: string; tone: 'accent' | 'plain' }[] {
+  const badges: { text: string; tone: 'accent' | 'plain' }[] = []
+  if (detail.cellType) badges.push({ text: detail.cellType, tone: 'accent' })
+  if (detail.modelName) badges.push({ text: detail.modelName, tone: 'plain' })
+  if (detail.productId) badges.push({ text: detail.productId, tone: 'plain' })
+  return badges
 }
 
 function BatteryDetailCard({ batteryCellId }: Props) {
@@ -56,7 +65,17 @@ function BatteryDetailCard({ batteryCellId }: Props) {
 
       {detail && (
         <>
-          <BatteryInfoHeader detail={detail} />
+          <BatteryInfoHeader
+            title={detail.cellSerialNo}
+            idLabel={`ID ${detail.batteryCellId}`}
+            badges={buildBatteryBadges(detail)}
+            metaItems={[
+              { label: '생산처', value: detail.purchaseId ?? '-' },
+              { label: '제조일', value: formatDate(detail.manufacturedDate) },
+              { label: '등록일', value: formatDateTime(detail.createdAt) },
+              { label: '최종 수정', value: formatDateTime(detail.updatedAt) },
+            ]}
+          />
 
           <div className="battery-detail__body">
             <InspectionList
@@ -71,51 +90,6 @@ function BatteryDetailCard({ batteryCellId }: Props) {
         </>
       )}
     </section>
-  )
-}
-
-// ── Battery Info Header ───────────────────────────────────────────────────────
-
-function BatteryInfoHeader({ detail }: { detail: BatteryDetail }) {
-  return (
-    <div className="battery-detail__info-card">
-      <div className="battery-detail__info-top">
-        <div>
-          <h1 className="battery-detail__serial">{detail.cellSerialNo}</h1>
-          <div className="battery-detail__info-sub">
-            {detail.cellType && (
-              <span className="battery-detail__cell-type-badge">{detail.cellType}</span>
-            )}
-            {detail.modelName && (
-              <span className="battery-detail__info-text">{detail.modelName}</span>
-            )}
-            {detail.productId && (
-              <span className="battery-detail__info-text">{detail.productId}</span>
-            )}
-          </div>
-        </div>
-        <span className="battery-detail__id-label">ID {detail.batteryCellId}</span>
-      </div>
-
-      <div className="battery-detail__meta-grid">
-        <div className="battery-detail__meta-item">
-          <span className="battery-detail__meta-label">생산처</span>
-          <span className="battery-detail__meta-val">{detail.purchaseId ?? '-'}</span>
-        </div>
-        <div className="battery-detail__meta-item">
-          <span className="battery-detail__meta-label">제조일</span>
-          <span className="battery-detail__meta-val">{formatDate(detail.manufacturedDate)}</span>
-        </div>
-        <div className="battery-detail__meta-item">
-          <span className="battery-detail__meta-label">등록일</span>
-          <span className="battery-detail__meta-val">{formatDateTime(detail.createdAt)}</span>
-        </div>
-        <div className="battery-detail__meta-item">
-          <span className="battery-detail__meta-label">최종 수정</span>
-          <span className="battery-detail__meta-val">{formatDateTime(detail.updatedAt)}</span>
-        </div>
-      </div>
-    </div>
   )
 }
 

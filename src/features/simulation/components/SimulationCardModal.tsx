@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Modal } from '@/shared/ui/Modal'
 import type { FinalLabel } from '@/features/battery/types'
-import type { BatchProgress } from '../types'
+import type { CellProgress } from '../types'
 import { ROUTES } from '@/core/navigation/routes'
 import './SimulationCardModal.css'
 
@@ -9,8 +9,8 @@ interface SimulationCardModalProps {
   open: boolean
   onClose: () => void
   label: string
-  batches: BatchProgress[]
-  statusSource?: 'batch' | 'finalLabel'
+  cells: CellProgress[]
+  statusSource?: 'status' | 'finalLabel'
   finalLabelFilter?: FinalLabel
   emptyMessage?: string
 }
@@ -23,21 +23,20 @@ function SimulationCardModal({
   open,
   onClose,
   label,
-  batches,
-  statusSource = 'batch',
+  cells,
+  statusSource = 'status',
   finalLabelFilter,
   emptyMessage = '현재 처리 중인 셀이 없습니다.',
 }: SimulationCardModalProps) {
   const navigate = useNavigate()
-  const rows = batches.flatMap((batch) =>
-    batch.cells
-      .filter((cell) => (finalLabelFilter ? cell.finalLabel === finalLabelFilter : true))
-      .map((cell) => ({
-        batchId: batch.batchId,
-        batteryCellId: cell.batteryCellId,
-        status: statusSource === 'finalLabel' ? (cell.finalLabel ?? '-') : batch.status,
-      })),
-  )
+
+  const rows = cells
+    .filter((cell) => (finalLabelFilter ? cell.finalLabel === finalLabelFilter : true))
+    .map((cell) => ({
+      batchId: cell.batchId,
+      batteryCellId: cell.batteryCellId,
+      status: statusSource === 'finalLabel' ? (cell.finalLabel ?? '-') : cell.status,
+    }))
 
   return (
     <Modal open={open} onClose={onClose} className="simulation-card-modal">
@@ -71,9 +70,7 @@ function SimulationCardModal({
                   <td>{row.batteryCellId}</td>
                   <td>
                     <span
-                      className={`simulation-card-modal__status simulation-card-modal__status--${normalizeStatusClass(
-                        row.status,
-                      )}`}
+                      className={`simulation-card-modal__status simulation-card-modal__status--${normalizeStatusClass(row.status)}`}
                     >
                       {row.status}
                     </span>

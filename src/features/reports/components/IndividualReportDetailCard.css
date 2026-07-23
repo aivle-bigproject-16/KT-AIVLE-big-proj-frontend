@@ -1,4 +1,7 @@
 .individual-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   max-width: 100rem;
 }
 
@@ -6,7 +9,6 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin-bottom: 1.6rem;
   font-size: 1.4rem;
   color: #5b5f63;
   text-decoration: none;
@@ -16,25 +18,8 @@
   color: #191c1d;
 }
 
-.individual-detail__card {
-  border: 1px solid #e9bcb6;
-  border-radius: 1.2rem;
-  background: #fff;
-  padding: 3.2rem;
-  flex-shrink: 0;
-}
-
-.individual-detail__card > .detail-info-card {
-  border: none;
-  padding: 0 0 2.4rem;
-  margin-bottom: 2.4rem;
-  border-bottom: 1px solid #f8f9fa;
-}
-
 .individual-detail__notice {
   margin: 0;
-  padding: 4rem 0;
-  text-align: center;
   font-size: 1.4rem;
   color: #5b5f63;
 }
@@ -130,33 +115,6 @@
 
 .individual-detail__coord-value {
   color: #5b5f63;
-}
-
-/* 메타데이터 */
-
-.individual-detail__meta-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  margin: 0;
-}
-
-.individual-detail__meta-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.2rem;
-  font-size: 1.3rem;
-}
-
-.individual-detail__meta-row dt {
-  color: #5b5f63;
-}
-
-.individual-detail__meta-row dd {
-  margin: 0;
-  color: #191c1d;
-  font-weight: 600;
 }
 
 /* CT / RGB 이미지 */

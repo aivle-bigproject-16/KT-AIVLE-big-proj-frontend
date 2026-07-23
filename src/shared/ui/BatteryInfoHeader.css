@@ -64,7 +64,7 @@
 
 .battery-info-header__meta-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1.6rem;
   margin-top: 2rem;
   padding-top: 1.6rem;

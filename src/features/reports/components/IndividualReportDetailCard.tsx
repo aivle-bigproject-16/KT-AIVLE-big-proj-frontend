@@ -35,22 +35,20 @@ function IndividualReportDetailCard({ reportId }: IndividualReportDetailCardProp
         ← 개별 리포트 목록으로
       </Link>
 
-      <div className="individual-detail__card">
-        {isLoading && <p className="individual-detail__notice">불러오는 중...</p>}
-        {error && <p className="individual-detail__notice individual-detail__notice--error">{error}</p>}
+      {isLoading && <p className="individual-detail__notice">불러오는 중...</p>}
+      {error && <p className="individual-detail__notice individual-detail__notice--error">{error}</p>}
 
-        {detail && detail.status === 'PENDING' && (
-          <p className="individual-detail__notice">리포트를 생성하는 중입니다.</p>
-        )}
+      {detail && detail.status === 'PENDING' && (
+        <p className="individual-detail__notice">리포트를 생성하는 중입니다.</p>
+      )}
 
-        {detail && detail.status === 'FAILED' && (
-          <p className="individual-detail__notice individual-detail__notice--error">
-            리포트 생성에 실패했습니다.
-          </p>
-        )}
+      {detail && detail.status === 'FAILED' && (
+        <p className="individual-detail__notice individual-detail__notice--error">
+          리포트 생성에 실패했습니다.
+        </p>
+      )}
 
-        {detail && detail.status === 'COMPLETED' && <IndividualDetailBody detail={detail} />}
-      </div>
+      {detail && detail.status === 'COMPLETED' && <IndividualDetailBody detail={detail} />}
     </section>
   )
 }
@@ -62,6 +60,10 @@ function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
         title={detail.title ?? `개별 리포트 #${detail.reportId}`}
         idLabel={`RPT-${detail.reportId}`}
         badges={[{ text: detail.cellSerialNo, tone: 'neutral' }]}
+        metaItems={[
+          { label: '생성일시', value: formatDateTime(detail.createdAt) },
+          { label: '수정일시', value: formatDateTime(detail.updatedAt) },
+        ]}
       />
 
       <div className="individual-detail__layout">
@@ -85,20 +87,6 @@ function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
                 ))}
               </ul>
             )}
-          </div>
-
-          <div className="individual-detail__box">
-            <h2 className="individual-detail__box-title">메타데이터 (METADATA)</h2>
-            <dl className="individual-detail__meta-list">
-              <div className="individual-detail__meta-row">
-                <dt>생성일시</dt>
-                <dd>{formatDateTime(detail.createdAt)}</dd>
-              </div>
-              <div className="individual-detail__meta-row">
-                <dt>수정일시</dt>
-                <dd>{formatDateTime(detail.updatedAt)}</dd>
-              </div>
-            </dl>
           </div>
         </div>
       </div>

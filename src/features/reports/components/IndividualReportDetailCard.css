@@ -117,31 +117,3 @@
   color: #5b5f63;
 }
 
-/* CT / RGB 이미지 */
-
-.individual-detail__image-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-}
-
-.individual-detail__image-btn {
-  flex-shrink: 0;
-  border: 1px solid #e9bcb6;
-  border-radius: 0.8rem;
-  overflow: hidden;
-  cursor: pointer;
-  background: none;
-  padding: 0;
-}
-
-.individual-detail__image-btn:hover {
-  border-color: #c0392b;
-}
-
-.individual-detail__image {
-  display: block;
-  width: 16rem;
-  height: 16rem;
-  object-fit: cover;
-}

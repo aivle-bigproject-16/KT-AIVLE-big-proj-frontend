@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { ImageBboxModal } from '@/shared/ui/ImageBboxModal'
+import { ImageBboxGrid } from '@/shared/ui/ImageBboxGrid'
+import type { ImageBboxGridItem } from '@/shared/ui/ImageBboxGrid'
 import './InspectionImageSection.css'
 import type { Inspection } from '../types'
 
@@ -9,82 +9,6 @@ const LABEL_TONE: Record<string, 'reject' | 'fail' | 'pass'> = {
   PASS: 'pass',
 }
 
-type LightboxImg = Inspection['image'][number]
-
-function useBboxScale() {
-  const imgRef = useRef<HTMLImageElement>(null)
-  const [bboxScale, setBboxScale] = useState<{
-    sx: number; sy: number; ox: number; oy: number
-  } | null>(null)
-
-  const handleLoad = () => {
-    const img = imgRef.current
-    if (!img || !img.naturalWidth) return
-    const nw = img.naturalWidth
-    const nh = img.naturalHeight
-    const dw = img.clientWidth
-    const dh = img.clientHeight
-    const s = Math.max(dw / nw, dh / nh)
-    setBboxScale({ sx: s, sy: s, ox: (dw - nw * s) / 2, oy: (dh - nh * s) / 2 })
-  }
-
-  return { imgRef, bboxScale, handleLoad }
-}
-
-function BboxOverlays({
-  defects,
-  scale,
-}: {
-  defects: Inspection['defectResults']
-  scale: { sx: number; sy: number; ox: number; oy: number }
-}) {
-  return (
-    <>
-      {defects.map((d) => {
-        if (!d.bbox) return null
-        return (
-          <div
-            key={d.defectResultId}
-            className={`battery-detail__bbox-rect battery-detail__bbox-rect--${d.label.toLowerCase()}`}
-            style={{
-              left: scale.ox + d.bbox.x * scale.sx,
-              top: scale.oy + d.bbox.y * scale.sy,
-              width: d.bbox.width * scale.sx,
-              height: d.bbox.height * scale.sy,
-            }}
-          />
-        )
-      })}
-    </>
-  )
-}
-
-function ImageWithBbox({
-  image,
-  defects,
-  onClick,
-}: {
-  image: LightboxImg
-  defects: Inspection['defectResults']
-  onClick: () => void
-}) {
-  const { imgRef, bboxScale, handleLoad } = useBboxScale()
-
-  return (
-    <button type="button" className="battery-detail__image-wrap" onClick={onClick}>
-      <img
-        ref={imgRef}
-        src={image.imageUrl}
-        alt={`${image.imageType} ${image.imageId}`}
-        className="battery-detail__image"
-        onLoad={handleLoad}
-      />
-      <span className="battery-detail__image-type-overlay">{image.imageType}</span>
-      {bboxScale && <BboxOverlays defects={defects} scale={bboxScale} />}
-    </button>
-  )
-}
-
 export function ImageSection({
   images,
   defects,
@@ -92,55 +16,32 @@ export function ImageSection({
   images: Inspection['image']
   defects: Inspection['defectResults']
 }) {
-  const [lightboxImg, setLightboxImg] = useState<LightboxImg | null>(null)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const items: ImageBboxGridItem[] = images.map((img) => {
+    const imgDefects = defects.filter((d) => d.imageId === img.imageId)
 
-  const openLightbox = (img: LightboxImg) => {
-    setLightboxImg(img)
-    setLightboxOpen(true)
-  }
-
-  const closeLightbox = () => setLightboxOpen(false)
+    return {
+      id: img.imageId,
+      imageUrl: img.imageUrl,
+      title: `${img.imageType} · ID ${img.imageId}`,
+      typeLabel: img.imageType,
+      regions: imgDefects
+        .filter((d) => d.bbox)
+        .map((d) => ({ id: d.defectResultId, bbox: d.bbox!, tone: LABEL_TONE[d.label] ?? 'pass' })),
+      infoItems: imgDefects.map((d) => ({
+        id: d.defectResultId,
+        badgeText: d.label,
+        badgeTone: LABEL_TONE[d.label] ?? 'pass',
+        primaryText: d.defectType,
+        secondaryText: `${d.imageType} · 신뢰도 ${Math.round(d.confidence * 100)}%${
+          d.bbox ? ` · bbox (${d.bbox.x}, ${d.bbox.y}) ${d.bbox.width}×${d.bbox.height}` : ''
+        }`,
+      })),
+    }
+  })
 
   return (
     <div className="battery-detail__image-section">
-      {images.length === 0 ? (
-        <p className="battery-detail__empty">이미지가 없습니다.</p>
-      ) : (
-        <div className="battery-detail__image-grid">
-          {images.map((img) => (
-            <ImageWithBbox
-              key={img.imageId}
-              image={img}
-              defects={defects.filter((d) => d.imageId === img.imageId)}
-              onClick={() => openLightbox(img)}
-            />
-          ))}
-        </div>
-      )}
-
-      {lightboxImg && (
-        <ImageBboxModal
-          title={`${lightboxImg.imageType} · ID ${lightboxImg.imageId}`}
-          imageUrl={lightboxImg.imageUrl}
-          regions={defects
-            .filter((d) => d.imageId === lightboxImg.imageId && d.bbox)
-            .map((d) => ({ id: d.defectResultId, bbox: d.bbox!, tone: LABEL_TONE[d.label] ?? 'pass' }))}
-          infoItems={defects
-            .filter((d) => d.imageId === lightboxImg.imageId)
-            .map((d) => ({
-              id: d.defectResultId,
-              badgeText: d.label,
-              badgeTone: LABEL_TONE[d.label] ?? 'pass',
-              primaryText: d.defectType,
-              secondaryText: `${d.imageType} · 신뢰도 ${Math.round(d.confidence * 100)}%${
-                d.bbox ? ` · bbox (${d.bbox.x}, ${d.bbox.y}) ${d.bbox.width}×${d.bbox.height}` : ''
-              }`,
-            }))}
-          open={lightboxOpen}
-          onClose={closeLightbox}
-        />
-      )}
+      <ImageBboxGrid items={items} emptyText="이미지가 없습니다." />
     </div>
   )
 }

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './IndividualReportDetailCard.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { useIndividualReportDetailStore } from '../store/useIndividualReportDetailStore'
 import { BatteryInfoHeader } from '@/shared/ui/BatteryInfoHeader'
-import { ImageBboxModal } from '@/shared/ui/ImageBboxModal'
+import { ImageBboxGrid } from '@/shared/ui/ImageBboxGrid'
+import type { ImageBboxGridItem } from '@/shared/ui/ImageBboxGrid'
 import type { IndividualReportDetail, ImageMapping } from '../types'
 
 function formatDateTime(value: string | null): string {
@@ -128,49 +129,30 @@ function ImageBox({
   emptyText: string
   mappings: ImageMapping[]
 }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-  const openMapping = openIndex !== null ? mappings[openIndex] : undefined
+  const items: ImageBboxGridItem[] = images.map((src, i) => {
+    const mapping = mappings[i]
+    return {
+      id: mapping ? mapping.imageId : i,
+      imageUrl: src,
+      title: mapping ? `${mapping.imageType} · ID ${mapping.imageId}` : `${title} ${i + 1}`,
+      typeLabel: mapping?.imageType,
+      regions: mapping ? [{ id: mapping.imageId, bbox: mapping.bbox, tone: 'neutral' as const }] : [],
+      infoItems: mapping
+        ? [
+            {
+              id: mapping.imageId,
+              primaryText: mapping.imageType,
+              secondaryText: `bbox (${mapping.bbox.x}, ${mapping.bbox.y}) ${mapping.bbox.width}×${mapping.bbox.height}`,
+            },
+          ]
+        : [],
+    }
+  })
 
   return (
     <div className="individual-detail__box">
       <h2 className="individual-detail__box-title">{title}</h2>
-      {images.length === 0 ? (
-        <p className="individual-detail__empty">{emptyText}</p>
-      ) : (
-        <div className="individual-detail__image-grid">
-          {images.map((src, i) => (
-            <button
-              key={src}
-              type="button"
-              className="individual-detail__image-btn"
-              onClick={() => setOpenIndex(i)}
-            >
-              <img src={src} alt={`${title} ${i + 1}`} className="individual-detail__image" />
-            </button>
-          ))}
-        </div>
-      )}
-
-      {openIndex !== null && (
-        <ImageBboxModal
-          title={openMapping ? `${openMapping.imageType} · ID ${openMapping.imageId}` : `${title} ${openIndex + 1}`}
-          imageUrl={images[openIndex]}
-          regions={openMapping ? [{ id: openMapping.imageId, bbox: openMapping.bbox, tone: 'neutral' }] : []}
-          infoItems={
-            openMapping
-              ? [
-                  {
-                    id: openMapping.imageId,
-                    primaryText: openMapping.imageType,
-                    secondaryText: `bbox (${openMapping.bbox.x}, ${openMapping.bbox.y}) ${openMapping.bbox.width}×${openMapping.bbox.height}`,
-                  },
-                ]
-              : []
-          }
-          open={openIndex !== null}
-          onClose={() => setOpenIndex(null)}
-        />
-      )}
+      <ImageBboxGrid items={items} emptyText={emptyText} />
     </div>
   )
 }

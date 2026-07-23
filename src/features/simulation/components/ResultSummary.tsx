@@ -34,13 +34,11 @@ function ResultSummary() {
     fetchList()
   }, [fetchList])
 
-  const displayList: CompletedCellRow[] = completed.flatMap((batch) =>
-    batch.cells.map((cell) => ({
-      batteryCellId: cell.batteryCellId,
-      inspectionId: cell.inspectionId,
-      latestFinalLabel: cell.finalLabel,
-    })),
-  )
+  const displayList: CompletedCellRow[] = completed.map((cell) => ({
+    batteryCellId: cell.batteryCellId,
+    inspectionId: cell.inspectionId,
+    latestFinalLabel: cell.finalLabel,
+  }))
 
   const filteredList = displayList.filter(
     (item) => resultFilter === 'ALL' || item.latestFinalLabel === resultFilter,

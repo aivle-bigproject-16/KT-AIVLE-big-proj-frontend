@@ -6,6 +6,15 @@ import { useIndividualReportDetailStore } from '../store/useIndividualReportDeta
 import IndividualReportHeader from './IndividualReportHeader'
 import type { IndividualReportDetail, ImageMapping } from '../types'
 
+function formatDateTime(value: string | null): string {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
 interface IndividualReportDetailCardProps {
   reportId: number
 }
@@ -51,29 +60,43 @@ function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
     <>
       <IndividualReportHeader detail={detail} />
 
-      <div className="individual-detail__section">
-        <h2 className="individual-detail__section-title">검사 요약</h2>
-        {detail.content ? (
-          <p className="individual-detail__summary-body">{detail.content}</p>
-        ) : (
-          <p className="individual-detail__empty">본문이 없습니다.</p>
-        )}
-      </div>
-
-      {detail.imageMappings.length > 0 && (
-        <div className="individual-detail__section">
-          <h2 className="individual-detail__section-title">감지 좌표</h2>
-          <ul className="individual-detail__coord-list">
-            {detail.imageMappings.map((mapping, i) => (
-              <CoordItem key={`${mapping.imageType}-${mapping.imageId}-${i}`} mapping={mapping} />
-            ))}
-          </ul>
+      <div className="individual-detail__layout">
+        <div className="individual-detail__col individual-detail__col--images">
+          <ImageBox title="CT 데이터 분석 (CT DATA ANALYSIS)" images={detail.ctImages} emptyText="CT 이미지가 없습니다." />
+          <ImageBox title="RGB 이미지 분석 (RGB IMAGE ANALYSIS)" images={detail.rgbImages} emptyText="RGB 이미지가 없습니다." />
         </div>
-      )}
 
-      <div className="individual-detail__images-row">
-        <ImageGroup title="CT 이미지" images={detail.ctImages} />
-        <ImageGroup title="RGB 이미지" images={detail.rgbImages} />
+        <div className="individual-detail__col individual-detail__col--side">
+          <div className="individual-detail__box">
+            <h2 className="individual-detail__box-title">검사 요약 (INSPECTION SUMMARY)</h2>
+            {detail.content ? (
+              <p className="individual-detail__summary-body">{detail.content}</p>
+            ) : (
+              <p className="individual-detail__empty">본문이 없습니다.</p>
+            )}
+            {detail.imageMappings.length > 0 && (
+              <ul className="individual-detail__coord-list">
+                {detail.imageMappings.map((mapping, i) => (
+                  <CoordItem key={`${mapping.imageType}-${mapping.imageId}-${i}`} mapping={mapping} />
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="individual-detail__box">
+            <h2 className="individual-detail__box-title">메타데이터 (METADATA)</h2>
+            <dl className="individual-detail__meta-list">
+              <div className="individual-detail__meta-row">
+                <dt>생성일시</dt>
+                <dd>{formatDateTime(detail.createdAt)}</dd>
+              </div>
+              <div className="individual-detail__meta-row">
+                <dt>수정일시</dt>
+                <dd>{formatDateTime(detail.updatedAt)}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
       </div>
     </>
   )
@@ -91,12 +114,12 @@ function CoordItem({ mapping }: { mapping: ImageMapping }) {
   )
 }
 
-function ImageGroup({ title, images }: { title: string; images: string[] }) {
+function ImageBox({ title, images, emptyText }: { title: string; images: string[]; emptyText: string }) {
   return (
-    <div className="individual-detail__image-group">
-      <h2 className="individual-detail__section-title">{title}</h2>
+    <div className="individual-detail__box">
+      <h2 className="individual-detail__box-title">{title}</h2>
       {images.length === 0 ? (
-        <p className="individual-detail__empty">{title}가 없습니다.</p>
+        <p className="individual-detail__empty">{emptyText}</p>
       ) : (
         <div className="individual-detail__image-grid">
           {images.map((src, i) => (

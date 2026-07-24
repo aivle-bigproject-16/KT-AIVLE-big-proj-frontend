@@ -1,14 +1,12 @@
-import { Link, useParams } from 'react-router-dom'
-import { ROUTES } from '@/core/navigation/routes'
-import { BatteryDetailMockCard } from '@/features/battery'
+import { useParams } from 'react-router-dom'
+import { BatteryDetailCard } from '@/features/battery'
 
 function BatteryDetailPage() {
   const { batteryCellId } = useParams<{ batteryCellId: string }>()
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <Link to={ROUTES.BATTERY}>← 배터리 목록으로</Link>
-      <BatteryDetailMockCard batteryCellId={Number(batteryCellId)} />
+    <div style={{ background: '#F8F9FA', minHeight: '100%' }}>
+      <BatteryDetailCard batteryCellId={Number(batteryCellId)} />
     </div>
   )
 }

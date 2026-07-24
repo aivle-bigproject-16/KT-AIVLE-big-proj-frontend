@@ -1,15 +1,16 @@
 import { Simulation, KpiCards, ResultSummary, DefectAnalysisChart } from '@/features/simulation'
+import './DashboardPage.css'
 
 function DashboardPage() {
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif', display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="dashboard">
       <KpiCards />
       <Simulation />
-      <div style={{ display: 'flex', gap: 24 }}>
-        <div style={{ display: 'flex', flex: 2 }}>
+      <div className="dashboard__bottom">
+        <div className="dashboard__defect">
           <DefectAnalysisChart />
         </div>
-        <div style={{ display: 'flex', flex: 3 }}>
+        <div className="dashboard__result">
           <ResultSummary />
         </div>
       </div>

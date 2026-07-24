@@ -67,17 +67,17 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
 
         <table className="report-table__table">
           <colgroup>
-            <col className="daily-report-table__col-date" />
             <col className="daily-report-table__col-status" />
             <col className="daily-report-table__col-title" />
+            <col className="daily-report-table__col-date" />
             <col className="daily-report-table__col-created" />
             <col className="daily-report-table__col-detail" />
           </colgroup>
           <thead>
             <tr>
-              <th>판정일자</th>
               <th>상태</th>
               <th>제목</th>
+              <th>판정일자</th>
               <th>생성일시</th>
               <th>상세</th>
             </tr>
@@ -92,7 +92,6 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
             )}
             {pagedList.map((item) => (
               <tr key={item.reportId} onClick={() => navigate(ROUTES.REPORT_DAILY_DETAIL(item.reportId))} style={{ cursor: 'pointer' }}>
-                <td>{item.reportDate}</td>
                 <td>
                   <span className="report-table__status-cell">
                     <span className="report-table__status-icon">
@@ -110,6 +109,7 @@ function DailyReportTable({ headerActions }: DailyReportTableProps) {
                   </span>
                 </td>
                 <td>{item.title ?? `리포트 #${item.reportId}`}</td>
+                <td>{item.reportDate}</td>
                 <td className="report-table__created">{formatDateTime(item.createdAt)}</td>
                 <td>
                   <DetailLinkButton to={ROUTES.REPORT_DAILY_DETAIL(item.reportId)} />

@@ -115,6 +115,22 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
+  // GET /api/battery/:batteryCellId — 상세 조회. batteryDetail 컬렉션에서 찾아 반환한다.
+  const batteryDetailMatch = url.pathname.match(/^\/api\/battery\/(\d+)$/)
+  if (req.method === 'GET' && batteryDetailMatch) {
+    const batteryCellId = Number(batteryDetailMatch[1])
+    const db = await readDb()
+    const item = db.batteryDetail?.find((b) => b.batteryCellId === batteryCellId)
+    if (!item) {
+      res.writeHead(404, { 'content-type': 'application/json', 'access-control-allow-origin': '*' })
+      res.end(JSON.stringify({ success: false, message: '해당 배터리가 존재하지 않습니다.', data: null }))
+      return
+    }
+    res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' })
+    res.end(JSON.stringify({ success: true, message: '배터리 상세 조회가 완료되었습니다.', data: item }))
+    return
+  }
+
   // GET /api/reports/individual/:reportId, GET /api/reports/daily/:reportId
   // 3단계 경로라 json-server의 /:name/:id 라우트가 못 잡는다.
   // db.json의 reports[].content 배열에서 직접 항목을 찾아 반환한다.
@@ -184,36 +200,36 @@ const server = http.createServer(async (req, res) => {
 })
 
 // --- /ws/sim, /api/sim — 검사 진행 상황(simulation.progress) mock ---
-// POST /api/sim { batchSize, batteryCellCount, captureSpeed } 요청에 맞춰 셀·배치를 생성하고
-// registered에 전부 등록한 뒤, 한 번에 한 배치씩 CAPTURING(captureSpeed초) → ANALYZING → COMPLETED 순으로 진행한다.
-let registered = []
-let capture = null
-let analyze = null
-let completed = []
+// 셀 단위로 진행 상황을 관리한다. 촬영(capture)은 배치 단위로, 분석(analyze)은 셀 단위로 진행한다.
+let registered = []   // CellProgress[] — 대기 중인 셀
+let capture = []      // CellProgress[] — 현재 촬영 배치의 셀들 (CAPTURING | CAPTURED)
+let analyze = null    // CellProgress | null — 분석 중인 단일 셀
+let completed = []    // CellProgress[] — 공정 완료 셀
 let captureSpeedSec = null
 let hasStartedOnce = false
+let totalCellCount = 0
 let totalBatchCount = 0
+let runId = 0
 
-// WS(/ws/sim)와 HTTP(POST·GET /api/sim)가 전부 이 페이로드 하나를 공유한다.
-// 한 번도 시작된 적이 없으면 captureSpeed가 없어 PROGRESS 스키마(비-nullable int)를 만족할 수 없으므로
-// COMPLETED(종료/복구할 것 없음)로 응답한다.
 function snapshot(forceProgress = false) {
   if (!hasStartedOnce) return { event: 'COMPLETED' }
 
-  // 모든 배치가 completed에 들어갔으면 COMPLETED
-  if (!forceProgress && completed.length === totalBatchCount && totalBatchCount > 0) {
-    console.log(`[snap] COMPLETED: completed=${completed.length}, total=${totalBatchCount}`)
+  if (
+    !forceProgress &&
+    completed.length === totalCellCount &&
+    totalCellCount > 0 &&
+    analyze === null &&
+    capture.length === 0
+  ) {
+    console.log(`[snap] COMPLETED`)
     return { event: 'COMPLETED' }
   }
 
-  console.log(`[snap] PROGRESS: registered=${registered.length}, capture=${capture ? 'yes' : 'no'}, analyze=${analyze ? 'yes' : 'no'}, completed=${completed.length}/${totalBatchCount}`)
-  const batches = [...registered, capture, analyze, ...completed].filter(Boolean)
-  const batchCount = batches.length
-  const batteryCellCount = batches.reduce((sum, b) => sum + b.cells.length, 0)
+  console.log(`[snap] PROGRESS: registered=${registered.length}, capture=${capture.length}, analyze=${analyze ? analyze.batteryCellId : 'null'}, completed=${completed.length}/${totalCellCount}`)
   return {
     event: 'PROGRESS',
-    batchCount,
-    batteryCellCount,
+    batchCount: totalBatchCount,
+    batteryCellCount: totalCellCount,
     captureSpeed: captureSpeedSec,
     registered,
     capture,
@@ -229,24 +245,28 @@ function broadcastSnapshot(forceProgress = false) {
   }
 }
 
-function makeBatches(batchSize, batteryCellCount) {
-  const batches = []
+function makeCells(batchSize, batteryCellCount) {
+  const cells = []
   let remaining = batteryCellCount
   let batchId = 1
 
   while (remaining > 0) {
     const cellCount = Math.min(batchSize, remaining)
-    const cells = []
     for (let i = 1; i <= cellCount; i++) {
       const cellId = Number(`${batchId}${String(i).padStart(3, '0')}`)
-      cells.push({ batteryCellId: cellId, inspectionId: cellId, finalLabel: null })
+      cells.push({
+        batteryCellId: cellId,
+        inspectionId: cellId,
+        finalLabel: null,
+        batchId,
+        status: 'REGISTERED',
+      })
     }
-    batches.push({ batchId, status: 'REGISTERED', cells })
     remaining -= cellCount
     batchId += 1
   }
 
-  return batches
+  return cells
 }
 
 const ANALYZE_DELAY_MIN_MS = 1000
@@ -256,95 +276,77 @@ function randomAnalyzeDelayMs() {
   return Math.floor(Math.random() * (ANALYZE_DELAY_MAX_MS - ANALYZE_DELAY_MIN_MS + 1)) + ANALYZE_DELAY_MIN_MS
 }
 
-// POST /api/sim이 다시 호출되면(재시작) runId가 올라간다 — 이전 실행의 setTimeout 체인은
-// myRunId 검사에 걸려 조용히 무시되고, 새로 시작된 시뮬레이션 상태를 건드리지 않는다.
-let runId = 0
-
-function moveToAnalyze(batch, myRunId) {
+// 캡처 완료 셀 하나를 분석 슬롯으로 이동한다.
+function analyzeCell(cell, myRunId) {
   if (myRunId !== runId) return
 
-  if (capture?.batchId === batch.batchId) {
-    capture = null
-  }
-
-  batch.status = 'ANALYZING'
-  analyze = batch
+  capture = capture.filter((c) => c.batteryCellId !== cell.batteryCellId)
+  cell.status = 'ANALYZING'
+  analyze = cell
   broadcastSnapshot()
-  console.log(`[sim] batch ${batch.batchId} → ANALYZING`)
-
-  // 분석으로 넘어가는 즉시 다음 배치를 CAPTURING으로 올린다.
-  processNextBatch(myRunId)
+  console.log(`[sim] cell ${cell.batteryCellId} (batch ${cell.batchId}) → ANALYZING`)
 
   const analyzeDelayMs = randomAnalyzeDelayMs()
-  console.log(`[sim] batch ${batch.batchId} analyze delay=${analyzeDelayMs}ms`)
-
   setTimeout(() => {
     if (myRunId !== runId) return
 
-    batch.status = 'COMPLETED'
-    batch.cells = batch.cells.map((cell) => ({
-      ...cell,
-      finalLabel: (() => {
-        const r = Math.random()
-        if (r < 0.75) return 'PASS'
-        if (r < 0.95) return 'REJECT'
-        return 'FAIL'
-      })(),
-    }))
-
+    const r = Math.random()
+    cell.finalLabel = r < 0.75 ? 'PASS' : r < 0.95 ? 'REJECT' : 'FAIL'
+    cell.status = 'COMPLETED'
     analyze = null
-    completed = [batch, ...completed]
-    // 마지막 배치라도 최종 completed 목록을 먼저 PROGRESS로 한번 보내고,
-    // 다음 루프에서 큐 소진 시 COMPLETED 이벤트를 보낸다.
+    completed = [cell, ...completed]
     broadcastSnapshot(true)
-    console.log(`[sim] batch ${batch.batchId} → COMPLETED`)
+    console.log(`[sim] cell ${cell.batteryCellId} → COMPLETED (${cell.finalLabel})`)
 
-    // 캡처가 이미 끝나서 CAPTURED 상태로 대기 중이면 즉시 분석 슬롯으로 이동.
-    if (capture && capture.status === 'CAPTURED') {
-      moveToAnalyze(capture, myRunId)
-      return
+    // 다음 CAPTURED 셀 분석 — 없으면 완료 체크
+    const nextCapture = capture.find((c) => c.status === 'CAPTURED')
+    if (nextCapture) {
+      analyzeCell(nextCapture, myRunId)
+    } else if (registered.length === 0 && !capture.some((c) => c.status === 'CAPTURING')) {
+      broadcastSnapshot()
+      console.log('[sim] all cells completed')
     }
-
-    processNextBatch(myRunId)
   }, analyzeDelayMs)
 }
 
+// registered에서 다음 배치의 셀을 꺼내 capture에 추가한다.
+// CAPTURED 셀이 남아 있어도 CAPTURING 배치가 없으면 즉시 다음 배치를 시작한다.
 function processNextBatch(myRunId) {
-  if (myRunId !== runId) return // 이미 재시작되어 폐기된 실행 — 무시
+  if (myRunId !== runId) return
+  // 이미 촬영 중인 배치가 있으면 대기
+  if (capture.some((c) => c.status === 'CAPTURING')) return
 
-  // capture 슬롯이 사용 중이면 새 배치를 올리지 않는다.
-  if (capture) return
+  if (registered.length === 0) return
 
-  const batch = registered.shift()
-  if (!batch) {
-    // 큐 소진 — 모든 배치가 완료되었으면 COMPLETED 브로드캐스트
-    if (completed.length === totalBatchCount && totalBatchCount > 0 && analyze === null && capture === null) {
-      broadcastSnapshot()
-      console.log('[sim] all batches completed')
-    }
-    return
+  const nextBatchId = registered[0].batchId
+  const batchCells = []
+  while (registered.length > 0 && registered[0].batchId === nextBatchId) {
+    const cell = registered.shift()
+    cell.status = 'CAPTURING'
+    batchCells.push(cell)
   }
-
-  batch.status = 'CAPTURING'
-  capture = batch
+  // 기존 CAPTURED 셀에 새 CAPTURING 셀을 추가 (적재와 촬영 동시)
+  capture = [...capture, ...batchCells]
   broadcastSnapshot()
-  console.log(`[sim] batch ${batch.batchId} → CAPTURING (${captureSpeedSec}s)`)
+  console.log(`[sim] batch ${nextBatchId} → CAPTURING (${captureSpeedSec}s), cells=${batchCells.length}, capture총=${capture.length}`)
 
   setTimeout(() => {
     if (myRunId !== runId) return
-    if (!capture || capture.batchId !== batch.batchId) return
 
-    batch.status = 'CAPTURED'
-
-    if (analyze === null) {
-      moveToAnalyze(batch, myRunId)
-      return
+    for (const cell of capture.filter((c) => c.batchId === nextBatchId && c.status === 'CAPTURING')) {
+      cell.status = 'CAPTURED'
     }
-
-    // 분석 슬롯이 비지 않았으면 CAPTURED 상태로 capture 슬롯에서 대기.
-    capture = batch
     broadcastSnapshot()
-    console.log(`[sim] batch ${batch.batchId} → CAPTURED (waiting ANALYZING slot)`)
+    console.log(`[sim] batch ${nextBatchId} → CAPTURED`)
+
+    // CAPTURED 즉시 다음 배치 촬영 시작
+    processNextBatch(myRunId)
+
+    // 분석 슬롯이 비어 있으면 첫 번째 CAPTURED 셀 분석 시작
+    if (analyze === null) {
+      const firstCapture = capture.find((c) => c.status === 'CAPTURED')
+      if (firstCapture) analyzeCell(firstCapture, myRunId)
+    }
   }, captureSpeedSec * 1000)
 }
 
@@ -352,15 +354,17 @@ function startSimulation({ batchSize, batteryCellCount, captureSpeed }) {
   runId += 1
   const myRunId = runId
 
-  registered = makeBatches(batchSize, batteryCellCount)
-  totalBatchCount = registered.length
-  capture = null
+  const cells = makeCells(batchSize, batteryCellCount)
+  totalCellCount = cells.length
+  totalBatchCount = Math.ceil(batteryCellCount / batchSize)
+  registered = cells
+  capture = []
   analyze = null
   completed = []
   captureSpeedSec = captureSpeed
   hasStartedOnce = true
 
-  console.log(`[sim] started: batchSize=${batchSize} batteryCellCount=${batteryCellCount} captureSpeed=${captureSpeed}s`)
+  console.log(`[sim] started: batchSize=${batchSize} batteryCellCount=${batteryCellCount} captureSpeed=${captureSpeed}s, totalCells=${totalCellCount}, totalBatches=${totalBatchCount}`)
   setTimeout(() => processNextBatch(myRunId), 0)
 }
 

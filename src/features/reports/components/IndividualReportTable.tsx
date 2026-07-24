@@ -69,6 +69,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           <colgroup>
             <col className="individual-report-table__col-status" />
             <col className="individual-report-table__col-title" />
+            <col className="individual-report-table__col-date" />
             <col className="individual-report-table__col-created" />
             <col className="individual-report-table__col-detail" />
           </colgroup>
@@ -76,6 +77,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
             <tr>
               <th>상태</th>
               <th>제목</th>
+              <th></th>
               <th>생성일시</th>
               <th>상세</th>
             </tr>
@@ -83,7 +85,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
           <tbody>
             {!isLoading && list.length === 0 && (
               <tr>
-                <td colSpan={4} className="report-table__empty">
+                <td colSpan={5} className="report-table__empty">
                   등록된 리포트가 없습니다.
                 </td>
               </tr>
@@ -107,6 +109,7 @@ function IndividualReportTable({ headerActions }: IndividualReportTableProps) {
                   </span>
                 </td>
                 <td>{item.title ?? `리포트 #${item.reportId}`}</td>
+                <td></td>
                 <td className="report-table__created">{formatDateTime(item.createdAt)}</td>
                 <td>
                   <DetailLinkButton to={ROUTES.REPORT_INDIVIDUAL_DETAIL(item.reportId)} />

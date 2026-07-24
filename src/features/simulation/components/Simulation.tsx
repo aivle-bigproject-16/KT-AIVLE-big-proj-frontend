@@ -30,15 +30,17 @@ function Simulation() {
   const completed = useSimulationStore((s) => s.completed)
   const captureSpeed = useSimulationStore((s) => s.captureSpeed)
 
-  const registeredCellCount = registered.reduce((sum, batch) => sum + batch.cells.length, 0)
-  const capturingCellCount = capture?.cells.length ?? 0
-  const analyzingCellCount = analyze?.cells.length ?? 0
+  // 셀 단위 집계
+  const registeredCellCount = registered.length
+  const capturingCellCount = capture.length
 
-  const completedCells = completed.flatMap((batch) => batch.cells)
-  const passCount = completedCells.filter((cell) => cell.finalLabel === 'PASS').length
-  const rejectCount = completedCells.filter((cell) => cell.finalLabel === 'REJECT').length
-  const failCount = completedCells.filter((cell) => cell.finalLabel === 'FAIL').length
-  const completedCount = completedCells.length
+  // 촬영은 배치 단위로 표시 — CAPTURING 상태 셀의 batchId를 진행 키로 사용
+  const activeBatchId = capture.find((c) => c.status === 'CAPTURING')?.batchId
+
+  const passCount = completed.filter((c) => c.finalLabel === 'PASS').length
+  const rejectCount = completed.filter((c) => c.finalLabel === 'REJECT').length
+  const failCount = completed.filter((c) => c.finalLabel === 'FAIL').length
+  const completedCount = completed.length
 
   return (
     <section className="simulation">
@@ -54,9 +56,7 @@ function Simulation() {
       </div>
 
       <div className="simulation__body">
-        {/*<VariantLabel>Variant 1: Glassmorphism Cards</VariantLabel>*/}
         <div className="simulation__cards">
-          {/* current/total 모두 useSimulationStore(WS) 실연동 — total은 batteryCellCount(전체 셀 개수) */}
           <SimulationCard
             label="대기 (PENDING)"
             icon={<InputIcon />}
@@ -74,9 +74,9 @@ function Simulation() {
             current={capturingCellCount}
             total={batteryCellCount}
             unit="active"
-            progressDurationSec={capture ? (captureSpeed ?? undefined) : undefined}
-            progressKey={capture?.batchId}
-            batchId={capture?.batchId}
+            progressDurationSec={activeBatchId !== undefined ? (captureSpeed ?? undefined) : undefined}
+            progressKey={activeBatchId}
+            batchId={activeBatchId}
             onClick={() => setModalCard('capture')}
           />
           <div className="simulation__connector" aria-hidden="true" />
@@ -84,7 +84,7 @@ function Simulation() {
             label="분석 (ANALYSIS)"
             icon={<AnalysisIcon />}
             iconColor={ACCENT_COLOR}
-            current={analyzingCellCount}
+            current={analyze ? 1 : 0}
             unit="queued"
             active={analyze !== null}
             batchId={analyze?.batchId}
@@ -102,7 +102,6 @@ function Simulation() {
             </svg>
           </div>
           <div className="simulation__cards-side">
-            {/* current/total은 useSimulationStore의 completed 셀 목록에서 집계한 실연동 값 */}
             <CompactCard
               label="정상 (PASS)"
               icon={<CheckIcon />}
@@ -136,29 +135,34 @@ function Simulation() {
           </div>
         </div>
       </div>
+
       <SimulationCardModal
         open={modalCard === 'pending'}
         onClose={() => setModalCard(null)}
         label="대기 (PENDING)"
-        batches={registered}
+        cells={registered}
       />
       <SimulationCardModal
         open={modalCard === 'capture'}
         onClose={() => setModalCard(null)}
         label="촬영 (CAPTURING)"
-        batches={capture ? [capture] : []}
+        cells={[...capture].sort((a, b) =>
+          a.status === 'CAPTURING' && b.status !== 'CAPTURING' ? -1
+          : a.status !== 'CAPTURING' && b.status === 'CAPTURING' ? 1
+          : 0
+        )}
       />
       <SimulationCardModal
         open={modalCard === 'analyze'}
         onClose={() => setModalCard(null)}
         label="분석 (ANALYSIS)"
-        batches={analyze ? [analyze] : []}
+        cells={analyze ? [analyze] : []}
       />
       <SimulationCardModal
         open={modalCard === 'pass'}
         onClose={() => setModalCard(null)}
         label="정상 (PASS)"
-        batches={completed}
+        cells={completed}
         statusSource="finalLabel"
         finalLabelFilter="PASS"
         emptyMessage="현재 정상(PASS) 셀이 없습니다."
@@ -167,7 +171,7 @@ function Simulation() {
         open={modalCard === 'reject'}
         onClose={() => setModalCard(null)}
         label="불량 (REJECT)"
-        batches={completed}
+        cells={completed}
         statusSource="finalLabel"
         finalLabelFilter="REJECT"
         emptyMessage="현재 불량(REJECT) 셀이 없습니다."
@@ -176,7 +180,7 @@ function Simulation() {
         open={modalCard === 'fail'}
         onClose={() => setModalCard(null)}
         label="검사 실패 (FAIL)"
-        batches={completed}
+        cells={completed}
         statusSource="finalLabel"
         finalLabelFilter="FAIL"
         emptyMessage="현재 검사 실패(FAIL) 셀이 없습니다."

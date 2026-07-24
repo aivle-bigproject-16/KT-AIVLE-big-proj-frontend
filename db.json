@@ -285,19 +285,19 @@
           "status": "COMPLETED",
           "title": "BATT-001 불량 검사 상세 리포트",
           "content": "CT 이미지 분석 결과, 상단 탭 부분에 94% 신뢰도로 크랙이 발견되었습니다.",
-          "ctImages": [],
-          "rgbImages": [],
+          "ctImages": ["https://picsum.photos/seed/ct1002/4000/530"],
+          "rgbImages": ["https://picsum.photos/seed/rgb1002/1920/1080"],
           "createdAt": "2026-07-07T10:00:00Z",
           "updatedAt": "2026-07-07T10:30:00Z",
           "imageMappings": [
             {
               "imageType": "CT",
-              "imageId": 1,
+              "imageId": 1001,
               "bbox": {
-                "x": 120,
-                "y": 80,
-                "width": 240,
-                "height": 160
+                "x": 800,
+                "y": 100,
+                "width": 500,
+                "height": 200
               }
             }
           ]
@@ -309,8 +309,8 @@
           "status": "COMPLETED",
           "title": "BATT-002 불량 검사 상세 리포트",
           "content": "RGB 이미지 분석 결과, 표면에 오점이 발견되었습니다.",
-          "ctImages": [],
-          "rgbImages": [],
+          "ctImages": ["https://picsum.photos/seed/ct1002/4000/530"],
+          "rgbImages": ["https://picsum.photos/seed/rgb1002/1920/1080"],
           "createdAt": "2026-07-07T11:00:00Z",
           "updatedAt": "2026-07-07T11:30:00Z",
           "imageMappings": [
@@ -318,10 +318,10 @@
               "imageType": "RGB",
               "imageId": 2,
               "bbox": {
-                "x": 60,
-                "y": 40,
-                "width": 100,
-                "height": 100
+                "x": 400,
+                "y": 200,
+                "width": 350,
+                "height": 280
               }
             }
           ]
@@ -420,6 +420,1079 @@
           }
         }
       ]
+    }
+  ],
+  "batteryDetail": [
+    {
+      "id": "1",
+      "batteryCellId": 1,
+      "cellSerialNo": "CELL-001",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-01",
+      "createdAt": "2026-07-07T10:00:00Z",
+      "updatedAt": "2026-07-07T10:30:00Z",
+      "inspections": [
+        {
+          "inspectionId": 101,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-07T10:20:00Z",
+          "image": [
+            {
+              "imageId": 1001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct001/4000/530"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 501,
+              "label": "REJECT",
+              "imageId": 1001,
+              "imageType": "CT",
+              "defectType": "MICRO_DEFECT",
+              "imageUrl": "https://picsum.photos/seed/ct001/4000/530",
+              "confidence": 0.9321,
+              "bbox": {
+                "x": 800,
+                "y": 100,
+                "width": 500,
+                "height": 200
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 102,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-07T10:00:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 1,
+          "inspectionId": 101,
+          "status": "COMPLETED",
+          "title": "CELL-001 CT 검사 상세 리포트",
+          "createdAt": "2026-07-07T10:40:00Z",
+          "updatedAt": "2026-07-07T10:45:00Z"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "batteryCellId": 2,
+      "cellSerialNo": "CELL-002",
+      "purchaseId": "Samsung",
+      "productId": "PRD-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-06-15",
+      "createdAt": "2026-07-06T11:00:00Z",
+      "updatedAt": "2026-07-06T11:30:00Z",
+      "inspections": [
+        {
+          "inspectionId": 201,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-06T11:00:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "1001",
+      "batteryCellId": 1001,
+      "cellSerialNo": "CELL-1001",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-04",
+      "createdAt": "2026-07-10T09:00:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 1401,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-10T09:00:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "1002",
+      "batteryCellId": 1002,
+      "cellSerialNo": "CELL-1002",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-05",
+      "createdAt": "2026-07-10T09:10:00Z",
+      "updatedAt": "2026-07-10T09:40:00Z",
+      "inspections": [
+        {
+          "inspectionId": 1101,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-10T09:30:00Z",
+          "image": [
+            {
+              "imageId": 2001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct1002/4000/530"
+            },
+            {
+              "imageId": 2002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb1002/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 601,
+              "label": "REJECT",
+              "imageId": 2001,
+              "imageType": "CT",
+              "defectType": "CRACK",
+              "imageUrl": "https://picsum.photos/seed/ct1002/4000/530",
+              "confidence": 0.8754,
+              "bbox": {
+                "x": 1500,
+                "y": 80,
+                "width": 600,
+                "height": 250
+              }
+            },
+            {
+              "defectResultId": 602,
+              "label": "REJECT",
+              "imageId": 2002,
+              "imageType": "RGB",
+              "defectType": "SWELLING",
+              "imageUrl": "https://picsum.photos/seed/rgb1002/1920/1080",
+              "confidence": 0.7623,
+              "bbox": {
+                "x": 400,
+                "y": 200,
+                "width": 350,
+                "height": 280
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 1102,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-10T09:10:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 2,
+          "inspectionId": 1101,
+          "status": "COMPLETED",
+          "title": "CELL-1002 크랙·팽창 복합 결함 리포트",
+          "createdAt": "2026-07-10T10:00:00Z",
+          "updatedAt": "2026-07-10T10:20:00Z"
+        }
+      ]
+    },
+    {
+      "id": "1003",
+      "batteryCellId": 1003,
+      "cellSerialNo": "CELL-1003",
+      "purchaseId": "Samsung",
+      "productId": "PRD-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-07-02",
+      "createdAt": "2026-07-10T09:20:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 1501,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-10T09:20:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "1004",
+      "batteryCellId": 1004,
+      "cellSerialNo": "CELL-1004",
+      "purchaseId": "Samsung",
+      "productId": "PRD-003",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-07-03",
+      "createdAt": "2026-07-10T09:30:00Z",
+      "updatedAt": "2026-07-10T09:50:00Z",
+      "inspections": [
+        {
+          "inspectionId": 1301,
+          "finalLabel": "FAIL",
+          "analyzedAt": "2026-07-10T09:50:00Z",
+          "image": [
+            {
+              "imageId": 3001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct1004/4000/530"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 701,
+              "label": "FAIL",
+              "imageId": 3001,
+              "imageType": "CT",
+              "defectType": "MICRO_DEFECT",
+              "imageUrl": "https://picsum.photos/seed/ct1004/4000/530",
+              "confidence": 0.6102,
+              "bbox": null
+            }
+          ]
+        },
+        {
+          "inspectionId": 1302,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-10T09:30:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 3,
+          "inspectionId": 1301,
+          "status": "PENDING",
+          "title": "CELL-1004 검사 실패 리포트",
+          "createdAt": "2026-07-10T10:00:00Z",
+          "updatedAt": null
+        }
+      ]
+    },
+    {
+      "id": "1005",
+      "batteryCellId": 1005,
+      "cellSerialNo": "CELL-1005",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-04",
+      "createdAt": "2026-07-10T09:40:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 1601,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-10T09:40:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "1006",
+      "batteryCellId": 1006,
+      "cellSerialNo": "CELL-1006",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-06",
+      "createdAt": "2026-07-10T09:50:00Z",
+      "updatedAt": "2026-07-10T10:10:00Z",
+      "inspections": [
+        {
+          "inspectionId": 1701,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-10T10:00:00Z",
+          "image": [
+            {
+              "imageId": 4001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct1006/4000/530"
+            },
+            {
+              "imageId": 4002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb1006/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 801,
+              "label": "REJECT",
+              "imageId": 4001,
+              "imageType": "CT",
+              "defectType": "CRACK",
+              "imageUrl": "https://picsum.photos/seed/ct1006/4000/530",
+              "confidence": 0.9145,
+              "bbox": {
+                "x": 600,
+                "y": 50,
+                "width": 700,
+                "height": 300
+              }
+            },
+            {
+              "defectResultId": 802,
+              "label": "REJECT",
+              "imageId": 4002,
+              "imageType": "RGB",
+              "defectType": "CRACK",
+              "imageUrl": "https://picsum.photos/seed/rgb1006/1920/1080",
+              "confidence": 0.8823,
+              "bbox": {
+                "x": 800,
+                "y": 300,
+                "width": 400,
+                "height": 350
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 1702,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-10T09:50:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 4,
+          "inspectionId": 1701,
+          "status": "COMPLETED",
+          "title": "CELL-1006 크랙 결함 리포트",
+          "createdAt": "2026-07-10T10:30:00Z",
+          "updatedAt": "2026-07-10T10:50:00Z"
+        }
+      ]
+    },
+    {
+      "id": "2001",
+      "batteryCellId": 2001,
+      "cellSerialNo": "CELL-2001",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-08",
+      "createdAt": "2026-07-11T10:00:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 2010,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-11T10:00:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "2002",
+      "batteryCellId": 2002,
+      "cellSerialNo": "CELL-2002",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-07",
+      "createdAt": "2026-07-11T10:10:00Z",
+      "updatedAt": "2026-07-11T10:40:00Z",
+      "inspections": [
+        {
+          "inspectionId": 2020,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-11T10:30:00Z",
+          "image": [
+            {
+              "imageId": 5001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct2002/4000/530"
+            },
+            {
+              "imageId": 5002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb2002/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 901,
+              "label": "REJECT",
+              "imageId": 5001,
+              "imageType": "CT",
+              "defectType": "SWELLING",
+              "imageUrl": "https://picsum.photos/seed/ct2002/4000/530",
+              "confidence": 0.9401,
+              "bbox": {
+                "x": 2500,
+                "y": 100,
+                "width": 550,
+                "height": 250
+              }
+            },
+            {
+              "defectResultId": 902,
+              "label": "REJECT",
+              "imageId": 5002,
+              "imageType": "RGB",
+              "defectType": "CONTAMINATION",
+              "imageUrl": "https://picsum.photos/seed/rgb2002/1920/1080",
+              "confidence": 0.8512,
+              "bbox": {
+                "x": 200,
+                "y": 150,
+                "width": 300,
+                "height": 250
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 2021,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-11T10:10:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 5,
+          "inspectionId": 2020,
+          "status": "COMPLETED",
+          "title": "CELL-2002 팽창·오염 복합 결함 리포트",
+          "createdAt": "2026-07-11T11:00:00Z",
+          "updatedAt": "2026-07-11T11:20:00Z"
+        }
+      ]
+    },
+    {
+      "id": "2003",
+      "batteryCellId": 2003,
+      "cellSerialNo": "CELL-2003",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-06",
+      "createdAt": "2026-07-11T10:20:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 2030,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-11T10:20:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "2004",
+      "batteryCellId": 2004,
+      "cellSerialNo": "CELL-2004",
+      "purchaseId": "Samsung",
+      "productId": "PRD-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-07-05",
+      "createdAt": "2026-07-11T10:30:00Z",
+      "updatedAt": "2026-07-11T10:50:00Z",
+      "inspections": [
+        {
+          "inspectionId": 2040,
+          "finalLabel": "FAIL",
+          "analyzedAt": "2026-07-11T10:45:00Z",
+          "image": [
+            {
+              "imageId": 6001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct2004/4000/530"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 1001,
+              "label": "FAIL",
+              "imageId": 6001,
+              "imageType": "CT",
+              "defectType": "CRACK",
+              "imageUrl": "https://picsum.photos/seed/ct2004/4000/530",
+              "confidence": 0.6823,
+              "bbox": null
+            }
+          ]
+        },
+        {
+          "inspectionId": 2041,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-11T10:30:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 6,
+          "inspectionId": 2040,
+          "status": "PENDING",
+          "title": "CELL-2004 크랙 검사 리포트",
+          "createdAt": "2026-07-11T11:00:00Z",
+          "updatedAt": null
+        }
+      ]
+    },
+    {
+      "id": "2005",
+      "batteryCellId": 2005,
+      "cellSerialNo": "CELL-2005",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-08",
+      "createdAt": "2026-07-11T10:40:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 2050,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-11T10:40:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "2006",
+      "batteryCellId": 2006,
+      "cellSerialNo": "CELL-2006",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-07",
+      "createdAt": "2026-07-11T10:50:00Z",
+      "updatedAt": "2026-07-11T11:20:00Z",
+      "inspections": [
+        {
+          "inspectionId": 2060,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-11T11:10:00Z",
+          "image": [
+            {
+              "imageId": 7001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct2006/4000/530"
+            },
+            {
+              "imageId": 7002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb2006/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 1101,
+              "label": "REJECT",
+              "imageId": 7001,
+              "imageType": "CT",
+              "defectType": "MICRO_DEFECT",
+              "imageUrl": "https://picsum.photos/seed/ct2006/4000/530",
+              "confidence": 0.8932,
+              "bbox": {
+                "x": 3200,
+                "y": 80,
+                "width": 500,
+                "height": 200
+              }
+            },
+            {
+              "defectResultId": 1102,
+              "label": "REJECT",
+              "imageId": 7002,
+              "imageType": "RGB",
+              "defectType": "SWELLING",
+              "imageUrl": "https://picsum.photos/seed/rgb2006/1920/1080",
+              "confidence": 0.7456,
+              "bbox": {
+                "x": 1200,
+                "y": 400,
+                "width": 400,
+                "height": 350
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 2061,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-11T10:50:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 7,
+          "inspectionId": 2060,
+          "status": "COMPLETED",
+          "title": "CELL-2006 미세결함·팽창 복합 결함 리포트",
+          "createdAt": "2026-07-11T11:30:00Z",
+          "updatedAt": "2026-07-11T11:50:00Z"
+        }
+      ]
+    },
+    {
+      "id": "3001",
+      "batteryCellId": 3001,
+      "cellSerialNo": "CELL-3001",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-10",
+      "createdAt": "2026-07-12T08:00:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 3010,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T08:00:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "3002",
+      "batteryCellId": 3002,
+      "cellSerialNo": "CELL-3002",
+      "purchaseId": "Samsung",
+      "productId": "PRD-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-07-09",
+      "createdAt": "2026-07-12T08:10:00Z",
+      "updatedAt": "2026-07-12T08:40:00Z",
+      "inspections": [
+        {
+          "inspectionId": 3020,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-12T08:30:00Z",
+          "image": [
+            {
+              "imageId": 8001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct3002/4000/530"
+            },
+            {
+              "imageId": 8002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb3002/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 1201,
+              "label": "REJECT",
+              "imageId": 8001,
+              "imageType": "CT",
+              "defectType": "CRACK",
+              "imageUrl": "https://picsum.photos/seed/ct3002/4000/530",
+              "confidence": 0.9012,
+              "bbox": {
+                "x": 1000,
+                "y": 200,
+                "width": 400,
+                "height": 200
+              }
+            },
+            {
+              "defectResultId": 1202,
+              "label": "REJECT",
+              "imageId": 8002,
+              "imageType": "RGB",
+              "defectType": "MICRO_DEFECT",
+              "imageUrl": "https://picsum.photos/seed/rgb3002/1920/1080",
+              "confidence": 0.8265,
+              "bbox": {
+                "x": 600,
+                "y": 500,
+                "width": 350,
+                "height": 300
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 3021,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T08:10:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 8,
+          "inspectionId": 3020,
+          "status": "COMPLETED",
+          "title": "CELL-3002 크랙 결함 리포트",
+          "createdAt": "2026-07-12T09:00:00Z",
+          "updatedAt": "2026-07-12T09:20:00Z"
+        }
+      ]
+    },
+    {
+      "id": "3003",
+      "batteryCellId": 3003,
+      "cellSerialNo": "CELL-3003",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-10",
+      "createdAt": "2026-07-12T08:20:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 3030,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T08:20:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "3004",
+      "batteryCellId": 3004,
+      "cellSerialNo": "CELL-3004",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-08",
+      "createdAt": "2026-07-12T08:30:00Z",
+      "updatedAt": "2026-07-12T08:50:00Z",
+      "inspections": [
+        {
+          "inspectionId": 3040,
+          "finalLabel": "FAIL",
+          "analyzedAt": "2026-07-12T08:45:00Z",
+          "image": [
+            {
+              "imageId": 9001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct3004/4000/530"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 1301,
+              "label": "FAIL",
+              "imageId": 9001,
+              "imageType": "CT",
+              "defectType": "SWELLING",
+              "imageUrl": "https://picsum.photos/seed/ct3004/4000/530",
+              "confidence": 0.5891,
+              "bbox": null
+            }
+          ]
+        },
+        {
+          "inspectionId": 3041,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T08:30:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 9,
+          "inspectionId": 3040,
+          "status": "PENDING",
+          "title": "CELL-3004 팽창 결함 리포트",
+          "createdAt": "2026-07-12T09:00:00Z",
+          "updatedAt": null
+        }
+      ]
+    },
+    {
+      "id": "3005",
+      "batteryCellId": 3005,
+      "cellSerialNo": "CELL-3005",
+      "purchaseId": "Samsung",
+      "productId": "PRD-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-07-09",
+      "createdAt": "2026-07-12T08:40:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 3050,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T08:40:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "3006",
+      "batteryCellId": 3006,
+      "cellSerialNo": "CELL-3006",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-07",
+      "createdAt": "2026-07-12T08:50:00Z",
+      "updatedAt": "2026-07-12T09:20:00Z",
+      "inspections": [
+        {
+          "inspectionId": 3060,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-12T09:10:00Z",
+          "image": [
+            {
+              "imageId": 10001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct3006/4000/530"
+            },
+            {
+              "imageId": 10002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb3006/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 1401,
+              "label": "REJECT",
+              "imageId": 10001,
+              "imageType": "CT",
+              "defectType": "CONTAMINATION",
+              "imageUrl": "https://picsum.photos/seed/ct3006/4000/530",
+              "confidence": 0.8634,
+              "bbox": {
+                "x": 3500,
+                "y": 150,
+                "width": 400,
+                "height": 200
+              }
+            },
+            {
+              "defectResultId": 1402,
+              "label": "REJECT",
+              "imageId": 10002,
+              "imageType": "RGB",
+              "defectType": "CRACK",
+              "imageUrl": "https://picsum.photos/seed/rgb3006/1920/1080",
+              "confidence": 0.789,
+              "bbox": {
+                "x": 100,
+                "y": 600,
+                "width": 450,
+                "height": 300
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 3061,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T08:50:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 10,
+          "inspectionId": 3060,
+          "status": "COMPLETED",
+          "title": "CELL-3006 오염·크랙 복합 결함 리포트",
+          "createdAt": "2026-07-12T09:30:00Z",
+          "updatedAt": "2026-07-12T09:50:00Z"
+        }
+      ]
+    },
+    {
+      "id": "3007",
+      "batteryCellId": 3007,
+      "cellSerialNo": "CELL-3007",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-11",
+      "createdAt": "2026-07-12T09:00:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 3070,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T09:00:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "3008",
+      "batteryCellId": 3008,
+      "cellSerialNo": "CELL-3008",
+      "purchaseId": "Samsung",
+      "productId": "PRD-002",
+      "modelName": "MODEL-B",
+      "cellType": "CYLINDRICAL",
+      "manufacturedDate": "2026-07-10",
+      "createdAt": "2026-07-12T09:10:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 3080,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T09:10:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
+    },
+    {
+      "id": "3009",
+      "batteryCellId": 3009,
+      "cellSerialNo": "CELL-3009",
+      "purchaseId": "SK",
+      "productId": "PRD-004",
+      "modelName": "MODEL-C",
+      "cellType": "PRISMATIC",
+      "manufacturedDate": "2026-07-08",
+      "createdAt": "2026-07-12T09:20:00Z",
+      "updatedAt": "2026-07-12T09:50:00Z",
+      "inspections": [
+        {
+          "inspectionId": 3090,
+          "finalLabel": "REJECT",
+          "analyzedAt": "2026-07-12T09:40:00Z",
+          "image": [
+            {
+              "imageId": 11001,
+              "imageType": "CT",
+              "imageUrl": "https://picsum.photos/seed/ct3009/4000/530"
+            },
+            {
+              "imageId": 11002,
+              "imageType": "RGB",
+              "imageUrl": "https://picsum.photos/seed/rgb3009/1920/1080"
+            }
+          ],
+          "defectResults": [
+            {
+              "defectResultId": 1501,
+              "label": "REJECT",
+              "imageId": 11001,
+              "imageType": "CT",
+              "defectType": "MICRO_DEFECT",
+              "imageUrl": "https://picsum.photos/seed/ct3009/4000/530",
+              "confidence": 0.9234,
+              "bbox": {
+                "x": 1800,
+                "y": 50,
+                "width": 650,
+                "height": 280
+              }
+            },
+            {
+              "defectResultId": 1502,
+              "label": "REJECT",
+              "imageId": 11002,
+              "imageType": "RGB",
+              "defectType": "CONTAMINATION",
+              "imageUrl": "https://picsum.photos/seed/rgb3009/1920/1080",
+              "confidence": 0.8156,
+              "bbox": {
+                "x": 1400,
+                "y": 200,
+                "width": 380,
+                "height": 320
+              }
+            }
+          ]
+        },
+        {
+          "inspectionId": 3091,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T09:20:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": [
+        {
+          "reportId": 11,
+          "inspectionId": 3090,
+          "status": "COMPLETED",
+          "title": "CELL-3009 미세결함·오염 복합 결함 리포트",
+          "createdAt": "2026-07-12T10:00:00Z",
+          "updatedAt": "2026-07-12T10:20:00Z"
+        }
+      ]
+    },
+    {
+      "id": "3010",
+      "batteryCellId": 3010,
+      "cellSerialNo": "CELL-3010",
+      "purchaseId": "LG",
+      "productId": "PRD-001",
+      "modelName": "MODEL-A",
+      "cellType": "POUCH",
+      "manufacturedDate": "2026-07-11",
+      "createdAt": "2026-07-12T09:30:00Z",
+      "updatedAt": null,
+      "inspections": [
+        {
+          "inspectionId": 3100,
+          "finalLabel": "PASS",
+          "analyzedAt": "2026-07-12T09:30:00Z",
+          "image": [],
+          "defectResults": []
+        }
+      ],
+      "reports": []
     }
   ],
   "users": [

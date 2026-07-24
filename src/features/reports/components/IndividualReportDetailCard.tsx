@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import './IndividualReportDetailCard.css'
 import { ROUTES } from '@/core/navigation/routes'
 import { useIndividualReportDetailStore } from '../store/useIndividualReportDetailStore'
-import IndividualReportHeader from './IndividualReportHeader'
+import { BatteryInfoHeader } from '@/shared/ui/BatteryInfoHeader'
+import { ImageBboxGrid } from '@/shared/ui/ImageBboxGrid'
+import type { ImageBboxGridItem } from '@/shared/ui/ImageBboxGrid'
 import type { IndividualReportDetail, ImageMapping } from '../types'
 
 function formatDateTime(value: string | null): string {
@@ -35,22 +37,20 @@ function IndividualReportDetailCard({ reportId }: IndividualReportDetailCardProp
         ← 개별 리포트 목록으로
       </Link>
 
-      <div className="individual-detail__card">
-        {isLoading && <p className="individual-detail__notice">불러오는 중...</p>}
-        {error && <p className="individual-detail__notice individual-detail__notice--error">{error}</p>}
+      {isLoading && <p className="individual-detail__notice">불러오는 중...</p>}
+      {error && <p className="individual-detail__notice individual-detail__notice--error">{error}</p>}
 
-        {detail && detail.status === 'PENDING' && (
-          <p className="individual-detail__notice">리포트를 생성하는 중입니다.</p>
-        )}
+      {detail && detail.status === 'PENDING' && (
+        <p className="individual-detail__notice">리포트를 생성하는 중입니다.</p>
+      )}
 
-        {detail && detail.status === 'FAILED' && (
-          <p className="individual-detail__notice individual-detail__notice--error">
-            리포트 생성에 실패했습니다.
-          </p>
-        )}
+      {detail && detail.status === 'FAILED' && (
+        <p className="individual-detail__notice individual-detail__notice--error">
+          리포트 생성에 실패했습니다.
+        </p>
+      )}
 
-        {detail && detail.status === 'COMPLETED' && <IndividualDetailBody detail={detail} />}
-      </div>
+      {detail && detail.status === 'COMPLETED' && <IndividualDetailBody detail={detail} />}
     </section>
   )
 }
@@ -58,12 +58,30 @@ function IndividualReportDetailCard({ reportId }: IndividualReportDetailCardProp
 function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
   return (
     <>
-      <IndividualReportHeader detail={detail} />
+      <BatteryInfoHeader
+        title={detail.title ?? `개별 리포트 #${detail.reportId}`}
+        idLabel={`RPT-${detail.reportId}`}
+        badges={[{ text: detail.cellSerialNo, tone: 'neutral' }]}
+        metaItems={[
+          { label: '생성일시', value: formatDateTime(detail.createdAt) },
+          { label: '수정일시', value: formatDateTime(detail.updatedAt) },
+        ]}
+      />
 
       <div className="individual-detail__layout">
         <div className="individual-detail__col individual-detail__col--images">
-          <ImageBox title="CT 데이터 분석 (CT DATA ANALYSIS)" images={detail.ctImages} emptyText="CT 이미지가 없습니다." />
-          <ImageBox title="RGB 이미지 분석 (RGB IMAGE ANALYSIS)" images={detail.rgbImages} emptyText="RGB 이미지가 없습니다." />
+          <ImageBox
+            title="CT 데이터 분석 (CT DATA ANALYSIS)"
+            images={detail.ctImages}
+            emptyText="CT 이미지가 없습니다."
+            mappings={detail.imageMappings.filter((m) => m.imageType === 'CT')}
+          />
+          <ImageBox
+            title="RGB 이미지 분석 (RGB IMAGE ANALYSIS)"
+            images={detail.rgbImages}
+            emptyText="RGB 이미지가 없습니다."
+            mappings={detail.imageMappings.filter((m) => m.imageType === 'RGB')}
+          />
         </div>
 
         <div className="individual-detail__col individual-detail__col--side">
@@ -81,20 +99,6 @@ function IndividualDetailBody({ detail }: { detail: IndividualReportDetail }) {
                 ))}
               </ul>
             )}
-          </div>
-
-          <div className="individual-detail__box">
-            <h2 className="individual-detail__box-title">메타데이터 (METADATA)</h2>
-            <dl className="individual-detail__meta-list">
-              <div className="individual-detail__meta-row">
-                <dt>생성일시</dt>
-                <dd>{formatDateTime(detail.createdAt)}</dd>
-              </div>
-              <div className="individual-detail__meta-row">
-                <dt>수정일시</dt>
-                <dd>{formatDateTime(detail.updatedAt)}</dd>
-              </div>
-            </dl>
           </div>
         </div>
       </div>
@@ -114,19 +118,40 @@ function CoordItem({ mapping }: { mapping: ImageMapping }) {
   )
 }
 
-function ImageBox({ title, images, emptyText }: { title: string; images: string[]; emptyText: string }) {
+function ImageBox({
+  title,
+  images,
+  emptyText,
+  mappings,
+}: {
+  title: string
+  images: string[]
+  emptyText: string
+  mappings: ImageMapping[]
+}) {
+  const items: ImageBboxGridItem[] = images.map((src, i) => {
+    const mapping = mappings[i]
+    return {
+      id: mapping ? mapping.imageId : i,
+      imageUrl: src,
+      title: mapping ? `${mapping.imageType} · ID ${mapping.imageId}` : `${title} ${i + 1}`,
+      regions: mapping ? [{ id: mapping.imageId, bbox: mapping.bbox, tone: 'neutral' as const }] : [],
+      infoItems: mapping
+        ? [
+            {
+              id: mapping.imageId,
+              primaryText: mapping.imageType,
+              secondaryText: `bbox (${mapping.bbox.x}, ${mapping.bbox.y}) ${mapping.bbox.width}×${mapping.bbox.height}`,
+            },
+          ]
+        : [],
+    }
+  })
+
   return (
     <div className="individual-detail__box">
       <h2 className="individual-detail__box-title">{title}</h2>
-      {images.length === 0 ? (
-        <p className="individual-detail__empty">{emptyText}</p>
-      ) : (
-        <div className="individual-detail__image-grid">
-          {images.map((src, i) => (
-            <img key={src} src={src} alt={`${title} ${i + 1}`} className="individual-detail__image" />
-          ))}
-        </div>
-      )}
+      <ImageBboxGrid items={items} emptyText={emptyText} />
     </div>
   )
 }

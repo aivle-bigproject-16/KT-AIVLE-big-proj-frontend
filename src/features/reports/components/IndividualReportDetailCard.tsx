@@ -135,7 +135,6 @@ function ImageBox({
       id: mapping ? mapping.imageId : i,
       imageUrl: src,
       title: mapping ? `${mapping.imageType} · ID ${mapping.imageId}` : `${title} ${i + 1}`,
-      typeLabel: mapping?.imageType,
       regions: mapping ? [{ id: mapping.imageId, bbox: mapping.bbox, tone: 'neutral' as const }] : [],
       infoItems: mapping
         ? [

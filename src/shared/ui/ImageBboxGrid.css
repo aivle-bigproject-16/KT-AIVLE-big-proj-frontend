@@ -1,12 +1,12 @@
 .image-bbox-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 16rem);
   gap: 1.2rem;
+  justify-content: center;
 }
 
 .image-bbox-grid__item {
   position: relative;
-  flex-shrink: 0;
   border: 1px solid #e9bcb6;
   border-radius: 0.8rem;
   overflow: hidden;

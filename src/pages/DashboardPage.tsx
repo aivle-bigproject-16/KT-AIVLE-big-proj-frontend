@@ -1,4 +1,5 @@
-import { Simulation, KpiCards, ResultSummary, DefectAnalysisChart } from '@/features/simulation'
+import { Simulation, KpiCards, ResultSummary } from '@/features/simulation'
+import { DefectAnalysisChart } from '@/features/dashboard'
 import './DashboardPage.css'
 
 function DashboardPage() {

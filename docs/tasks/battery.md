@@ -1,22 +1,28 @@
+# battery
+
 # 배터리 — 검사 목록 / 상세 (battery)
 
 > `src/features/battery/`
-> 관련 API: `GET /battery?page=&size=`, `GET /battery/{batteryCellId}`
-> 필터 파라미터는 현재 API_SPEC에 없음 — `page` / `size`만 확정.
+관련 API: `GET /battery?page=&size=`, `GET /battery/{batteryCellId}`
+필터 파라미터는 현재 API_SPEC에 없음 — `page` / `size`만 확정.
+> 
 
 ## 작업 이력
 
 | 날짜 | 디자인 | 컴포넌트 | 스토어 | 서비스 |
-|---|---|---|---|---|
-| 2026-07-08 | | | `useBatteryListStore` / `useBatteryDetailStore` 파일 생성 (스캐폴딩 + 목업 연동) | `batteryService` 파일 생성 (스캐폴딩 + 목업 연동) |
-| 2026-07-13 | | | API 명세 반영 수정 (`a9b2b1b`) | API 명세 반영 수정 (`a9b2b1b`) |
+| --- | --- | --- | --- | --- |
+| 2026-07-08 |  |  | `useBatteryListStore` / `useBatteryDetailStore` 파일 생성 (스캐폴딩 + 목업 연동) | `batteryService` 파일 생성 (스캐폴딩 + 목업 연동) |
+| 2026-07-13 | FAIL 느낌표 표시·페이지 칸 비율 조정 (`5bfe631`) · FAIL 느낌표 노란색·행 높이 통일 (`7c75fa7`) · 상세 열 버튼 수정 (`34fcf0d`) | 배터리 목록 페이지 구현 (`09c29f1`) · 아이콘 컴포넌트 분리 (`58f8f9d`) · REJECT/FAIL 필터 구현 (`4557441`) · 탭 너비 고정 (`37838b3`) | API 명세 반영 수정 (`a9b2b1b`) | API 명세 반영 수정 (`a9b2b1b`) |
+| 2026-07-14 | 디자인 요소 일부 수정 (`9048e42`) | 배터리·리포트 목록 공통 컴포넌트 분리 (`1f72d12`) · Pagination, DetailLinkButton 공통 컴포넌트 추가 (`1204dd0`) |  |  |
+| 2026-07-15 |  | 페이지네이션 추가 (`0943978`) |  |  |
+| 2026-07-22 | 배터리 상세 디자인 | 배터리 상세조회 컴포넌트 구현 (`23a0c9c`) | `useBatteryDetailStore` 연결 (`23a0c9c`) |  |
 
 ---
 
 ## 브랜치 & 커밋 이력
 
 | 브랜치 | 커밋 | 날짜 | 내용 |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `feat/scaffold` | `560fee7` | 2026-07-08 | API 명세 기반 도메인 타입 인터페이스 정의 |
 | `feat/scaffold` | `8f09267` | 2026-07-08 | axios 기반 HTTP 클라이언트 및 모듈 확장 타입 추가 |
 | `test` | `5848645` | 2026-07-08 | mockup 및 테스트용 BE 서버 생성 |
@@ -32,3 +38,5 @@
 | `feat/shared-components` | `1204dd0` | 2026-07-14 | feat: Pagination, DetailLinkButton 공통 컴포넌트 추가 |
 | `feat/battery` (PR #22) | `9048e42` | 2026-07-14 | Fix: 디자인 요소 일부 수정 |
 | `feat/battery` | `66bd78e` | 2026-07-14 | Feat: api_spec 수정 |
+| `feat/battery` | `0943978` | 2026-07-15 | feat: 페이지네이션 추가 |
+| `feat/battery` (PR #25) | `23a0c9c` | 2026-07-22 | Feat: 배터리 상세조회 |

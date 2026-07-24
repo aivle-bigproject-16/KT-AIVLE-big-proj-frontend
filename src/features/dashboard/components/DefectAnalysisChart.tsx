@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './DefectAnalysisChart.css'
-import { dashboardService } from '@/features/dashboard/services/dashboardService'
+import { useDashboardStore } from '@/features/dashboard/store/useDashboardStore'
 import type { GraphDataItem, GraphType } from '@/features/dashboard/types'
 
 // 8-hue 고정 순서 카테고리 팔레트(색맹 안전성 검증됨) — slot 1부터 순서대로 배정
@@ -172,29 +172,14 @@ function DailyTrendLine({ data }: { data: GraphDataItem[] }) {
 
 function DefectAnalysisChart() {
   const [chartType, setChartType] = useState<GraphType>('DEFECT_TYPE')
-  const [graphData, setGraphData] = useState<GraphDataItem[]>([])
+  const graphData = useDashboardStore((s) => s.graphData)
+  const { fetchDashboard } = useDashboardStore((s) => s.actions)
 
   useEffect(() => {
-    let cancelled = false
-
-    dashboardService
-      .getDashboard({
-        todayDate: '2026-07-07',
-        startDate: '2026-07-01',
-        size: 5,
-        graphType: chartType,
-      })
-      .then((res) => {
-        if (!cancelled) setGraphData(res.data.graphData)
-      })
-      .catch(() => {
-        if (!cancelled) setGraphData([])
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [chartType])
+    const todayDate = new Date().toISOString().slice(0, 10)
+    const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    fetchDashboard({ todayDate, startDate, size: 5, graphType: chartType })
+  }, [chartType, fetchDashboard])
 
   return (
     <div className="defect-analysis-chart">

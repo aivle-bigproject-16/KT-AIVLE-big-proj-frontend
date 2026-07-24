@@ -1,17 +1,23 @@
 # KT AIVLE Big Project — Frontend
 
-React 19 기반 배터리 검사 및 대시보드 웹 애플리케이션입니다.
+React 19 기반 배터리 검사 및 대시보드 웹 애플리케이션.
+
+> **AI 또는 새 기여자에게**: 설계 원칙, 스토어 분리 정책, WS 연결 규칙, CSS 전략, API 엔드포인트 전체 목록 등 상세 내용은 [`ARCHITECTURE.md`](./ARCHITECTURE.md)를 참고하라.
+
+---
 
 ## 기술 스택
 
 | 구분 | 기술 |
 |---|---|
 | UI | React 19 + TypeScript |
-| 번들러 | Vite 8 |
+| 번들러 | Vite |
 | 패키지 매니저 | Bun |
 | 상태관리 | Zustand |
 | 컴파일러 | React Compiler (자동 메모이제이션) |
 | Lint | ESLint 10 + typescript-eslint |
+
+---
 
 ## 시작하기
 
@@ -32,74 +38,84 @@ bun preview
 bun lint
 ```
 
+### mock 서버 실행 (백엔드 없이 개발 시)
+
+```bash
+node mock-server.mjs
+```
+
+`http://localhost:4000` — json-server 기반. `db.json`이 데이터 소스.
+
+---
+
 ## 폴더 구조
 
 ```
 src/
 ├── features/          # 비즈니스 도메인별 코드
-│   ├── header/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   └── index.ts
-│   ├── battery/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── types/
-│   │   ├── store/
-│   │   ├── services/
-│   │   └── index.ts
-│   ├── dashboard/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── types/
-│   │   ├── store/
-│   │   ├── services/
-│   │   └── index.ts
-│   └── report/
-│       ├── components/
-│       ├── hooks/
-│       ├── types/
-│       ├── store/
-│       ├── services/
-│       └── index.ts
+│   ├── header/        # 사이드바, TopAppBar
+│   ├── auth/          # 로그인, 회원가입
+│   ├── battery/       # 배터리 목록 / 상세
+│   ├── dashboard/     # KPI 차트 (HTTP)
+│   ├── simulation/    # 실시간 시뮬레이션 (WS)
+│   └── reports/       # 개별 / 일일 리포트
 ├── pages/             # 라우트 1:1 페이지 컴포넌트
-│   ├── DashboardPage.tsx
-│   ├── InspectionPage.tsx
-│   └── ReportPage.tsx
-├── core/              # 앱 전반 인프라
-│   ├── api/           # axios 인스턴스 + 인터셉터
-│   ├── auth/          # 전역 AuthContext + Reducer
-│   └── navigation/    # Router, PrivateRoute, routes 상수
-└── shared/            # 2개 이상 feature에서 쓰이는 공통 코드
-    ├── ui/            # 재사용 UI 컴포넌트 (Button, Modal 등)
-    ├── hooks/         # 크로스 피처 훅 (useDebounce 등)
-    ├── utils/         # 순수 유틸 함수 (formatDate, cn 등)
-    └── types/         # 공통 TypeScript 타입
+├── core/
+│   ├── api/           # axios 인스턴스, WebSocket 팩토리
+│   └── navigation/    # Router, PrivateRoute, RootLayout
+└── shared/
+    ├── ui/            # Pagination, DetailLinkButton, Modal
+    ├── hooks/
+    ├── utils/
+    └── types/         # ApiResponse<T>, Pageable, AsyncState
 ```
 
-## 아키텍처 원칙
+---
 
-**의존성 방향** (단방향, 역방향 금지)
-```
-shared/ → features/ → pages/
-```
+## 페이지 목록
 
-- features 간 직접 import 금지 — 공통 코드는 `shared/`로 이동
-- 각 feature는 `index.ts`를 통해서만 외부에 노출
-- `pages/`에서 여러 feature를 조합해 화면 구성
-- Context + Reducer는 각 `feature/context/` 안에 위치 (전역 Auth만 `core/auth/`에)
+| 페이지 | 라우트 | 스토어 연결 |
+|---|---|---|
+| 로그인 | `/auth/login` | ✅ |
+| 회원가입 | `/auth/signup` | ✅ |
+| 대시보드 | `/dashboard` | ✅ |
+| 배터리 목록 | `/battery` | ✅ |
+| 배터리 상세 | `/battery/:batteryCellId` | ✅ |
+| 개별 리포트 목록 | `/reports/individual` | ✅ |
+| 개별 리포트 상세 | `/reports/individual/:reportId` | ✅ |
+| 일일 리포트 목록 | `/reports/daily` | ✅ |
+| 일일 리포트 상세 | `/reports/daily/:reportId` | ✅ |
+
+> ✅ 스토어 연결 완료 &nbsp;|&nbsp; 🔧 컴포넌트 구현 완료, 스토어 미연결
+
+---
+
+## 아키텍처 요약
+
+- **의존성 방향**: `shared/` → `features/` → `pages/` (단방향)
+- **스토어**: 라우트 단위로 분리 (`use<Domain>ListStore` / `use<Domain>DetailStore`)
+- **인증**: httpOnly 쿠키 + `withCredentials`. FE는 토큰을 직접 저장하지 않음
+- **WebSocket**: `simulationSocketService` 싱글턴, 지수 백오프 재연결
+
+> 자세한 내용은 [`ARCHITECTURE.md`](./ARCHITECTURE.md) 참고.
+
+---
 
 ## 네이밍 컨벤션
 
 | 대상 | 규칙 | 예시 |
 |---|---|---|
-| 컴포넌트 | PascalCase | `BatteryCard.tsx` |
+| 컴포넌트 | PascalCase | `BatteryList.tsx` |
 | 페이지 | PascalCase + `Page` 접미사 | `DashboardPage.tsx` |
 | 훅 | `use` 접두사 + camelCase | `useDefects.ts` |
-| 서비스 | camelCase + `Service` 접미사 | `batteryService.ts` |
-| 타입/인터페이스 | PascalCase | `Defect`, `BatteryCell` |
-| 폴더 | 소문자 camelCase | `battery`, `dashboard` |
+| 스토어 | `use` + PascalCase + `(List\|Detail)Store` | `useBatteryListStore.ts` |
+| 서비스 (HTTP) | camelCase + `Service` 접미사 | `batteryService.ts` |
+| 서비스 (WS) | camelCase + `SocketService` 접미사 | `simulationSocketService.ts` |
+| 타입/인터페이스 | PascalCase | `BatteryDetail` |
+| 폴더 | 소문자 camelCase | `battery`, `reports` |
 | 상수 | UPPER_SNAKE_CASE | `API_BASE_URL` |
+
+---
 
 ## 커밋 컨벤션
 

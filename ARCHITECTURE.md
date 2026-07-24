@@ -95,17 +95,19 @@ src/
 ### pages/
 라우트와 1:1 대응하는 페이지 컴포넌트. features를 조합해서 화면을 구성.
 
-| 파일 | 역할 | 라우트 |
-|---|---|---|
-| `LoginPage.tsx` | 로그인 화면 | `/auth/login` |
-| `SignupPage.tsx` | 회원가입 화면 | `/auth/signup` |
-| `DashboardPage.tsx` | 메인 대시보드 — `dashboard`(KPI) + `simulation`(실시간 진행) feature 조합 | `/dashboard` |
-| `BatteryPage.tsx` | 배터리 목록 화면 | `/battery` |
-| `BatteryDetailPage.tsx` | 배터리 상세 화면 | `/battery/:batteryCellId` |
-| `IndividualReportPage.tsx` | 개별 리포트 목록 화면 | `/reports/individual` |
-| `IndividualReportDetailPage.tsx` | 개별 리포트 상세 화면 | `/reports/individual/:reportId` |
-| `DailyReportPage.tsx` | 일일 리포트 목록 화면 | `/reports/daily` |
-| `DailyReportDetailPage.tsx` | 일일 리포트 상세 화면 | `/reports/daily/:reportId` |
+| 파일 | 역할 | 라우트 | 스토어 연결 |
+|---|---|---|---|
+| `LoginPage.tsx` | 로그인 화면 | `/auth/login` | `useLoginStore` ✅ |
+| `SignupPage.tsx` | 회원가입 화면 | `/auth/signup` | `useSignupStore` ✅ |
+| `DashboardPage.tsx` | 메인 대시보드 — `dashboard`(KPI) + `simulation`(실시간 진행) feature 조합 | `/dashboard` | `useSimulationStore` ✅ / `DefectAnalysisChart`는 `dashboardService` 직접 호출 (스토어 미경유) |
+| `BatteryPage.tsx` | 배터리 목록 화면 | `/battery` | `useBatteryListStore` ✅ |
+| `BatteryDetailPage.tsx` | 배터리 상세 화면 | `/battery/:batteryCellId` | `useBatteryDetailStore` ✅ |
+| `IndividualReportPage.tsx` | 개별 리포트 목록 화면 | `/reports/individual` | `useIndividualReportListStore` ✅ |
+| `IndividualReportDetailPage.tsx` | 개별 리포트 상세 화면 | `/reports/individual/:reportId` | `useIndividualReportDetailStore` ✅ |
+| `DailyReportPage.tsx` | 일일 리포트 목록 화면 | `/reports/daily` | `useDailyReportListStore` ✅ |
+| `DailyReportDetailPage.tsx` | 일일 리포트 상세 화면 | `/reports/daily/:reportId` | `useDailyReportDetailStore` ✅ |
+
+> ✅ 스토어 연결 완료 &nbsp;|&nbsp; 🔧 컴포넌트 구현 완료, 스토어 미연결
 
 ### core/
 앱 전반의 인프라 레이어.
@@ -147,10 +149,18 @@ src/
 
 | 폴더 | 역할 |
 |---|---|
-| `ui/` | 순수 재사용 UI 컴포넌트 (Button, Modal 등) |
+| `ui/` | 순수 재사용 UI 컴포넌트 |
 | `hooks/` | 크로스 피처 훅 (useDebounce, useMediaQuery 등) |
 | `utils/` | 순수 유틸 함수 (formatDate, cn 등) |
 | `types/` | 공통 TypeScript 타입 (`api.ts`, `store.ts`) |
+
+**현재 구현된 shared/ui 컴포넌트**
+
+| 컴포넌트 | 파일 | 사용처 |
+|---|---|---|
+| `Pagination` | `Pagination.tsx` | 배터리 목록, 개별/일일 리포트 목록 |
+| `DetailLinkButton` | `DetailLinkButton.tsx` | 배터리 목록, 개별/일일 리포트 목록 상세 이동 버튼 |
+| `Modal` | `Modal.tsx` | 시뮬레이션 카드 모달 |
 
 ## 아키텍처 원칙
 
@@ -249,6 +259,25 @@ WS 채널은 짝이 되는 HTTP 서비스(시작/설정·복구용)를 같은 fe
 | simulation (WS) | `simulationSocketService.ts` | `WS /ws/sim` |
 | report (개별) | `individualReportService.ts` | `POST /reports/individual`, `GET /reports/individual`, `GET /reports/individual/:reportId` |
 | report (일일) | `dailyReportService.ts` | `POST /reports/daily`, `GET /reports/daily`, `GET /reports/daily/:reportId` |
+
+**배터리 상세 응답 구조 (`GET /battery/:batteryCellId`)**
+
+2026-07-16 스펙 변경. `inspections[]` 중심 구조로 개편됐다.
+
+```
+BatteryDetail
+├── batteryCellId, cellSerialNo, cellType, manufacturedDate …
+├── inspections[]
+│     ├── inspectionId, finalLabel, analyzedAt
+│     ├── image[]          ← CT / RGB 이미지 목록
+│     └── defectResults[]  ← 결함 탐지 결과 (defectType, confidence, bbox)
+└── reports[]
+      └── reportId, inspectionId, status, title …
+```
+
+**시뮬레이션 WS 메세지 단위**
+
+WS 메세지는 **셀 단위**로 push된다 (배치 단위 아님). `SimulationProgressPayload`의 `cell` 필드는 개별 셀 상태를 나타낸다.
 
 ### shared/ 승격 기준
 feature 하나에서만 쓰임    → feature 안에 위치

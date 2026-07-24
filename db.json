@@ -323,6 +323,16 @@
                 "width": 350,
                 "height": 280
               }
+            },
+            {
+              "imageType": "CT",
+              "imageId": 1001,
+              "bbox": {
+                "x": 800,
+                "y": 100,
+                "width": 500,
+                "height": 200
+              }
             }
           ]
         },

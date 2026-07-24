@@ -285,8 +285,8 @@
           "status": "COMPLETED",
           "title": "BATT-001 불량 검사 상세 리포트",
           "content": "CT 이미지 분석 결과, 상단 탭 부분에 94% 신뢰도로 크랙이 발견되었습니다.",
-          "ctImages": ["https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530", "https://picsum.photos/seed/ct1002/4000/530"],
-          "rgbImages": ["https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080", "https://picsum.photos/seed/rgb1002/1920/1080"],
+          "ctImages": ["https://picsum.photos/seed/ct1002/4000/530"],
+          "rgbImages": ["https://picsum.photos/seed/rgb1002/1920/1080"],
           "createdAt": "2026-07-07T10:00:00Z",
           "updatedAt": "2026-07-07T10:30:00Z",
           "imageMappings": [
